@@ -17,17 +17,31 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "fractol.hpp"
+#ifndef FRACTOL_INCLUDE_KEYBOARD_EVENT_HPP_
+#define FRACTOL_INCLUDE_KEYBOARD_EVENT_HPP_
+
+#include "event.hpp"
+
+#include "key_map.hpp"
 
 namespace cozz {
 
-Fractol::Fractol(int argc, char **argv) {}
+class KeyboardEvent final : public Event {
+  public:
+    KeyboardEvent(uint32_t window_id, bool pressed, bool is_repeat, KeyMap key);
 
-Fractol::~Fractol() = default;
+    bool IsPressed() const;
 
-uint8_t Fractol::Run() {
-    while (1) {
-    }
-}
+    bool IsRepeat() const;
+
+    KeyMap GetKey() const;
+
+  protected:
+    bool pressed_;
+    bool is_repeat_;
+    KeyMap key_;
+};
 
 }  // namespace cozz
+
+#endif  // FRACTOL_INCLUDE_KEYBOARD_EVENT_HPP_

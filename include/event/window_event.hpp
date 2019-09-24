@@ -17,17 +17,41 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "fractol.hpp"
+#ifndef FRACTOL_INCLUDE_WINDOW_EVENT_HPP_
+#define FRACTOL_INCLUDE_WINDOW_EVENT_HPP_
+
+#include "event.hpp"
 
 namespace cozz {
 
-Fractol::Fractol(int argc, char **argv) {}
+class WindowEvent : public Event {
+  public:
+    enum class Type {
+        kShown = 0x0,
+        kHidden,
+        kExposed,
+        kMoved,
+        kResized,
+        kMinimized,
+        kMaximized,
+        kRestored,
+        kEnter,
+        kLeave,
+        kFocusGained,
+        kFocusLost,
+        kClose,
+        kTakeFocus
+    };
 
-Fractol::~Fractol() = default;
+    WindowEvent(uint32_t window_id, Type type);
+    virtual ~WindowEvent();
 
-uint8_t Fractol::Run() {
-    while (1) {
-    }
-}
+    virtual Type GetEvent() const final;
+
+  protected:
+    Type event_;
+};
 
 }  // namespace cozz
+
+#endif  // FRACTOL_INCLUDE_WINDOW_EVENT_HPP_

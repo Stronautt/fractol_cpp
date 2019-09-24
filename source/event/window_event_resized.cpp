@@ -17,17 +17,13 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "fractol.hpp"
+#include "event/window_event_resized.hpp"
 
 namespace cozz {
 
-Fractol::Fractol(int argc, char **argv) {}
+WindowEventResized::WindowEventResized(uint32_t window_id, int32_t new_width, int32_t new_height)
+    : WindowEvent(window_id, WindowEvent::Type::kMoved), new_width_(new_width), new_height_(new_height) {}
 
-Fractol::~Fractol() = default;
-
-uint8_t Fractol::Run() {
-    while (1) {
-    }
-}
+std::pair<int32_t, int32_t> WindowEventResized::GetSize() const { return std::make_pair(new_width_, new_height_); }
 
 }  // namespace cozz

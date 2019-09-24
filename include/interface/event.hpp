@@ -17,21 +17,39 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_FRACTOL_HPP_
-#define FRACTOL_INCLUDE_FRACTOL_HPP_
+#ifndef FRACTOL_INCLUDE_INTERFACE_EVENT_HPP_
+#define FRACTOL_INCLUDE_INTERFACE_EVENT_HPP_
 
+#include <chrono>
 #include <cstdint>
+#include <stdexcept>
 
 namespace cozz {
 
-class Fractol final {
-  public:
-    Fractol(int argc, char **argv);
-    ~Fractol();
+class event_error : public std::runtime_error {
+    using std::runtime_error::runtime_error;
+};
 
-    uint8_t Run();
+class Event {
+  public:
+    enum class Type : uint8_t { kWindow = 0x0, kKeyboard, kMouseMotion, kMouseButton, kMouseWheel, kQuit };
+
+    virtual ~Event();
+
+    virtual Type GetType() const final;
+
+    virtual std::chrono::system_clock::time_point GetTimestamp() const final;
+
+    virtual uint32_t GetWindowId() const final;
+
+  protected:
+    Event(Type type, uint32_t window_id);
+
+    Type type_;
+    std::chrono::system_clock::time_point timestamp_;
+    uint32_t window_id_;
 };
 
 }  // namespace cozz
 
-#endif  // FRACTOL_INCLUDE_FRACTOL_HPP_
+#endif  // FRACTOL_INCLUDE_INTERFACE_EVENT_HPP_

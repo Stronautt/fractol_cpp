@@ -17,17 +17,29 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "fractol.hpp"
+#ifndef FRACTOL_INCLUDE_MOUSE_WHEEL_EVENT_HPP_
+#define FRACTOL_INCLUDE_MOUSE_WHEEL_EVENT_HPP_
+
+#include "event.hpp"
 
 namespace cozz {
 
-Fractol::Fractol(int argc, char **argv) {}
+class MouseWheelEvent final : public Event {
+  public:
+    MouseWheelEvent(uint32_t window_id, int32_t scrolled_x, int32_t scrolled_y, bool inversed);
 
-Fractol::~Fractol() = default;
+    int32_t GetScrolledByX() const;
 
-uint8_t Fractol::Run() {
-    while (1) {
-    }
-}
+    int32_t GetScrolledByY() const;
+
+    bool IsInversed() const;
+
+  protected:
+    int32_t scrolled_x_;
+    int32_t scrolled_y_;
+    bool inversed_;
+};
 
 }  // namespace cozz
+
+#endif  // FRACTOL_INCLUDE_MOUSE_WHEEL_EVENT_HPP_

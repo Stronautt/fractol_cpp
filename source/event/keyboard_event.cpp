@@ -17,17 +17,22 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "fractol.hpp"
+#include "event/keyboard_event.hpp"
 
 namespace cozz {
 
-Fractol::Fractol(int argc, char **argv) {}
+KeyboardEvent::KeyboardEvent(uint32_t window_id, bool pressed, bool is_repeat, KeyMap key)
+    : Event(Event::Type::kKeyboard, window_id),
+      pressed_(pressed),
+      is_repeat_(is_repeat),
+      key_(key > KeyMap::kKeyboardButtonsBegin && key < KeyMap::kKeyboardButtonsEnd
+               ? key
+               : throw event_error("Invalid keyboard button")) {}
 
-Fractol::~Fractol() = default;
+bool KeyboardEvent::IsPressed() const { return pressed_; }
 
-uint8_t Fractol::Run() {
-    while (1) {
-    }
-}
+bool KeyboardEvent::IsRepeat() const { return is_repeat_; }
+
+KeyMap KeyboardEvent::GetKey() const { return key_; }
 
 }  // namespace cozz

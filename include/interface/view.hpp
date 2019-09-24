@@ -17,17 +17,18 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "fractol.hpp"
+#ifndef FRACTOL_INCLUDE_VIEW_HPP_
+#define FRACTOL_INCLUDE_VIEW_HPP_
 
 namespace cozz {
 
-Fractol::Fractol(int argc, char **argv) {}
+class View {
+  public:
+    virtual ~View() = default;
 
-Fractol::~Fractol() = default;
-
-uint8_t Fractol::Run() {
-    while (1) {
-    }
-}
+    virtual void Draw() = 0;
+};
 
 }  // namespace cozz
+
+#endif  // FRACTOL_INCLUDE_VIEW_HPP_

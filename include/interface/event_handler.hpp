@@ -17,17 +17,26 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "fractol.hpp"
+#ifndef FRACTOL_INCLUDE_INTERFACE_EVENT_HANDLER_HPP_
+#define FRACTOL_INCLUDE_INTERFACE_EVENT_HANDLER_HPP_
+
+#include <functional>
 
 namespace cozz {
 
-Fractol::Fractol(int argc, char **argv) {}
+#include "Event.hpp"
 
-Fractol::~Fractol() = default;
+class EventHandler {
+  public:
+    virtual ~EventHandler() = default;
 
-uint8_t Fractol::Run() {
-    while (1) {
-    }
-}
+    virtual bool Poll() = 0;
+
+    uint64_t RegisterEventCallback(Event::Type type, std::function<void(const Event&)>) final;
+
+    void UnregisterEventCallback(Event::Type type, uint64_t id) final;
+};
 
 }  // namespace cozz
+
+#endif  // FRACTOL_INCLUDE_INTERFACE_EVENT_HANDLER_HPP_

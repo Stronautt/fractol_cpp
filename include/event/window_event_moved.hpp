@@ -17,17 +17,27 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "fractol.hpp"
+#ifndef FRACTOL_INCLUDE_WINDOW_EVENT_MOVED_HPP_
+#define FRACTOL_INCLUDE_WINDOW_EVENT_MOVED_HPP_
+
+#include "window_event.hpp"
+
+#include <cstdint>
+#include <utility>
 
 namespace cozz {
 
-Fractol::Fractol(int argc, char **argv) {}
+class WindowEventMoved final : public WindowEvent {
+  public:
+    WindowEventMoved(uint32_t window_id, int32_t x, int32_t y);
 
-Fractol::~Fractol() = default;
+    std::pair<int32_t, int32_t> GetPosition() const;
 
-uint8_t Fractol::Run() {
-    while (1) {
-    }
-}
+  protected:
+    int32_t x_;
+    int32_t y_;
+};
 
 }  // namespace cozz
+
+#endif  // FRACTOL_INCLUDE_WINDOW_EVENT_MOVED_HPP_

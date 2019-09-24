@@ -17,17 +17,15 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "fractol.hpp"
+#include "event/window_event.hpp"
 
 namespace cozz {
 
-Fractol::Fractol(int argc, char **argv) {}
+WindowEvent::WindowEvent(uint32_t window_id, WindowEvent::Type type)
+    : Event(Event::Type::kWindow, window_id), event_(type) {}
 
-Fractol::~Fractol() = default;
+WindowEvent::~WindowEvent() = default;
 
-uint8_t Fractol::Run() {
-    while (1) {
-    }
-}
+WindowEvent::Type WindowEvent::GetEvent() const { return event_; }
 
 }  // namespace cozz

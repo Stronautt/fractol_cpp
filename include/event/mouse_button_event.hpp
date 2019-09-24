@@ -17,17 +17,37 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "fractol.hpp"
+#ifndef FRACTOL_INCLUDE_MOUSE_BUTTON_EVENT_HPP_
+#define FRACTOL_INCLUDE_MOUSE_BUTTON_EVENT_HPP_
+
+#include "event.hpp"
+
+#include <utility>
+
+#include "key_map.hpp"
 
 namespace cozz {
 
-Fractol::Fractol(int argc, char **argv) {}
+class MouseButtonEvent final : public Event {
+  public:
+    MouseButtonEvent(uint32_t window_id, KeyMap button, bool pressed, uint8_t clicks, int32_t x, int32_t y);
 
-Fractol::~Fractol() = default;
+    KeyMap GetButton() const;
 
-uint8_t Fractol::Run() {
-    while (1) {
-    }
-}
+    bool IsPressed() const;
+
+    uint8_t GetClicksCount() const;
+
+    std::pair<int32_t, int32_t> GetPosition() const;
+
+  protected:
+    KeyMap button_;
+    bool pressed_;
+    uint8_t clicks_;
+    int32_t x_;
+    int32_t y_;
+};
 
 }  // namespace cozz
+
+#endif  // FRACTOL_INCLUDE_MOUSE_BUTTON_EVENT_HPP_

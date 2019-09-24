@@ -22,11 +22,21 @@ cmake_minimum_required(VERSION 3.5.1 FATAL_ERROR)
 project(fractol VERSION 0.1.0 LANGUAGES CXX)
 
 set(EXE_NAME ${PROJECT_NAME} CACHE STRING "Name of the executable")
-set(LIB_NAME ${EXE_NAME}_core CACHE STRING "Name of the the core library")
+set(LIB_NAME ${EXE_NAME}_core CACHE STRING "Name of the core library")
 
-add_library(${LIB_NAME} STATIC source/fractol.cpp)
+add_library(${LIB_NAME} STATIC source/fractol.cpp
+	                           source/event/event.cpp
+	                           source/event/window_event.cpp
+	                           source/event/window_event_moved.cpp
+	                           source/event/window_event_resized.cpp
+	                           source/event/keyboard_event.cpp
+	                           source/event/mouse_motion_event.cpp
+	                           source/event/mouse_button_event.cpp
+	                           source/event/mouse_wheel_event.cpp
+	                           source/event/quit_event.cpp)
 target_include_directories(${LIB_NAME} PUBLIC include
-	                                   PRIVATE source/include)
+                                              include/interface
+                                       PRIVATE source/include)
 
 add_executable(${EXE_NAME} source/main.cpp)
 target_link_libraries(${EXE_NAME} PRIVATE ${LIB_NAME})

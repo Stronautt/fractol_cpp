@@ -17,17 +17,10 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "fractol.hpp"
+#include "event/quit_event.hpp"
 
 namespace cozz {
 
-Fractol::Fractol(int argc, char **argv) {}
-
-Fractol::~Fractol() = default;
-
-uint8_t Fractol::Run() {
-    while (1) {
-    }
-}
+QuitEvent::QuitEvent() : Event(Event::Type::kQuit, 0) {}
 
 }  // namespace cozz
