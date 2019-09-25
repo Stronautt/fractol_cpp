@@ -21,20 +21,53 @@
 #define FRACTOL_INCLUDE_INTERFACE_EVENT_HANDLER_HPP_
 
 #include <functional>
+#include <map>
+#include <stdexcept>
+#include <typeindex>
+
+#include "event.hpp"
+#include "event/keyboard_event.hpp"
+#include "event/mouse_button_event.hpp"
+#include "event/mouse_motion_event.hpp"
+#include "event/mouse_wheel_event.hpp"
+#include "event/quit_event.hpp"
+#include "event/window_event.hpp"
 
 namespace cozz {
 
-#include "Event.hpp"
-
 class EventHandler {
   public:
-    virtual ~EventHandler() = default;
+    using EventHandlerID = const std::multimap<Event::Type, std::function<void(const Event&)>>::iterator;
 
-    virtual bool Poll() = 0;
+    virtual ~EventHandler();
 
-    uint64_t RegisterEventCallback(Event::Type type, std::function<void(const Event&)>) final;
+    virtual bool Poll() const = 0;
 
-    void UnregisterEventCallback(Event::Type type, uint64_t id) final;
+    template <class EventType>
+    EventHandlerID RegisterEventCallback(const std::function<void(const EventType&)>& callback) {
+        static const std::map<std::type_index, Event::Type> event_types_map = {
+            {std::type_index(typeid(WindowEvent)), Event::Type::kWindow},
+            {std::type_index(typeid(KeyboardEvent)), Event::Type::kKeyboard},
+            {std::type_index(typeid(MouseMotionEvent)), Event::Type::kMouseMotion},
+            {std::type_index(typeid(MouseButtonEvent)), Event::Type::kMouseButton},
+            {std::type_index(typeid(MouseWheelEvent)), Event::Type::kMouseWheel},
+            {std::type_index(typeid(QuitEvent)), Event::Type::kQuit},
+        };
+
+        try {
+            return callbacks_map_.emplace(event_types_map.at(std::type_index(typeid(EventType))),
+                                          reinterpret_cast<const std::function<void(const Event&)>&>(callback));
+        } catch (const std::out_of_range&) {
+            throw std::logic_error("Unknown event type");
+        }
+    }
+
+    virtual void UnregisterEventCallback(EventHandlerID id) final;
+
+  protected:
+    std::multimap<Event::Type, std::function<void(const Event&)>> callbacks_map_;
+
+    void TriggerCallbacks(const Event& event) const;
 };
 
 }  // namespace cozz

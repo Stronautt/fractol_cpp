@@ -17,30 +17,32 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "fractol.hpp"
-
-#include <functional>
-#include <iostream>
-
 #include "sdl_event_handler.hpp"
+
+#include <SDL2/SDL.h>
+
+#include "event/quit_event.hpp"
 
 namespace cozz {
 
-Fractol::Fractol(int argc, char** argv) : is_running_(true), event_handler_(std::make_unique<SDLEventHandler>()) {
-    event_handler_->RegisterEventCallback<QuitEvent>(std::bind(&Fractol::Terminate, this, std::placeholders::_1));
-}
-
-Fractol::~Fractol() = default;
-
-void Fractol::Terminate(const QuitEvent& event) {
-    std::cout << "Application is terminating" << std::endl;
-    is_running_ = false;
-}
-
-uint8_t Fractol::Run() {
-    while (is_running_) {
-        event_handler_->Poll();
+SDLEventHandler::SDLEventHandler() {
+    if (!SDL_WasInit(SDL_INIT_EVENTS)) {
+        SDL_Init(SDL_INIT_EVENTS);
     }
+}
+
+bool SDLEventHandler::Poll() const {
+    SDL_Event e;
+    while (SDL_PollEvent(&e)) {
+        switch (e.type) {
+            case SDL_QUIT:
+                TriggerCallbacks(QuitEvent());
+                break;
+            default:
+                return false;
+        }
+    }
+    return true;
 }
 
 }  // namespace cozz

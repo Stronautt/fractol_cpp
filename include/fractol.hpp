@@ -20,16 +20,27 @@
 #ifndef FRACTOL_INCLUDE_FRACTOL_HPP_
 #define FRACTOL_INCLUDE_FRACTOL_HPP_
 
+#include <atomic>
 #include <cstdint>
+#include <memory>
 
 namespace cozz {
 
+class EventHandler;
+class QuitEvent;
+
 class Fractol final {
   public:
-    Fractol(int argc, char **argv);
+    Fractol(int argc, char** argv);
     ~Fractol();
 
     uint8_t Run();
+
+  private:
+    std::atomic<bool> is_running_;
+    std::unique_ptr<EventHandler> event_handler_;
+
+    void Terminate(const QuitEvent& event);
 };
 
 }  // namespace cozz

@@ -21,11 +21,13 @@ cmake_minimum_required(VERSION 3.5.1 FATAL_ERROR)
 
 project(fractol VERSION 0.1.0 LANGUAGES CXX)
 
+find_package(SDL2 REQUIRED)
+
 set(EXE_NAME ${PROJECT_NAME} CACHE STRING "Name of the executable")
 set(LIB_NAME ${EXE_NAME}_core CACHE STRING "Name of the core library")
 
 add_library(${LIB_NAME} STATIC source/fractol.cpp
-	                           source/event/event.cpp
+							   source/event/event.cpp
 	                           source/event/window_event.cpp
 	                           source/event/window_event_moved.cpp
 	                           source/event/window_event_resized.cpp
@@ -33,10 +35,13 @@ add_library(${LIB_NAME} STATIC source/fractol.cpp
 	                           source/event/mouse_motion_event.cpp
 	                           source/event/mouse_button_event.cpp
 	                           source/event/mouse_wheel_event.cpp
-	                           source/event/quit_event.cpp)
+	                           source/event/quit_event.cpp
+	                           source/event_handler.cpp
+	                           source/sdl_event_handler.cpp)
 target_include_directories(${LIB_NAME} PUBLIC include
                                               include/interface
-                                       PRIVATE source/include)
+                                       PRIVATE source/include
+                                       		   ${SDL2_INCLUDE_DIRS})
 
 add_executable(${EXE_NAME} source/main.cpp)
-target_link_libraries(${EXE_NAME} PRIVATE ${LIB_NAME})
+target_link_libraries(${EXE_NAME} PRIVATE ${LIB_NAME} ${SDL2_LIBRARIES})
