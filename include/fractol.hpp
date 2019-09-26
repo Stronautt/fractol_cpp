@@ -27,6 +27,10 @@
 namespace cozz {
 
 class EventHandler;
+class MouseWheelEvent;
+class MouseButtonEvent;
+class MouseMotionEvent;
+class KeyboardEvent;
 class QuitEvent;
 
 class Fractol final {
@@ -39,6 +43,14 @@ class Fractol final {
   private:
     std::atomic<bool> is_running_;
     std::unique_ptr<EventHandler> event_handler_;
+
+    void MouseWheelHandler(const MouseWheelEvent& event);
+
+    void MouseButtonHandler(const MouseButtonEvent& event);
+
+    void MouseMotionHandler(const MouseMotionEvent& event);
+
+    void KeyboardHandler(const KeyboardEvent& event);
 
     void Terminate(const QuitEvent& event);
 };

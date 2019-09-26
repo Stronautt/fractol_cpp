@@ -17,8 +17,8 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_WINDOW_EVENT_RESIZED_HPP_
-#define FRACTOL_INCLUDE_WINDOW_EVENT_RESIZED_HPP_
+#ifndef FRACTOL_INCLUDE_window_resized_event_HPP_
+#define FRACTOL_INCLUDE_window_resized_event_HPP_
 
 #include "window_event.hpp"
 
@@ -27,9 +27,9 @@
 
 namespace cozz {
 
-class WindowEventResized final : public WindowEvent {
+class WindowResizedEvent final : public WindowEvent<Event::Type::kWindowResized> {
   public:
-    WindowEventResized(uint32_t window_id, int32_t new_width, int32_t new_height);
+    WindowResizedEvent(uint32_t window_id, int32_t new_width, int32_t new_height);
 
     std::pair<int32_t, int32_t> GetSize() const;
 
@@ -40,4 +40,4 @@ class WindowEventResized final : public WindowEvent {
 
 }  // namespace cozz
 
-#endif  // FRACTOL_INCLUDE_WINDOW_EVENT_RESIZED_HPP_
+#endif  // FRACTOL_INCLUDE_window_resized_event_HPP_

@@ -17,13 +17,27 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "event/window_event_resized.hpp"
+#ifndef FRACTOL_INCLUDE_window_moved_event_HPP_
+#define FRACTOL_INCLUDE_window_moved_event_HPP_
+
+#include "window_event.hpp"
+
+#include <cstdint>
+#include <utility>
 
 namespace cozz {
 
-WindowEventResized::WindowEventResized(uint32_t window_id, int32_t new_width, int32_t new_height)
-    : WindowEvent(window_id, WindowEvent::Type::kMoved), new_width_(new_width), new_height_(new_height) {}
+class WindowMovedEvent final : public WindowEvent<Event::Type::kWindowMoved> {
+  public:
+    WindowMovedEvent(uint32_t window_id, int32_t x, int32_t y);
 
-std::pair<int32_t, int32_t> WindowEventResized::GetSize() const { return std::make_pair(new_width_, new_height_); }
+    std::pair<int32_t, int32_t> GetPosition() const;
+
+  protected:
+    int32_t x_;
+    int32_t y_;
+};
 
 }  // namespace cozz
+
+#endif  // FRACTOL_INCLUDE_window_moved_event_HPP_

@@ -23,6 +23,7 @@
 #include <functional>
 
 #include "event_handler.hpp"
+#include "key_map.hpp"
 
 namespace cozz {
 

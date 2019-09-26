@@ -32,7 +32,27 @@ class event_error : public std::runtime_error {
 
 class Event {
   public:
-    enum class Type : uint8_t { kWindow = 0x0, kKeyboard, kMouseMotion, kMouseButton, kMouseWheel, kQuit };
+    enum class Type : uint8_t {
+        kWindowShown = 0x0,
+        kWindowHidden,
+        kWindowExposed,
+        kWindowMoved,
+        kWindowResized,
+        kWindowMinimized,
+        kWindowMaximized,
+        kWindowRestored,
+        kWindowEnter,
+        kWindowLeave,
+        kWindowFocusGained,
+        kWindowFocusLost,
+        kWindowClose,
+        kWindowTakeFocus,
+        kKeyboard,
+        kMouseMotion,
+        kMouseButton,
+        kMouseWheel,
+        kQuit,
+    };
 
     virtual ~Event();
 

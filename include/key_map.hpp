@@ -42,8 +42,8 @@ enum class KeyMap : uint16_t {
     kNumericKeysBegin,
 
     /* Numeric keys */
-    kNum1, kNum2, kNum3, kNum4, kNum5,
-    kNum6, kNum7, kNum8, kNum9, kNum0,
+    kNum0, kNum1, kNum2, kNum3, kNum4,
+    kNum5, kNum6, kNum7, kNum8, kNum9,
 
     /* Key pad numeric keys */
     kKeyPadNum1, kKeyPadNum2, kKeyPadNum3, kKeyPadNum4, kKeyPadNum5,

@@ -36,4 +36,16 @@ bool MouseMotionEvent::IsExtra1ButtonPressed() const { return state_ & ButtonSta
 
 bool MouseMotionEvent::IsExtra2ButtonPressed() const { return state_ & ButtonState::kExtra2Pressed; }
 
+MouseMotionEvent::ButtonState& operator|=(MouseMotionEvent::ButtonState& a, MouseMotionEvent::ButtonState b) {
+    return a = a | b;
+}
+
+MouseMotionEvent::ButtonState operator|(MouseMotionEvent::ButtonState a, MouseMotionEvent::ButtonState b) {
+    return static_cast<MouseMotionEvent::ButtonState>(static_cast<uint8_t>(a) | static_cast<uint8_t>(b));
+}
+
+MouseMotionEvent::ButtonState operator&(MouseMotionEvent::ButtonState a, MouseMotionEvent::ButtonState b) {
+    return static_cast<MouseMotionEvent::ButtonState>(static_cast<uint8_t>(a) & static_cast<uint8_t>(b));
+}
+
 }  // namespace cozz

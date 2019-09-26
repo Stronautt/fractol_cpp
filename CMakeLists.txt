@@ -28,9 +28,8 @@ set(LIB_NAME ${EXE_NAME}_core CACHE STRING "Name of the core library")
 
 add_library(${LIB_NAME} STATIC source/fractol.cpp
 							   source/event/event.cpp
-	                           source/event/window_event.cpp
-	                           source/event/window_event_moved.cpp
-	                           source/event/window_event_resized.cpp
+	                           source/event/window_moved_event.cpp
+	                           source/event/window_resized_event.cpp
 	                           source/event/keyboard_event.cpp
 	                           source/event/mouse_motion_event.cpp
 	                           source/event/mouse_button_event.cpp

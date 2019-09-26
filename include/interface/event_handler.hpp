@@ -32,6 +32,8 @@
 #include "event/mouse_wheel_event.hpp"
 #include "event/quit_event.hpp"
 #include "event/window_event.hpp"
+#include "event/window_moved_event.hpp"
+#include "event/window_resized_event.hpp"
 
 namespace cozz {
 
@@ -45,14 +47,31 @@ class EventHandler {
 
     template <class EventType>
     EventHandlerID RegisterEventCallback(const std::function<void(const EventType&)>& callback) {
+        /* clang-format off */
         static const std::map<std::type_index, Event::Type> event_types_map = {
-            {std::type_index(typeid(WindowEvent)), Event::Type::kWindow},
-            {std::type_index(typeid(KeyboardEvent)), Event::Type::kKeyboard},
-            {std::type_index(typeid(MouseMotionEvent)), Event::Type::kMouseMotion},
-            {std::type_index(typeid(MouseButtonEvent)), Event::Type::kMouseButton},
-            {std::type_index(typeid(MouseWheelEvent)), Event::Type::kMouseWheel},
-            {std::type_index(typeid(QuitEvent)), Event::Type::kQuit},
+            {std::type_index(typeid(WindowEvent<Event::Type::kWindowShown>)),       Event::Type::kWindowShown},
+            {std::type_index(typeid(WindowEvent<Event::Type::kWindowHidden>)),      Event::Type::kWindowHidden},
+            {std::type_index(typeid(WindowEvent<Event::Type::kWindowExposed>)),     Event::Type::kWindowExposed},
+            {std::type_index(typeid(WindowMovedEvent)),                             Event::Type::kWindowMoved},
+            {std::type_index(typeid(WindowResizedEvent)),                           Event::Type::kWindowResized},
+            {std::type_index(typeid(WindowEvent<Event::Type::kWindowMinimized>)),   Event::Type::kWindowMinimized},
+            {std::type_index(typeid(WindowEvent<Event::Type::kWindowMaximized>)),   Event::Type::kWindowMaximized},
+            {std::type_index(typeid(WindowEvent<Event::Type::kWindowRestored>)),    Event::Type::kWindowRestored},
+            {std::type_index(typeid(WindowEvent<Event::Type::kWindowEnter>)),       Event::Type::kWindowEnter},
+            {std::type_index(typeid(WindowEvent<Event::Type::kWindowLeave>)),       Event::Type::kWindowLeave},
+            {std::type_index(typeid(WindowEvent<Event::Type::kWindowFocusGained>)), Event::Type::kWindowFocusGained},
+            {std::type_index(typeid(WindowEvent<Event::Type::kWindowFocusLost>)),   Event::Type::kWindowFocusLost},
+            {std::type_index(typeid(WindowEvent<Event::Type::kWindowClose>)),       Event::Type::kWindowClose},
+            {std::type_index(typeid(WindowEvent<Event::Type::kWindowTakeFocus>)),   Event::Type::kWindowTakeFocus},
+            {std::type_index(typeid(KeyboardEvent)),                                Event::Type::kKeyboard},
+            {std::type_index(typeid(MouseMotionEvent)),                             Event::Type::kMouseMotion},
+            {std::type_index(typeid(MouseButtonEvent)),                             Event::Type::kMouseButton},
+            {std::type_index(typeid(MouseWheelEvent)),                              Event::Type::kMouseWheel},
+            {std::type_index(typeid(QuitEvent)),                                    Event::Type::kQuit},
         };
+        /* clang-format on */
+
+        static_assert(std::is_convertible<EventType, Event>::value);
 
         try {
             return callbacks_map_.emplace(event_types_map.at(std::type_index(typeid(EventType))),

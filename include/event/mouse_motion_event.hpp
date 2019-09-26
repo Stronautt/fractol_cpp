@@ -29,6 +29,7 @@ namespace cozz {
 class MouseMotionEvent final : public Event {
   public:
     enum ButtonState : uint8_t {
+        kReleased = 0x0,
         kLeftPressed = 0x1,    /* 0000 0001 */
         kMiddlePressed = 0x2,  /* 0000 0010 */
         kRightPressed = 0x4,   /* 0000 0100 */
@@ -55,6 +56,12 @@ class MouseMotionEvent final : public Event {
     int32_t x_;
     int32_t y_;
 };
+
+MouseMotionEvent::ButtonState operator|(MouseMotionEvent::ButtonState a, MouseMotionEvent::ButtonState b);
+
+MouseMotionEvent::ButtonState operator&(MouseMotionEvent::ButtonState a, MouseMotionEvent::ButtonState b);
+
+MouseMotionEvent::ButtonState& operator|=(MouseMotionEvent::ButtonState& a, MouseMotionEvent::ButtonState b);
 
 }  // namespace cozz
 

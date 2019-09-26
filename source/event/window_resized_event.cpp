@@ -17,15 +17,13 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "event/window_event.hpp"
+#include "event/window_resized_event.hpp"
 
 namespace cozz {
 
-WindowEvent::WindowEvent(uint32_t window_id, WindowEvent::Type type)
-    : Event(Event::Type::kWindow, window_id), event_(type) {}
+WindowResizedEvent::WindowResizedEvent(uint32_t window_id, int32_t new_width, int32_t new_height)
+    : WindowEvent(window_id), new_width_(new_width), new_height_(new_height) {}
 
-WindowEvent::~WindowEvent() = default;
-
-WindowEvent::Type WindowEvent::GetEvent() const { return event_; }
+std::pair<int32_t, int32_t> WindowResizedEvent::GetSize() const { return std::make_pair(new_width_, new_height_); }
 
 }  // namespace cozz

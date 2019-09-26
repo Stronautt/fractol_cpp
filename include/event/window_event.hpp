@@ -24,33 +24,26 @@
 
 namespace cozz {
 
+template <Event::Type EventType>
 class WindowEvent : public Event {
   public:
-    enum class Type {
-        kShown = 0x0,
-        kHidden,
-        kExposed,
-        kMoved,
-        kResized,
-        kMinimized,
-        kMaximized,
-        kRestored,
-        kEnter,
-        kLeave,
-        kFocusGained,
-        kFocusLost,
-        kClose,
-        kTakeFocus
-    };
+    WindowEvent(uint32_t window_id) : Event(EventType, window_id) {}
 
-    WindowEvent(uint32_t window_id, Type type);
-    virtual ~WindowEvent();
-
-    virtual Type GetEvent() const final;
-
-  protected:
-    Type event_;
+    virtual ~WindowEvent() = default;
 };
+
+using WindowShownEvent = WindowEvent<Event::Type::kWindowShown>;
+using WindowHiddenEvent = WindowEvent<Event::Type::kWindowHidden>;
+using WindowExposedEvent = WindowEvent<Event::Type::kWindowExposed>;
+using WindowMinimizedEvent = WindowEvent<Event::Type::kWindowMinimized>;
+using WindowMaximizedEvent = WindowEvent<Event::Type::kWindowMaximized>;
+using WindowRestoredEvent = WindowEvent<Event::Type::kWindowRestored>;
+using WindowEnterEvent = WindowEvent<Event::Type::kWindowEnter>;
+using WindowLeaveEvent = WindowEvent<Event::Type::kWindowLeave>;
+using WindowFocusGainedEvent = WindowEvent<Event::Type::kWindowFocusGained>;
+using WindowFocusLostEvent = WindowEvent<Event::Type::kWindowFocusLost>;
+using WindowCloseEvent = WindowEvent<Event::Type::kWindowClose>;
+using WindowTakeFocusEvent = WindowEvent<Event::Type::kWindowTakeFocus>;
 
 }  // namespace cozz
 

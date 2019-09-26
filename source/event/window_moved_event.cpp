@@ -17,13 +17,12 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "event/window_event_moved.hpp"
+#include "event/window_moved_event.hpp"
 
 namespace cozz {
 
-WindowEventMoved::WindowEventMoved(uint32_t window_id, int32_t x, int32_t y)
-    : WindowEvent(window_id, WindowEvent::Type::kMoved), x_(x), y_(y) {}
+WindowMovedEvent::WindowMovedEvent(uint32_t window_id, int32_t x, int32_t y) : WindowEvent(window_id), x_(x), y_(y) {}
 
-std::pair<int32_t, int32_t> WindowEventMoved::GetPosition() const { return std::make_pair(x_, y_); }
+std::pair<int32_t, int32_t> WindowMovedEvent::GetPosition() const { return std::make_pair(x_, y_); }
 
 }  // namespace cozz
