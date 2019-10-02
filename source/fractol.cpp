@@ -31,7 +31,7 @@
 namespace cozz {
 
 Fractol::Fractol(int argc, char** argv) : is_running_(true), event_handler_(std::make_unique<SDLEventHandler>()) {
-    windows_.push_back(std::make_unique<SDLWindow>("Hello", 1600, 1200));
+    windows_.push_back(std::make_unique<SDLWindow>("Hello", 200, 200));
 
     event_handler_->RegisterEventCallback<MouseWheelEvent>(
         std::bind(&Fractol::MouseWheelHandler, this, std::placeholders::_1));
@@ -123,10 +123,31 @@ void Fractol::Terminate(const QuitEvent& event) {
     is_running_ = false;
 }
 
+void DrawOnTheWindow(Window& window) {
+    auto canvas = window.GetCanvas();
+
+    for (auto& pixel : canvas) {
+        pixel = 0xFF00;
+    }
+
+    for (uint64_t x = 0; x < canvas.GetWidth() / 2; x++) {
+        for (uint64_t y = 0; y < canvas.GetHeight() / 2; y++) {
+            canvas.At(x, y) = 0xFF0000;
+        }
+    }
+
+    for (uint64_t x = canvas.GetWidth() / 2; x < canvas.GetWidth(); x++) {
+        for (uint64_t y = canvas.GetHeight() / 2; y < canvas.GetHeight(); y++) {
+            canvas.At(x, y) = 0xFF;
+        }
+    }
+}
+
 uint8_t Fractol::Run() {
+    DrawOnTheWindow(*windows_[0]);
     while (is_running_) {
         event_handler_->Poll();
-        std::for_each(windows_.begin(), windows_.end(), [](auto& window){ window->Update(); });
+        std::for_each(windows_.begin(), windows_.end(), [](auto& window) { window->Update(); });
     }
 }
 

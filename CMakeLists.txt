@@ -41,6 +41,7 @@ add_library(${LIB_NAME} STATIC source/fractol.cpp
 	                           source/event/quit_event.cpp
 	                           source/event_handler.cpp
 	                           source/sdl_event_handler.cpp
+	                           source/canvas.cpp
 	                           source/window.cpp
 	                           source/sdl_window.cpp)
 target_include_directories(${LIB_NAME} PUBLIC include

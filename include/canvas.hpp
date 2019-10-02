@@ -20,47 +20,66 @@
 #ifndef FRACTOL_INCLUDE_CANVAS_HPP_
 #define FRACTOL_INCLUDE_CANVAS_HPP_
 
+#include <algorithm>
 #include <cstdint>
 #include <functional>
 #include <memory>
 
 namespace cozz {
 
-template <class PixelType, class Deleter = std::function<void(PixelType*)>>
 class Canvas {
   public:
-    using iterator = PixelType*;
-    using const_iterator = const PixelType*;
+    static constexpr uint8_t kMinBytesPerPixel = 1;
+    static constexpr uint8_t kMaxBytesPerPixel = 4;
 
-    Canvas(uint64_t width, uint64_t height)
-        : Canvas(width, height, new PixelType[width * height * sizeof(PixelType)], std::default_delete<PixelType[]>()) {
-    }
+    class iterator {
+      public:
+        iterator(uint8_t* pos, uint8_t bytes_per_pixel);
 
-    Canvas(uint64_t width, uint64_t height, PixelType* pixels, Deleter deleter = [](PixelType*) {})
-        : width_(width),
-          height_(height),
-          pitch_(width_ * sizeof(PixelType)),
-          pixels_(std::shared_ptr<PixelType[]>(pixels, deleter)) {}
+        bool operator==(const iterator& other) const;
+        bool operator!=(const iterator& other) const;
+        iterator& operator=(uint32_t value);
+        iterator& operator*();
+        operator uint32_t() const;
+        iterator operator++();
 
-    uint64_t GetWidth() const { return width_; }
-    uint64_t GetHeight() const { return height_; }
-    uint64_t GetPitch() const { return pitch_; }
+      private:
+        uint8_t* pos_;
+        uint8_t bytes_per_pixel_;
+    };
+    using const_iterator = const iterator;
 
-    iterator begin() { return pixels_.get(); }
-    const_iterator cbegin() const { return pixels_.get(); }
+    Canvas(uint64_t width, uint64_t height, uint8_t bytes_per_pixel = kMinBytesPerPixel);
 
-    iterator end() { return &pixels_[height_ * width_]; }
-    const_iterator cend() const { return &pixels_[height_ * width_]; }
+    Canvas(uint64_t width, uint64_t height, uint8_t* pixels, uint8_t bytes_per_pixel = kMinBytesPerPixel,
+           std::function<void(uint8_t*)> deleter = [](uint8_t*) {});
 
-    PixelType& At(uint64_t x, uint64_t y) { return pixels_[y * width_ + x]; }
+    uint64_t GetWidth() const;
+    uint64_t GetHeight() const;
+    uint64_t GetPitch() const;
+    uint8_t GetBytesPerPixel() const;
 
-    PixelType* GetRawPixels() { return pixels_.get(); }
+    iterator begin();
+    const_iterator cbegin() const;
+
+    iterator end();
+    const_iterator cend() const;
+
+    iterator At(uint64_t x, uint64_t y);
+
+    uint8_t* GetRawPixels() const;
 
   private:
+    // Size of the canvas
     uint64_t width_;
     uint64_t height_;
+
+    // Parameters which belongs to the pixel format
+    uint8_t bytes_per_pixel_;
     uint64_t pitch_;
-    std::shared_ptr<PixelType[]> pixels_;
+
+    // Pixels array
+    std::shared_ptr<uint8_t[]> pixels_;
 };
 
 }  // namespace cozz

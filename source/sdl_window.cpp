@@ -31,21 +31,16 @@ SDLWindow::SDLWindow(std::string title, uint32_t width, uint32_t height)
 SDLWindow::SDLWindow(std::string title, uint32_t x, uint32_t y, uint32_t width, uint32_t height)
     : Window(x, y, width, height),
       window_(SDL_CreateWindow(title.c_str(), x, y, width, height, 0), &SDL_DestroyWindow),
-      canvas_(std::make_unique<Canvas<SDLWindow::Pixel>>(
-          width, height, static_cast<SDLWindow::Pixel*>(SDL_GetWindowSurface(window_.get())->pixels))) {}
+      window_surface_(SDL_GetWindowSurface(window_.get())),
+      canvas_(std::make_unique<Canvas>(width, height, static_cast<uint8_t*>(window_surface_->pixels),
+                                       window_surface_->format->BytesPerPixel)) {}
 
-void SDLWindow::Update() {
-    SDL_UpdateWindowSurface(window_.get());
-}
+void SDLWindow::Update() { SDL_UpdateWindowSurface(window_.get()); }
 
-uint32_t SDLWindow::GetID() const {
-    return SDL_GetWindowID(window_.get());
-}
+uint32_t SDLWindow::GetID() const { return SDL_GetWindowID(window_.get()); }
 
-void SDLWindow::Resize() {
+void SDLWindow::Resize() {}
 
-}
-
-Canvas<SDLWindow::Pixel>& SDLWindow::GetCanvas() { return *canvas_; }
+Canvas& SDLWindow::GetCanvas() { return *canvas_; }
 
 }  // namespace cozz

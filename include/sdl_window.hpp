@@ -23,24 +23,18 @@
 #include "window.hpp"
 
 #include <cstdint>
-#include <string>
 #include <memory>
+#include <string>
 
 #include "canvas.hpp"
 
+extern "C" typedef struct SDL_Surface SDL_Surface;
 extern "C" typedef struct SDL_Window SDL_Window;
 
 namespace cozz {
 
 class SDLWindow final : public Window {
   public:
-    struct Pixel {
-        uint8_t b;
-        uint8_t g;
-        uint8_t r;
-        uint8_t a;
-    };
-
     SDLWindow(std::string title, uint32_t width, uint32_t height);
     SDLWindow(std::string title, uint32_t x, uint32_t y, uint32_t width, uint32_t height);
 
@@ -48,14 +42,15 @@ class SDLWindow final : public Window {
 
     virtual uint32_t GetID() const override;
 
-    Canvas<Pixel>& GetCanvas();
+    virtual Canvas& GetCanvas() override;
 
   protected:
     virtual void Resize() override;
 
   private:
     std::unique_ptr<SDL_Window, std::function<void(SDL_Window*)>> window_;
-    std::unique_ptr<Canvas<Pixel>> canvas_;
+    SDL_Surface* window_surface_;
+    std::unique_ptr<Canvas> canvas_;
 };
 
 }  // namespace cozz

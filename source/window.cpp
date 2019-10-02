@@ -21,7 +21,8 @@
 
 namespace cozz {
 
-Window::Window(uint64_t x, uint64_t y, uint64_t width, uint64_t height) : x_(x), y_(y), width_(width), height_(height) {}
+Window::Window(uint64_t x, uint64_t y, uint64_t width, uint64_t height)
+    : x_(x), y_(y), width_(width), height_(height) {}
 
 Window::~Window() = default;
 

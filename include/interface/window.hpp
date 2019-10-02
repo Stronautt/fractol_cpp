@@ -24,6 +24,8 @@
 
 namespace cozz {
 
+class Canvas;
+
 class Window {
   public:
     virtual ~Window();
@@ -31,6 +33,8 @@ class Window {
     virtual void Update() = 0;
 
     virtual uint32_t GetID() const = 0;
+
+    virtual Canvas& GetCanvas() = 0;
 
     uint64_t GetWidth() const;
 
