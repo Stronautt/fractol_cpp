@@ -17,18 +17,22 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_VIEW_HPP_
-#define FRACTOL_INCLUDE_VIEW_HPP_
+#include "window.hpp"
 
 namespace cozz {
 
-class View {
-  public:
-    virtual ~View() = default;
+Window::Window(uint64_t x, uint64_t y, uint64_t width, uint64_t height) : x_(x), y_(y), width_(width), height_(height) {}
 
-    virtual void Draw() = 0;
-};
+Window::~Window() = default;
+
+uint64_t Window::GetWidth() const { return width_; }
+
+uint64_t Window::GetHeight() const { return height_; }
+
+void Window::Resize(uint64_t width, uint64_t height) {
+    width_ = width;
+    height_ = height;
+    Resize();
+}
 
 }  // namespace cozz
-
-#endif  // FRACTOL_INCLUDE_VIEW_HPP_

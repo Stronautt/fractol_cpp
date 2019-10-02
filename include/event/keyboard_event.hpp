@@ -17,8 +17,8 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_KEYBOARD_EVENT_HPP_
-#define FRACTOL_INCLUDE_KEYBOARD_EVENT_HPP_
+#ifndef FRACTOL_INCLUDE_EVENT_KEYBOARD_EVENT_HPP_
+#define FRACTOL_INCLUDE_EVENT_KEYBOARD_EVENT_HPP_
 
 #include "event.hpp"
 
@@ -44,4 +44,4 @@ class KeyboardEvent final : public Event {
 
 }  // namespace cozz
 
-#endif  // FRACTOL_INCLUDE_KEYBOARD_EVENT_HPP_
+#endif  // FRACTOL_INCLUDE_EVENT_KEYBOARD_EVENT_HPP_

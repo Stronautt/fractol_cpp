@@ -17,8 +17,8 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_QUIT_EVENT_HPP_
-#define FRACTOL_INCLUDE_QUIT_EVENT_HPP_
+#ifndef FRACTOL_INCLUDE_EVENT_QUIT_EVENT_HPP_
+#define FRACTOL_INCLUDE_EVENT_QUIT_EVENT_HPP_
 
 #include "event.hpp"
 
@@ -31,4 +31,4 @@ class QuitEvent final : public Event {
 
 }  // namespace cozz
 
-#endif  // FRACTOL_INCLUDE_QUIT_EVENT_HPP_
+#endif  // FRACTOL_INCLUDE_EVENT_QUIT_EVENT_HPP_

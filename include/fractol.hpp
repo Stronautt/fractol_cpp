@@ -23,10 +23,12 @@
 #include <atomic>
 #include <cstdint>
 #include <memory>
+#include <vector>
 
 namespace cozz {
 
 class EventHandler;
+class Window;
 class MouseWheelEvent;
 class MouseButtonEvent;
 class MouseMotionEvent;
@@ -43,6 +45,7 @@ class Fractol final {
   private:
     std::atomic<bool> is_running_;
     std::unique_ptr<EventHandler> event_handler_;
+    std::vector<std::unique_ptr<Window>> windows_;
 
     void MouseWheelHandler(const MouseWheelEvent& event);
 

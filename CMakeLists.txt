@@ -23,6 +23,10 @@ project(fractol VERSION 0.1.0 LANGUAGES CXX)
 
 find_package(SDL2 REQUIRED)
 
+set(CMAKE_CXX_STANDARD 17)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fsanitize=leak")
+
 set(EXE_NAME ${PROJECT_NAME} CACHE STRING "Name of the executable")
 set(LIB_NAME ${EXE_NAME}_core CACHE STRING "Name of the core library")
 
@@ -36,7 +40,9 @@ add_library(${LIB_NAME} STATIC source/fractol.cpp
 	                           source/event/mouse_wheel_event.cpp
 	                           source/event/quit_event.cpp
 	                           source/event_handler.cpp
-	                           source/sdl_event_handler.cpp)
+	                           source/sdl_event_handler.cpp
+	                           source/window.cpp
+	                           source/sdl_window.cpp)
 target_include_directories(${LIB_NAME} PUBLIC include
                                               include/interface
                                        PRIVATE source/include

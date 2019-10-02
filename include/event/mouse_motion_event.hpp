@@ -17,8 +17,8 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_MOUSE_MOTION_EVENT_HPP_
-#define FRACTOL_INCLUDE_MOUSE_MOTION_EVENT_HPP_
+#ifndef FRACTOL_INCLUDE_EVENT_MOUSE_MOTION_EVENT_HPP_
+#define FRACTOL_INCLUDE_EVENT_MOUSE_MOTION_EVENT_HPP_
 
 #include "event.hpp"
 
@@ -65,4 +65,4 @@ MouseMotionEvent::ButtonState& operator|=(MouseMotionEvent::ButtonState& a, Mous
 
 }  // namespace cozz
 
-#endif  // FRACTOL_INCLUDE_MOUSE_MOTION_EVENT_HPP_
+#endif  // FRACTOL_INCLUDE_EVENT_MOUSE_MOTION_EVENT_HPP_

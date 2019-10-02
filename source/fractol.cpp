@@ -26,11 +26,12 @@
 #include <SDL2/SDL.h>
 
 #include "sdl_event_handler.hpp"
+#include "sdl_window.hpp"
 
 namespace cozz {
 
 Fractol::Fractol(int argc, char** argv) : is_running_(true), event_handler_(std::make_unique<SDLEventHandler>()) {
-    auto win_p = SDL_CreateWindow("Hello World", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 200, 200, 0);
+    windows_.push_back(std::make_unique<SDLWindow>("Hello", 1600, 1200));
 
     event_handler_->RegisterEventCallback<MouseWheelEvent>(
         std::bind(&Fractol::MouseWheelHandler, this, std::placeholders::_1));
@@ -125,6 +126,7 @@ void Fractol::Terminate(const QuitEvent& event) {
 uint8_t Fractol::Run() {
     while (is_running_) {
         event_handler_->Poll();
+        std::for_each(windows_.begin(), windows_.end(), [](auto& window){ window->Update(); });
     }
 }
 

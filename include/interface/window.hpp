@@ -17,29 +17,39 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_EVENT_MOUSE_WHEEL_EVENT_HPP_
-#define FRACTOL_INCLUDE_EVENT_MOUSE_WHEEL_EVENT_HPP_
+#ifndef FRACTOL_INCLUDE_INTERFACE_WINDOW_HPP_
+#define FRACTOL_INCLUDE_INTERFACE_WINDOW_HPP_
 
-#include "event.hpp"
+#include <cstdint>
 
 namespace cozz {
 
-class MouseWheelEvent final : public Event {
+class Window {
   public:
-    MouseWheelEvent(uint32_t window_id, int32_t scrolled_x, int32_t scrolled_y, bool inversed);
+    virtual ~Window();
 
-    int32_t GetScrolledByX() const;
+    virtual void Update() = 0;
 
-    int32_t GetScrolledByY() const;
+    virtual uint32_t GetID() const = 0;
 
-    bool IsInversed() const;
+    uint64_t GetWidth() const;
+
+    uint64_t GetHeight() const;
+
+    void Resize(uint64_t width, uint64_t height);
 
   protected:
-    int32_t scrolled_x_;
-    int32_t scrolled_y_;
-    bool inversed_;
+    uint64_t x_;
+    uint64_t y_;
+
+    uint64_t width_;
+    uint64_t height_;
+
+    Window(uint64_t x, uint64_t y, uint64_t width, uint64_t height);
+
+    virtual void Resize() = 0;
 };
 
 }  // namespace cozz
 
-#endif  // FRACTOL_INCLUDE_EVENT_MOUSE_WHEEL_EVENT_HPP_
+#endif  // FRACTOL_INCLUDE_INTERFACE_WINDOW_HPP_

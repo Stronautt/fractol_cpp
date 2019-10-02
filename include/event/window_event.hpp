@@ -17,8 +17,8 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_WINDOW_EVENT_HPP_
-#define FRACTOL_INCLUDE_WINDOW_EVENT_HPP_
+#ifndef FRACTOL_INCLUDE_EVENT_WINDOW_EVENT_HPP_
+#define FRACTOL_INCLUDE_EVENT_WINDOW_EVENT_HPP_
 
 #include "event.hpp"
 
@@ -47,4 +47,4 @@ using WindowTakeFocusEvent = WindowEvent<Event::Type::kWindowTakeFocus>;
 
 }  // namespace cozz
 
-#endif  // FRACTOL_INCLUDE_WINDOW_EVENT_HPP_
+#endif  // FRACTOL_INCLUDE_EVENT_WINDOW_EVENT_HPP_

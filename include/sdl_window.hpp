@@ -1,0 +1,63 @@
+/*
+ * This file is part of Fractol.
+
+ * Fractol is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Fractol is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Fractol. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Author: Pavlo Hrytsenko
+*/
+
+#ifndef FRACTOL_INCLUDE_SDL_WINDOW_HPP_
+#define FRACTOL_INCLUDE_SDL_WINDOW_HPP_
+
+#include "window.hpp"
+
+#include <cstdint>
+#include <string>
+#include <memory>
+
+#include "canvas.hpp"
+
+extern "C" typedef struct SDL_Window SDL_Window;
+
+namespace cozz {
+
+class SDLWindow final : public Window {
+  public:
+    struct Pixel {
+        uint8_t b;
+        uint8_t g;
+        uint8_t r;
+        uint8_t a;
+    };
+
+    SDLWindow(std::string title, uint32_t width, uint32_t height);
+    SDLWindow(std::string title, uint32_t x, uint32_t y, uint32_t width, uint32_t height);
+
+    virtual void Update() override;
+
+    virtual uint32_t GetID() const override;
+
+    Canvas<Pixel>& GetCanvas();
+
+  protected:
+    virtual void Resize() override;
+
+  private:
+    std::unique_ptr<SDL_Window, std::function<void(SDL_Window*)>> window_;
+    std::unique_ptr<Canvas<Pixel>> canvas_;
+};
+
+}  // namespace cozz
+
+#endif  // FRACTOL_INCLUDE_SDL_WINDOW_HPP_

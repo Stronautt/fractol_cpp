@@ -17,8 +17,8 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_window_resized_event_HPP_
-#define FRACTOL_INCLUDE_window_resized_event_HPP_
+#ifndef FRACTOL_INCLUDE_EVENT_WINDOW_RESIZED_EVENT_HPP_
+#define FRACTOL_INCLUDE_EVENT_WINDOW_RESIZED_EVENT_HPP_
 
 #include "window_event.hpp"
 
@@ -40,4 +40,4 @@ class WindowResizedEvent final : public WindowEvent<Event::Type::kWindowResized>
 
 }  // namespace cozz
 
-#endif  // FRACTOL_INCLUDE_window_resized_event_HPP_
+#endif  // FRACTOL_INCLUDE_EVENT_WINDOW_RESIZED_EVENT_HPP_

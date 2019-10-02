@@ -17,29 +17,18 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_EVENT_MOUSE_WHEEL_EVENT_HPP_
-#define FRACTOL_INCLUDE_EVENT_MOUSE_WHEEL_EVENT_HPP_
-
-#include "event.hpp"
+#ifndef FRACTOL_INCLUDE_INTERFACE_PAINTER_HPP_
+#define FRACTOL_INCLUDE_INTERFACE_PAINTER_HPP_
 
 namespace cozz {
 
-class MouseWheelEvent final : public Event {
+class Painter {
   public:
-    MouseWheelEvent(uint32_t window_id, int32_t scrolled_x, int32_t scrolled_y, bool inversed);
+    virtual ~Painter() = default;
 
-    int32_t GetScrolledByX() const;
-
-    int32_t GetScrolledByY() const;
-
-    bool IsInversed() const;
-
-  protected:
-    int32_t scrolled_x_;
-    int32_t scrolled_y_;
-    bool inversed_;
+    virtual void DrawLine(Canvas) = 0;
 };
 
 }  // namespace cozz
 
-#endif  // FRACTOL_INCLUDE_EVENT_MOUSE_WHEEL_EVENT_HPP_
+#endif  // FRACTOL_INCLUDE_INTERFACE_PAINTER_HPP_
