@@ -32,8 +32,14 @@ SDLWindow::SDLWindow(std::string title, uint32_t x, uint32_t y, uint32_t width, 
     : Window(x, y, width, height),
       window_(SDL_CreateWindow(title.c_str(), x, y, width, height, 0), &SDL_DestroyWindow),
       window_surface_(SDL_GetWindowSurface(window_.get())),
-      canvas_(std::make_unique<Canvas>(width, height, static_cast<uint8_t*>(window_surface_->pixels),
-                                       window_surface_->format->BytesPerPixel)) {}
+      canvas_(std::make_unique<Canvas>(
+          width, height, static_cast<uint8_t*>(window_surface_->pixels),
+          Canvas::PixelFormat(
+              window_surface_->format->BitsPerPixel, window_surface_->format->BytesPerPixel,
+              window_surface_->format->Rmask, window_surface_->format->Gmask, window_surface_->format->Bmask,
+              window_surface_->format->Amask, window_surface_->format->Rloss, window_surface_->format->Gloss,
+              window_surface_->format->Bloss, window_surface_->format->Aloss, window_surface_->format->Rshift,
+              window_surface_->format->Gshift, window_surface_->format->Bshift, window_surface_->format->Ashift))) {}
 
 void SDLWindow::Update() { SDL_UpdateWindowSurface(window_.get()); }
 

@@ -29,12 +29,41 @@ namespace cozz {
 
 class Canvas {
   public:
-    static constexpr uint8_t kMinBytesPerPixel = 1;
-    static constexpr uint8_t kMaxBytesPerPixel = 4;
+    struct PixelFormat {
+        static constexpr uint8_t kMinBytesPerPixel = 1;
+        static constexpr uint8_t kMinBitsPerPixel = kMinBytesPerPixel * 8;
+
+        static constexpr uint8_t kMaxBytesPerPixel = 4;
+        static constexpr uint8_t kMaxBitsPerPixel = kMaxBytesPerPixel * 8;
+
+        PixelFormat();
+
+        PixelFormat(uint8_t bits_per_pixel, uint8_t bytes_per_pixel, uint32_t r_mask, uint32_t g_mask, uint32_t b_mask,
+                    uint32_t a_mask, uint8_t r_loss, uint8_t g_loss, uint8_t b_loss, uint8_t a_loss, uint8_t r_shift,
+                    uint8_t g_shift, uint8_t b_shift, uint8_t a_shift);
+
+        uint8_t bits_per_pixel;
+        uint8_t bytes_per_pixel;
+
+        uint32_t r_mask;
+        uint32_t g_mask;
+        uint32_t b_mask;
+        uint32_t a_mask;
+
+        uint8_t r_loss;
+        uint8_t g_loss;
+        uint8_t b_loss;
+        uint8_t a_loss;
+
+        uint8_t r_shift;
+        uint8_t g_shift;
+        uint8_t b_shift;
+        uint8_t a_shift;
+    };
 
     class iterator {
       public:
-        iterator(uint8_t* pos, uint8_t bytes_per_pixel);
+        iterator(uint8_t* pos, const PixelFormat& format);
 
         bool operator==(const iterator& other) const;
         bool operator!=(const iterator& other) const;
@@ -43,21 +72,33 @@ class Canvas {
         operator uint32_t() const;
         iterator operator++();
 
+        uint8_t R() const;
+        void R(uint8_t channel);
+
+        uint8_t G() const;
+        void G(uint8_t channel);
+
+        uint8_t B() const;
+        void B(uint8_t channel);
+
+        uint8_t A() const;
+        void A(uint8_t channel);
+
       private:
         uint8_t* pos_;
-        uint8_t bytes_per_pixel_;
+        const PixelFormat& pixel_format_;
     };
     using const_iterator = const iterator;
 
-    Canvas(uint64_t width, uint64_t height, uint8_t bytes_per_pixel = kMinBytesPerPixel);
+    Canvas(uint64_t width, uint64_t height, const PixelFormat& pixel_format = PixelFormat());
 
-    Canvas(uint64_t width, uint64_t height, uint8_t* pixels, uint8_t bytes_per_pixel = kMinBytesPerPixel,
+    Canvas(uint64_t width, uint64_t height, uint8_t* pixels, const PixelFormat& pixel_format = PixelFormat(),
            std::function<void(uint8_t*)> deleter = [](uint8_t*) {});
 
     uint64_t GetWidth() const;
     uint64_t GetHeight() const;
     uint64_t GetPitch() const;
-    uint8_t GetBytesPerPixel() const;
+    const Canvas::PixelFormat& GetPixelFormat() const;
 
     iterator begin();
     const_iterator cbegin() const;
@@ -75,7 +116,7 @@ class Canvas {
     uint64_t height_;
 
     // Parameters which belongs to the pixel format
-    uint8_t bytes_per_pixel_;
+    PixelFormat pixel_format_;
     uint64_t pitch_;
 
     // Pixels array

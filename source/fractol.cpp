@@ -132,7 +132,9 @@ void DrawOnTheWindow(Window& window) {
 
     for (uint64_t x = 0; x < canvas.GetWidth() / 2; x++) {
         for (uint64_t y = 0; y < canvas.GetHeight() / 2; y++) {
-            canvas.At(x, y) = 0xFF0000;
+            canvas.At(x, y).R(0xF5);
+            canvas.At(x, y).G(0x57);
+            canvas.At(x, y).B(0x23);
         }
     }
 
