@@ -70,7 +70,7 @@ class Canvas {
         iterator& operator=(uint32_t value);
         iterator& operator*();
         operator uint32_t() const;
-        iterator operator++();
+        iterator& operator++();
 
         uint8_t R() const;
         void R(uint8_t channel);

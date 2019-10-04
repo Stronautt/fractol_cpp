@@ -25,7 +25,7 @@ find_package(SDL2 REQUIRED)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fsanitize=leak")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fsanitize=leak -Wextra -Werror -Wall -pedantic")
 
 set(EXE_NAME ${PROJECT_NAME} CACHE STRING "Name of the executable")
 set(LIB_NAME ${EXE_NAME}_core CACHE STRING "Name of the core library")

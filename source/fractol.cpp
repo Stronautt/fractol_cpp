@@ -30,7 +30,7 @@
 
 namespace cozz {
 
-Fractol::Fractol(int argc, char** argv) : is_running_(true), event_handler_(std::make_unique<SDLEventHandler>()) {
+Fractol::Fractol(int, char**) : is_running_(true), event_handler_(std::make_unique<SDLEventHandler>()) {
     windows_.push_back(std::make_unique<SDLWindow>("Hello", 200, 200));
 
     event_handler_->RegisterWindowEventCallbacks(*windows_[0]);
@@ -72,6 +72,8 @@ void Fractol::MouseButtonHandler(const MouseButtonEvent& event) {
             break;
         case KeyMap::kExtra2MouseButton:
             std::cout << "X2BM";
+            break;
+        default:
             break;
     }
     if (event.IsPressed()) {
@@ -120,7 +122,7 @@ void Fractol::KeyboardHandler(const KeyboardEvent& event) {
     }
 }
 
-void Fractol::Terminate(const QuitEvent& event) {
+void Fractol::Terminate(const QuitEvent&) {
     std::cout << "Application is terminating" << std::endl;
     is_running_ = false;
 }
@@ -153,6 +155,7 @@ uint8_t Fractol::Run() {
         event_handler_->Poll();
         std::for_each(windows_.begin(), windows_.end(), [](auto& window) { window->Update(); });
     }
+    return 0;
 }
 
 }  // namespace cozz

@@ -75,7 +75,10 @@ Canvas::iterator::operator uint32_t() const {
     return ret;
 }
 
-Canvas::iterator Canvas::iterator::operator++() { pos_ += pixel_format_.bytes_per_pixel; }
+Canvas::iterator& Canvas::iterator::operator++() {
+    pos_ += pixel_format_.bytes_per_pixel;
+    return *this;
+}
 
 uint8_t Canvas::iterator::R() const {
     uint32_t pixel = *this;
