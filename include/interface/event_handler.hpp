@@ -37,6 +37,8 @@
 
 namespace cozz {
 
+class Window;
+
 class EventHandler {
   public:
     using EventHandlerID = const std::multimap<Event::Type, std::function<void(const Event&)>>::iterator;
@@ -75,11 +77,13 @@ class EventHandler {
 
         try {
             return callbacks_map_.emplace(event_types_map.at(std::type_index(typeid(EventType))),
-                                          reinterpret_cast<const std::function<void(const Event&)>&>(callback));
+                                          ConvertCallback(callback));
         } catch (const std::out_of_range&) {
             throw std::logic_error("Unknown event type");
         }
     }
+
+    virtual void RegisterWindowEventCallbacks(Window& window) final;
 
     virtual void UnregisterEventCallback(EventHandlerID id) final;
 
@@ -87,6 +91,11 @@ class EventHandler {
     std::multimap<Event::Type, std::function<void(const Event&)>> callbacks_map_;
 
     void TriggerCallbacks(const Event& event) const;
+
+    template <class EventType>
+    std::function<void(const Event&)> ConvertCallback(const std::function<void(const EventType&)>& callback) {
+        return reinterpret_cast<const std::function<void(const Event&)>&>(callback);
+    }
 };
 
 }  // namespace cozz

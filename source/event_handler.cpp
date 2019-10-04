@@ -19,9 +19,18 @@
 
 #include "event_handler.hpp"
 
+#include "window.hpp"
+
 namespace cozz {
 
 EventHandler::~EventHandler() = default;
+
+void EventHandler::RegisterWindowEventCallbacks(Window& window) {
+    callbacks_map_.emplace(Event::Type::kWindowMoved, ConvertCallback<WindowMovedEvent>(
+                                                          std::bind(&Window::OnMove, &window, std::placeholders::_1)));
+    callbacks_map_.emplace(Event::Type::kWindowResized, ConvertCallback<WindowResizedEvent>(std::bind(
+                                                            &Window::OnResize, &window, std::placeholders::_1)));
+}
 
 void EventHandler::UnregisterEventCallback(EventHandlerID id) { callbacks_map_.erase(id); }
 

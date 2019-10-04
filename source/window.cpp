@@ -19,6 +19,9 @@
 
 #include "window.hpp"
 
+#include "event/window_moved_event.hpp"
+#include "event/window_resized_event.hpp"
+
 namespace cozz {
 
 Window::Window(uint64_t x, uint64_t y, uint64_t width, uint64_t height)
@@ -30,10 +33,18 @@ uint64_t Window::GetWidth() const { return width_; }
 
 uint64_t Window::GetHeight() const { return height_; }
 
-void Window::Resize(uint64_t width, uint64_t height) {
-    width_ = width;
-    height_ = height;
-    Resize();
+void Window::OnMove(const WindowMovedEvent& event) {
+    auto new_position = event.GetPosition();
+    x_ = new_position.first;
+    y_ = new_position.second;
+    Moved();
+}
+
+void Window::OnResize(const WindowResizedEvent& event) {
+    auto new_size = event.GetSize();
+    width_ = new_size.first;
+    height_ = new_size.second;
+    Resized();
 }
 
 }  // namespace cozz

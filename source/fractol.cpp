@@ -33,6 +33,8 @@ namespace cozz {
 Fractol::Fractol(int argc, char** argv) : is_running_(true), event_handler_(std::make_unique<SDLEventHandler>()) {
     windows_.push_back(std::make_unique<SDLWindow>("Hello", 200, 200));
 
+    event_handler_->RegisterWindowEventCallbacks(*windows_[0]);
+
     event_handler_->RegisterEventCallback<MouseWheelEvent>(
         std::bind(&Fractol::MouseWheelHandler, this, std::placeholders::_1));
     event_handler_->RegisterEventCallback<MouseButtonEvent>(

@@ -45,12 +45,16 @@ class SDLWindow final : public Window {
     virtual Canvas& GetCanvas() override;
 
   protected:
-    virtual void Resize() override;
+    virtual void Moved() override;
+
+    virtual void Resized() override;
 
   private:
     std::unique_ptr<SDL_Window, std::function<void(SDL_Window*)>> window_;
     SDL_Surface* window_surface_;
     std::unique_ptr<Canvas> canvas_;
+
+    std::unique_ptr<Canvas> CanvasFromSurface(const SDL_Surface* surface);
 };
 
 }  // namespace cozz

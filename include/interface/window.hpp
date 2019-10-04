@@ -24,6 +24,8 @@
 
 namespace cozz {
 
+class WindowMovedEvent;
+class WindowResizedEvent;
 class Canvas;
 
 class Window {
@@ -36,11 +38,13 @@ class Window {
 
     virtual Canvas& GetCanvas() = 0;
 
-    uint64_t GetWidth() const;
+    virtual uint64_t GetWidth() const final;
 
-    uint64_t GetHeight() const;
+    virtual uint64_t GetHeight() const final;
 
-    void Resize(uint64_t width, uint64_t height);
+    virtual void OnMove(const WindowMovedEvent& event) final;
+
+    virtual void OnResize(const WindowResizedEvent& event) final;
 
   protected:
     uint64_t x_;
@@ -51,7 +55,9 @@ class Window {
 
     Window(uint64_t x, uint64_t y, uint64_t width, uint64_t height);
 
-    virtual void Resize() = 0;
+    virtual void Moved() = 0;
+
+    virtual void Resized() = 0;
 };
 
 }  // namespace cozz

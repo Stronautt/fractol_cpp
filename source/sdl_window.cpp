@@ -19,6 +19,8 @@
 
 #include "sdl_window.hpp"
 
+#include <iostream>
+
 #include <SDL2/SDL.h>
 
 #include "canvas.hpp"
@@ -30,23 +32,32 @@ SDLWindow::SDLWindow(std::string title, uint32_t width, uint32_t height)
 
 SDLWindow::SDLWindow(std::string title, uint32_t x, uint32_t y, uint32_t width, uint32_t height)
     : Window(x, y, width, height),
-      window_(SDL_CreateWindow(title.c_str(), x, y, width, height, 0), &SDL_DestroyWindow),
+      window_(SDL_CreateWindow(title.c_str(), x, y, width, height, SDL_WINDOW_RESIZABLE), &SDL_DestroyWindow),
       window_surface_(SDL_GetWindowSurface(window_.get())),
-      canvas_(std::make_unique<Canvas>(
-          width, height, static_cast<uint8_t*>(window_surface_->pixels),
-          Canvas::PixelFormat(
-              window_surface_->format->BitsPerPixel, window_surface_->format->BytesPerPixel,
-              window_surface_->format->Rmask, window_surface_->format->Gmask, window_surface_->format->Bmask,
-              window_surface_->format->Amask, window_surface_->format->Rloss, window_surface_->format->Gloss,
-              window_surface_->format->Bloss, window_surface_->format->Aloss, window_surface_->format->Rshift,
-              window_surface_->format->Gshift, window_surface_->format->Bshift, window_surface_->format->Ashift))) {}
+      canvas_(CanvasFromSurface(window_surface_)) {}
 
 void SDLWindow::Update() { SDL_UpdateWindowSurface(window_.get()); }
 
 uint32_t SDLWindow::GetID() const { return SDL_GetWindowID(window_.get()); }
 
-void SDLWindow::Resize() {}
-
 Canvas& SDLWindow::GetCanvas() { return *canvas_; }
+
+void SDLWindow::Moved() { std::cout << "Window at: " << x_ << ";" << y_ << std::endl; }
+
+void SDLWindow::Resized() {
+    window_surface_ = SDL_GetWindowSurface(window_.get());
+    canvas_ = CanvasFromSurface(window_surface_);
+    std::cout << "Window resized to: " << width_ << "x" << height_ << std::endl;
+}
+
+std::unique_ptr<Canvas> SDLWindow::CanvasFromSurface(const SDL_Surface* surface) {
+    return std::make_unique<Canvas>(
+        surface->w, surface->h, static_cast<uint8_t*>(surface->pixels),
+        Canvas::PixelFormat(surface->format->BitsPerPixel, surface->format->BytesPerPixel, surface->format->Rmask,
+                            surface->format->Gmask, surface->format->Bmask, surface->format->Amask,
+                            surface->format->Rloss, surface->format->Gloss, surface->format->Bloss,
+                            surface->format->Aloss, surface->format->Rshift, surface->format->Gshift,
+                            surface->format->Bshift, surface->format->Ashift));
+}
 
 }  // namespace cozz
