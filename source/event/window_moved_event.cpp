@@ -21,8 +21,8 @@
 
 namespace cozz {
 
-WindowMovedEvent::WindowMovedEvent(uint32_t window_id, int32_t x, int32_t y) : WindowEvent(window_id), x_(x), y_(y) {}
+WindowMovedEvent::WindowMovedEvent(uint32_t window_id, uint64_t x, uint64_t y) : WindowEvent(window_id), x_(x), y_(y) {}
 
-std::pair<int32_t, int32_t> WindowMovedEvent::GetPosition() const { return std::make_pair(x_, y_); }
+std::pair<uint64_t, uint64_t> WindowMovedEvent::GetPosition() const { return std::make_pair(x_, y_); }
 
 }  // namespace cozz

@@ -19,7 +19,11 @@
 
 #include "canvas.hpp"
 
+#include <algorithm>
+
 namespace cozz {
+
+Canvas::PixelColor::PixelColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) : r(r), g(g), b(b), a(a) {}
 
 Canvas::PixelFormat::PixelFormat()
     : bits_per_pixel(kMinBitsPerPixel),
@@ -62,7 +66,9 @@ bool Canvas::pixel_iterator::operator==(const Canvas::pixel_iterator& other) con
 bool Canvas::pixel_iterator::operator!=(const Canvas::pixel_iterator& other) const { return pos_ != other.pos_; }
 
 Canvas::pixel_iterator& Canvas::pixel_iterator::operator=(uint32_t value) {
-    std::copy_n(reinterpret_cast<uint8_t*>(&value), sizeof(value), pos_);
+    if (pos_) {
+        std::copy_n(reinterpret_cast<uint8_t*>(&value), sizeof(value), pos_);
+    }
     return *this;
 }
 
@@ -71,7 +77,9 @@ Canvas::pixel_iterator& Canvas::pixel_iterator::operator*() { return *this; }
 Canvas::pixel_iterator::operator uint32_t() const {
     uint32_t ret = 0;
 
-    std::copy_n(pos_, pixel_format_.bytes_per_pixel, reinterpret_cast<uint8_t*>(&ret));
+    if (pos_) {
+        std::copy_n(pos_, pixel_format_.bytes_per_pixel, reinterpret_cast<uint8_t*>(&ret));
+    }
     return ret;
 }
 
@@ -120,6 +128,16 @@ void Canvas::pixel_iterator::A(uint8_t channel) {
     *this = (pixel & (~pixel_format_.a_mask)) | (channel << pixel_format_.a_shift);
 }
 
+Canvas::PixelColor Canvas::pixel_iterator::GetColor() const {
+  return {R(), G(), B(), A()};
+}
+void Canvas::pixel_iterator::SetColor(const PixelColor& color) {
+  R(color.r);
+  G(color.g);
+  B(color.b);
+  A(color.a);
+}
+
 Canvas::Canvas(uint64_t width, uint64_t height, const PixelFormat& pixel_format)
     : Canvas(width, height, new uint8_t[width * height * pixel_format.bytes_per_pixel], pixel_format,
              std::default_delete<uint8_t[]>()) {}
@@ -149,7 +167,14 @@ Canvas::pixel_iterator Canvas::end() { return pixel_iterator(&pixels_[height_ * 
 Canvas::const_pixel_iterator Canvas::cend() const { return const_pixel_iterator(&pixels_[height_ * pitch_], pixel_format_); }
 
 Canvas::pixel_iterator Canvas::At(uint64_t x, uint64_t y) {
-    return pixel_iterator(GetRawPixels() + y * pitch_ + x * pixel_format_.bytes_per_pixel, pixel_format_);
+    if (x < width_ && y < height_) {
+        return pixel_iterator(GetRawPixels() + y * pitch_ + x * pixel_format_.bytes_per_pixel, pixel_format_);
+    }
+    return pixel_iterator(nullptr, pixel_format_);
+}
+
+Canvas::pixel_iterator Canvas::At(const Point& p) {
+    return At(p.x, p.y);
 }
 
 uint8_t* Canvas::GetRawPixels() const { return pixels_.get(); }

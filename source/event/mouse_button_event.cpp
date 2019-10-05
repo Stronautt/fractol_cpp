@@ -21,8 +21,8 @@
 
 namespace cozz {
 
-MouseButtonEvent::MouseButtonEvent(uint32_t window_id, KeyMap button, bool pressed, uint8_t clicks, int32_t x,
-                                   int32_t y)
+MouseButtonEvent::MouseButtonEvent(uint32_t window_id, KeyMap button, bool pressed, uint8_t clicks, uint64_t x,
+                                   uint64_t y)
     : Event(Event::Type::kMouseButton, window_id),
       button_(button > KeyMap::kMouseButtonsBegin && button < KeyMap::kMouseButtonsEnd
                   ? button
@@ -38,6 +38,6 @@ bool MouseButtonEvent::IsPressed() const { return pressed_; }
 
 uint8_t MouseButtonEvent::GetClicksCount() const { return clicks_; }
 
-std::pair<int32_t, int32_t> MouseButtonEvent::GetPosition() const { return std::make_pair(x_, y_); }
+std::pair<uint64_t, uint64_t> MouseButtonEvent::GetPosition() const { return std::make_pair(x_, y_); }
 
 }  // namespace cozz

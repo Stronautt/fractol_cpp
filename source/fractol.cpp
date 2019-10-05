@@ -29,6 +29,7 @@
 #include "windows_manager.hpp"
 #include "sdl_window.hpp"
 #include "canvas.hpp"
+#include "painter.hpp"
 
 namespace cozz {
 
@@ -83,11 +84,18 @@ void Fractol::MouseButtonHandler(const MouseButtonEvent& event) {
 }
 
 void Fractol::MouseMotionHandler(const MouseMotionEvent& event) {
+    static std::pair<uint64_t, uint64_t> old_mouse_pos;
     auto mouse_pos = event.GetPosition();
 
     std::cout << "Mouse at: " << mouse_pos.first << ":" << mouse_pos.second << "; ";
     if (event.IsLeftButtonPressed()) {
         std::cout << "LBM pressed; ";
+
+        Painter painter(windows_manager_->GetById(event.GetWindowId()).lock()->GetCanvas());
+
+        painter.DrawLine({old_mouse_pos.first, old_mouse_pos.second}, {mouse_pos.first, mouse_pos.second}, {0xFF, 0x00, 0x00}, 2);
+
+        old_mouse_pos = mouse_pos;
     }
     if (event.IsMiddleButtonPressed()) {
         std::cout << "MBM pressed; ";
@@ -130,33 +138,43 @@ void DrawOnTheWindow(std::shared_ptr<Window> window, uint8_t R, uint8_t G, uint8
         return;
     }
 
-    auto canvas = window->GetCanvas();
+    auto canvas = window->GetCanvas().lock();
 
-    for (auto& pixel : canvas) {
+    for (auto& pixel : *canvas) {
         pixel = 0xFF00;
     }
 
-    for (uint64_t x = 0; x < canvas.GetWidth() / 2; x++) {
-        for (uint64_t y = 0; y < canvas.GetHeight() / 2; y++) {
-            canvas.At(x, y).R(R);
-            canvas.At(x, y).G(G);
-            canvas.At(x, y).B(B);
+    for (uint64_t x = 0; x < canvas->GetWidth() / 2; x++) {
+        for (uint64_t y = 0; y < canvas->GetHeight() / 2; y++) {
+            canvas->At(x, y).SetColor({R, G, B});
         }
     }
 
-    for (uint64_t x = canvas.GetWidth() / 2; x < canvas.GetWidth(); x++) {
-        for (uint64_t y = canvas.GetHeight() / 2; y < canvas.GetHeight(); y++) {
-            canvas.At(x, y) = 0xFF;
+    for (uint64_t x = canvas->GetWidth() / 2; x < canvas->GetWidth(); x++) {
+        for (uint64_t y = canvas->GetHeight() / 2; y < canvas->GetHeight(); y++) {
+            canvas->At(x, y) = 0xFF;
         }
     }
+
+    Painter painter(window->GetCanvas());
+
+    painter.DrawLine({0, 0}, {184, 17}, {0xFF, 0x00, 0x00});
+
+    painter.DrawCircle({125, 125}, 50, {0xFF, 0x00, 0x00}, 10);
+
+    painter.DrawFilledCircle({275, 95}, 50, {0x00, 0x00, 0xFF});
+
+    painter.DrawRect({350, 375}, 100, 50, {0xFF, 0x00, 0x00}, 2);
+
+    painter.DrawFilledRect({550, 375}, 100, 50, {0xFF, 0x00, 0x00});
 }
 
 uint8_t Fractol::Run() {
-    auto window1 = windows_manager_->CreateWindow<SDLWindow>("Hello", 200, 200);
-    auto window2 = windows_manager_->CreateWindow<SDLWindow>("World", 200, 200);
+    auto window1 = windows_manager_->CreateWindow<SDLWindow>("Hello", 800, 800);
+    auto window2 = windows_manager_->CreateWindow<SDLWindow>("World", 800, 800);
+    DrawOnTheWindow(window1.lock(), 0xF5, 0x57, 0x23);
+    DrawOnTheWindow(window2.lock(), 0xFF, 0xFF, 0xFF);
     while (is_running_) {
-        DrawOnTheWindow(window1.lock(), 0xF5, 0x57, 0x23);
-        DrawOnTheWindow(window2.lock(), 0xFF, 0xFF, 0xFF);
         event_handler_->Poll();
         windows_manager_->UpdateWindows();
     }

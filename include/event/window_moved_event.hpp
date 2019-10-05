@@ -29,13 +29,13 @@ namespace cozz {
 
 class WindowMovedEvent final : public WindowEvent<Event::Type::kWindowMoved> {
   public:
-    WindowMovedEvent(uint32_t window_id, int32_t x, int32_t y);
+    WindowMovedEvent(uint32_t window_id, uint64_t x, uint64_t y);
 
-    std::pair<int32_t, int32_t> GetPosition() const;
+    std::pair<uint64_t, uint64_t> GetPosition() const;
 
   protected:
-    int32_t x_;
-    int32_t y_;
+    uint64_t x_;
+    uint64_t y_;
 };
 
 }  // namespace cozz

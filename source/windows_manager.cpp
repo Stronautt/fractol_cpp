@@ -37,4 +37,16 @@ void WindowsManager::UpdateWindows() const {
     std::for_each(windows_.begin(), windows_.end(), [](const auto& window) {  window.second.first->Update(); });
 }
 
+std::weak_ptr<Window> WindowsManager::GetById(Window::ID id) const {
+    auto it = windows_.find(id);
+    if (it != windows_.end()) {
+        return it->second.first;
+    }
+    return {};
+}
+
+std::shared_ptr<EventHandler> WindowsManager::GetEventHandler() const {
+    return event_handler_;
+}
+
 }  // namespace cozz

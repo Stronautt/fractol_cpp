@@ -1,4 +1,4 @@
-# Fracto'l 42 Project
+# Fracto'l 42 Project (C++ Version)
 ##### © pgritsen (Pavlo Hrytsenko)
 
 - Mandelbrot Set

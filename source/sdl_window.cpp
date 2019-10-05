@@ -26,7 +26,11 @@
 namespace cozz {
 
 SDLWindow::SDLWindow(std::string title, uint32_t width, uint32_t height)
-    : SDLWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height) {}
+    : SDLWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height) {
+  if (!SDL_WasInit(SDL_INIT_VIDEO)) {
+      SDL_Init(SDL_INIT_VIDEO);
+  }
+}
 
 SDLWindow::SDLWindow(std::string title, uint32_t x, uint32_t y, uint32_t width, uint32_t height)
     : Window(title, x, y, width, height),
@@ -38,7 +42,7 @@ void SDLWindow::Update() { SDL_UpdateWindowSurface(window_.get()); }
 
 Window::ID SDLWindow::GetId() const { return SDL_GetWindowID(window_.get()); }
 
-Canvas& SDLWindow::GetCanvas() { return *canvas_; }
+std::weak_ptr<Canvas> SDLWindow::GetCanvas() { return canvas_; }
 
 void SDLWindow::Moved() {}
 
@@ -47,8 +51,8 @@ void SDLWindow::Resized() {
     canvas_ = CanvasFromSurface(window_surface_);
 }
 
-std::unique_ptr<Canvas> SDLWindow::CanvasFromSurface(const SDL_Surface* surface) {
-    return std::make_unique<Canvas>(
+std::shared_ptr<Canvas> SDLWindow::CanvasFromSurface(const SDL_Surface* surface) {
+    return std::make_shared<Canvas>(
         surface->w, surface->h, static_cast<uint8_t*>(surface->pixels),
         Canvas::PixelFormat(surface->format->BitsPerPixel, surface->format->BytesPerPixel, surface->format->Rmask,
                             surface->format->Gmask, surface->format->Bmask, surface->format->Amask,

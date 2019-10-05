@@ -33,7 +33,7 @@ std::string Window::GetTitle() const {
     return title_;
 }
 
-std::pair<int32_t, int32_t> Window::GetPosition() const {
+std::pair<int64_t, int64_t> Window::GetPosition() const {
     return std::make_pair(x_, y_);
 }
 

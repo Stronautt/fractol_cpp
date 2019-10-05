@@ -43,7 +43,7 @@ class SDLWindow final : public Window {
 
     virtual Window::ID GetId() const override;
 
-    virtual Canvas& GetCanvas() override;
+    virtual std::weak_ptr<Canvas> GetCanvas() override;
 
   protected:
     virtual void Moved() override;
@@ -53,9 +53,10 @@ class SDLWindow final : public Window {
   private:
     std::unique_ptr<SDL_Window, std::function<void(SDL_Window*)>> window_;
     SDL_Surface* window_surface_;
-    std::unique_ptr<Canvas> canvas_;
+    std::shared_ptr<Canvas> canvas_;
 
-    std::unique_ptr<Canvas> CanvasFromSurface(const SDL_Surface* surface);
+    std::shared_ptr<Canvas> CanvasFromSurface(const SDL_Surface* surface);
+
 };
 
 }  // namespace cozz

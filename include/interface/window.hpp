@@ -23,6 +23,7 @@
 #include <cstdint>
 #include <string>
 #include <utility>
+#include <memory>
 
 namespace cozz {
 
@@ -40,11 +41,11 @@ class Window {
 
     virtual ID GetId() const = 0;
 
-    virtual Canvas& GetCanvas() = 0;
+    virtual std::weak_ptr<Canvas> GetCanvas() = 0;
 
     virtual std::string GetTitle() const final;
 
-    virtual std::pair<int32_t, int32_t> GetPosition() const final;
+    virtual std::pair<int64_t, int64_t> GetPosition() const final;
 
     virtual uint64_t GetWidth() const final;
 

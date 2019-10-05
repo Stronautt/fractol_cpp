@@ -52,6 +52,10 @@ class WindowsManager final {
 
     void UpdateWindows() const;
 
+    std::weak_ptr<Window> GetById(Window::ID id) const;
+
+    std::shared_ptr<EventHandler> GetEventHandler() const;
+
   private:
     std::shared_ptr<EventHandler> event_handler_;
     std::map<Window::ID, std::pair<std::shared_ptr<Window>, std::list<EventHandler::HandlerID>>> windows_;

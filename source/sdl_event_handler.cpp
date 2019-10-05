@@ -236,6 +236,7 @@ KeyMap AlignMouseButtons(uint8_t sdl_button) {
 
 bool SDLEventHandler::Poll() const {
     SDL_Event e;
+    e.type = SDL_FIRSTEVENT;
     while (SDL_PollEvent(&e)) {
         switch (e.type) {
             case SDL_WINDOWEVENT:
@@ -313,7 +314,7 @@ bool SDLEventHandler::Poll() const {
                 return false;
         }
     }
-    return true;
+    return e.type != SDL_FIRSTEVENT;
 }
 
 }  // namespace cozz

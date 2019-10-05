@@ -29,13 +29,13 @@ namespace cozz {
 
 class WindowResizedEvent final : public WindowEvent<Event::Type::kWindowResized> {
   public:
-    WindowResizedEvent(uint32_t window_id, int32_t new_width, int32_t new_height);
+    WindowResizedEvent(uint32_t window_id, uint64_t new_width, uint64_t new_height);
 
-    std::pair<int32_t, int32_t> GetSize() const;
+    std::pair<uint64_t, uint64_t> GetSize() const;
 
   protected:
-    int32_t new_width_;
-    int32_t new_height_;
+    uint64_t new_width_;
+    uint64_t new_height_;
 };
 
 }  // namespace cozz

@@ -21,10 +21,10 @@
 
 namespace cozz {
 
-MouseMotionEvent::MouseMotionEvent(uint32_t window_id, ButtonState state, int32_t x, int32_t y)
+MouseMotionEvent::MouseMotionEvent(uint32_t window_id, ButtonState state, uint64_t x, uint64_t y)
     : Event(Event::Type::kMouseMotion, window_id), state_(state), x_(x), y_(y) {}
 
-std::pair<int32_t, int32_t> MouseMotionEvent::GetPosition() const { return std::make_pair(x_, y_); }
+std::pair<uint64_t, uint64_t> MouseMotionEvent::GetPosition() const { return std::make_pair(x_, y_); }
 
 bool MouseMotionEvent::IsLeftButtonPressed() const { return state_ & ButtonState::kLeftPressed; }
 

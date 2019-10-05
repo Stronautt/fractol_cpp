@@ -29,6 +29,20 @@ namespace cozz {
 
 class Canvas final {
   public:
+    struct Point {
+        uint64_t x;
+        uint64_t y;
+    };
+
+    struct PixelColor {
+        PixelColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 0xFF);
+
+        uint8_t r;
+        uint8_t g;
+        uint8_t b;
+        uint8_t a;
+    };
+
     struct PixelFormat final {
         static constexpr uint8_t kMinBytesPerPixel = 1;
         static constexpr uint8_t kMinBitsPerPixel = kMinBytesPerPixel * 8;
@@ -84,6 +98,9 @@ class Canvas final {
         uint8_t A() const;
         void A(uint8_t channel);
 
+        PixelColor GetColor() const;
+        void SetColor(const PixelColor& color);
+
       private:
         uint8_t* pos_;
         const PixelFormat& pixel_format_;
@@ -107,6 +124,8 @@ class Canvas final {
     const_pixel_iterator cend() const;
 
     pixel_iterator At(uint64_t x, uint64_t y);
+
+    pixel_iterator At(const Point& p);
 
     uint8_t* GetRawPixels() const;
 
