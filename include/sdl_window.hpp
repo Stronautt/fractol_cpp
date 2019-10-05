@@ -25,13 +25,14 @@
 #include <cstdint>
 #include <memory>
 #include <string>
-
-#include "canvas.hpp"
+#include <functional>
 
 extern "C" typedef struct SDL_Surface SDL_Surface;
 extern "C" typedef struct SDL_Window SDL_Window;
 
 namespace cozz {
+
+class Canvas;
 
 class SDLWindow final : public Window {
   public:
@@ -40,7 +41,7 @@ class SDLWindow final : public Window {
 
     virtual void Update() override;
 
-    virtual uint32_t GetID() const override;
+    virtual Window::ID GetId() const override;
 
     virtual Canvas& GetCanvas() override;
 

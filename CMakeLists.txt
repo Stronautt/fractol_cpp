@@ -43,7 +43,8 @@ add_library(${LIB_NAME} STATIC source/fractol.cpp
 	                           source/sdl_event_handler.cpp
 	                           source/canvas.cpp
 	                           source/window.cpp
-	                           source/sdl_window.cpp)
+	                           source/sdl_window.cpp
+	                           source/windows_manager.cpp)
 target_include_directories(${LIB_NAME} PUBLIC include
                                               include/interface
                                        PRIVATE source/include

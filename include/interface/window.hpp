@@ -21,22 +21,30 @@
 #define FRACTOL_INCLUDE_INTERFACE_WINDOW_HPP_
 
 #include <cstdint>
+#include <string>
+#include <utility>
 
 namespace cozz {
 
+class Canvas;
 class WindowMovedEvent;
 class WindowResizedEvent;
-class Canvas;
 
 class Window {
   public:
+    using ID = uint32_t;
+
     virtual ~Window();
 
     virtual void Update() = 0;
 
-    virtual uint32_t GetID() const = 0;
+    virtual ID GetId() const = 0;
 
     virtual Canvas& GetCanvas() = 0;
+
+    virtual std::string GetTitle() const final;
+
+    virtual std::pair<int32_t, int32_t> GetPosition() const final;
 
     virtual uint64_t GetWidth() const final;
 
@@ -47,13 +55,15 @@ class Window {
     virtual void OnResize(const WindowResizedEvent& event) final;
 
   protected:
+    std::string title_;
+
     uint64_t x_;
     uint64_t y_;
 
     uint64_t width_;
     uint64_t height_;
 
-    Window(uint64_t x, uint64_t y, uint64_t width, uint64_t height);
+    Window(std::string title, uint64_t x, uint64_t y, uint64_t width, uint64_t height);
 
     virtual void Moved() = 0;
 

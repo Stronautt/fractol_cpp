@@ -55,67 +55,67 @@ Canvas::PixelFormat::PixelFormat(uint8_t bits_per_pixel, uint8_t bytes_per_pixel
       b_shift(b_shift),
       a_shift(a_shift) {}
 
-Canvas::iterator::iterator(uint8_t* pos, const PixelFormat& pixel_format) : pos_(pos), pixel_format_(pixel_format) {}
+Canvas::pixel_iterator::pixel_iterator(uint8_t* pos, const PixelFormat& pixel_format) : pos_(pos), pixel_format_(pixel_format) {}
 
-bool Canvas::iterator::operator==(const Canvas::iterator& other) const { return pos_ == other.pos_; }
+bool Canvas::pixel_iterator::operator==(const Canvas::pixel_iterator& other) const { return pos_ == other.pos_; }
 
-bool Canvas::iterator::operator!=(const Canvas::iterator& other) const { return pos_ != other.pos_; }
+bool Canvas::pixel_iterator::operator!=(const Canvas::pixel_iterator& other) const { return pos_ != other.pos_; }
 
-Canvas::iterator& Canvas::iterator::operator=(uint32_t value) {
+Canvas::pixel_iterator& Canvas::pixel_iterator::operator=(uint32_t value) {
     std::copy_n(reinterpret_cast<uint8_t*>(&value), sizeof(value), pos_);
     return *this;
 }
 
-Canvas::iterator& Canvas::iterator::operator*() { return *this; }
+Canvas::pixel_iterator& Canvas::pixel_iterator::operator*() { return *this; }
 
-Canvas::iterator::operator uint32_t() const {
+Canvas::pixel_iterator::operator uint32_t() const {
     uint32_t ret = 0;
 
     std::copy_n(pos_, pixel_format_.bytes_per_pixel, reinterpret_cast<uint8_t*>(&ret));
     return ret;
 }
 
-Canvas::iterator& Canvas::iterator::operator++() {
+Canvas::pixel_iterator& Canvas::pixel_iterator::operator++() {
     pos_ += pixel_format_.bytes_per_pixel;
     return *this;
 }
 
-uint8_t Canvas::iterator::R() const {
+uint8_t Canvas::pixel_iterator::R() const {
     uint32_t pixel = *this;
     return static_cast<uint8_t>(((pixel & pixel_format_.r_mask) >> pixel_format_.r_shift) << pixel_format_.r_loss);
 }
 
-void Canvas::iterator::R(uint8_t channel) {
+void Canvas::pixel_iterator::R(uint8_t channel) {
     uint32_t pixel = *this;
     *this = (pixel & (~pixel_format_.r_mask)) | (channel << pixel_format_.r_shift);
 }
 
-uint8_t Canvas::iterator::G() const {
+uint8_t Canvas::pixel_iterator::G() const {
     uint32_t pixel = *this;
     return static_cast<uint8_t>(((pixel & pixel_format_.g_mask) >> pixel_format_.g_shift) << pixel_format_.g_loss);
 }
 
-void Canvas::iterator::G(uint8_t channel) {
+void Canvas::pixel_iterator::G(uint8_t channel) {
     uint32_t pixel = *this;
     *this = (pixel & (~pixel_format_.g_mask)) | (channel << pixel_format_.g_shift);
 }
 
-uint8_t Canvas::iterator::B() const {
+uint8_t Canvas::pixel_iterator::B() const {
     uint32_t pixel = *this;
     return static_cast<uint8_t>(((pixel & pixel_format_.b_mask) >> pixel_format_.b_shift) << pixel_format_.b_loss);
 }
 
-void Canvas::iterator::B(uint8_t channel) {
+void Canvas::pixel_iterator::B(uint8_t channel) {
     uint32_t pixel = *this;
     *this = (pixel & (~pixel_format_.b_mask)) | (channel << pixel_format_.b_shift);
 }
 
-uint8_t Canvas::iterator::A() const {
+uint8_t Canvas::pixel_iterator::A() const {
     uint32_t pixel = *this;
     return static_cast<uint8_t>(((pixel & pixel_format_.a_mask) >> pixel_format_.a_shift) << pixel_format_.a_loss);
 }
 
-void Canvas::iterator::A(uint8_t channel) {
+void Canvas::pixel_iterator::A(uint8_t channel) {
     uint32_t pixel = *this;
     *this = (pixel & (~pixel_format_.a_mask)) | (channel << pixel_format_.a_shift);
 }
@@ -140,16 +140,16 @@ uint64_t Canvas::GetPitch() const { return pitch_; }
 
 const Canvas::PixelFormat& Canvas::GetPixelFormat() const { return pixel_format_; }
 
-Canvas::iterator Canvas::begin() { return iterator(pixels_.get(), pixel_format_); }
+Canvas::pixel_iterator Canvas::begin() { return pixel_iterator(pixels_.get(), pixel_format_); }
 
-Canvas::const_iterator Canvas::cbegin() const { return const_iterator(pixels_.get(), pixel_format_); }
+Canvas::const_pixel_iterator Canvas::cbegin() const { return const_pixel_iterator(pixels_.get(), pixel_format_); }
 
-Canvas::iterator Canvas::end() { return iterator(&pixels_[height_ * pitch_], pixel_format_); }
+Canvas::pixel_iterator Canvas::end() { return pixel_iterator(&pixels_[height_ * pitch_], pixel_format_); }
 
-Canvas::const_iterator Canvas::cend() const { return const_iterator(&pixels_[height_ * pitch_], pixel_format_); }
+Canvas::const_pixel_iterator Canvas::cend() const { return const_pixel_iterator(&pixels_[height_ * pitch_], pixel_format_); }
 
-Canvas::iterator Canvas::At(uint64_t x, uint64_t y) {
-    return iterator(GetRawPixels() + y * pitch_ + x * pixel_format_.bytes_per_pixel, pixel_format_);
+Canvas::pixel_iterator Canvas::At(uint64_t x, uint64_t y) {
+    return pixel_iterator(GetRawPixels() + y * pitch_ + x * pixel_format_.bytes_per_pixel, pixel_format_);
 }
 
 uint8_t* Canvas::GetRawPixels() const { return pixels_.get(); }

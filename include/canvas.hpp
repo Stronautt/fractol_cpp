@@ -27,9 +27,9 @@
 
 namespace cozz {
 
-class Canvas {
+class Canvas final {
   public:
-    struct PixelFormat {
+    struct PixelFormat final {
         static constexpr uint8_t kMinBytesPerPixel = 1;
         static constexpr uint8_t kMinBitsPerPixel = kMinBytesPerPixel * 8;
 
@@ -61,16 +61,16 @@ class Canvas {
         uint8_t a_shift;
     };
 
-    class iterator {
+    class pixel_iterator final {
       public:
-        iterator(uint8_t* pos, const PixelFormat& format);
+        pixel_iterator(uint8_t* pos, const PixelFormat& format);
 
-        bool operator==(const iterator& other) const;
-        bool operator!=(const iterator& other) const;
-        iterator& operator=(uint32_t value);
-        iterator& operator*();
+        bool operator==(const pixel_iterator& other) const;
+        bool operator!=(const pixel_iterator& other) const;
+        pixel_iterator& operator=(uint32_t value);
+        pixel_iterator& operator*();
         operator uint32_t() const;
-        iterator& operator++();
+        pixel_iterator& operator++();
 
         uint8_t R() const;
         void R(uint8_t channel);
@@ -88,7 +88,7 @@ class Canvas {
         uint8_t* pos_;
         const PixelFormat& pixel_format_;
     };
-    using const_iterator = const iterator;
+    using const_pixel_iterator = const pixel_iterator;
 
     Canvas(uint64_t width, uint64_t height, const PixelFormat& pixel_format = PixelFormat());
 
@@ -100,13 +100,13 @@ class Canvas {
     uint64_t GetPitch() const;
     const Canvas::PixelFormat& GetPixelFormat() const;
 
-    iterator begin();
-    const_iterator cbegin() const;
+    pixel_iterator begin();
+    const_pixel_iterator cbegin() const;
 
-    iterator end();
-    const_iterator cend() const;
+    pixel_iterator end();
+    const_pixel_iterator cend() const;
 
-    iterator At(uint64_t x, uint64_t y);
+    pixel_iterator At(uint64_t x, uint64_t y);
 
     uint8_t* GetRawPixels() const;
 

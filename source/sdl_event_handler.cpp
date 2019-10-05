@@ -19,8 +19,6 @@
 
 #include "sdl_event_handler.hpp"
 
-#include <iostream>
-
 #include <SDL2/SDL.h>
 
 namespace cozz {

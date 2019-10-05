@@ -28,7 +28,7 @@
 namespace cozz {
 
 class EventHandler;
-class Window;
+class WindowsManager;
 class MouseWheelEvent;
 class MouseButtonEvent;
 class MouseMotionEvent;
@@ -44,8 +44,8 @@ class Fractol final {
 
   private:
     std::atomic<bool> is_running_;
-    std::unique_ptr<EventHandler> event_handler_;
-    std::vector<std::unique_ptr<Window>> windows_;
+    std::shared_ptr<EventHandler> event_handler_;
+    std::shared_ptr<WindowsManager> windows_manager_;
 
     void MouseWheelHandler(const MouseWheelEvent& event);
 

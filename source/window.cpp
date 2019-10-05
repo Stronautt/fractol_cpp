@@ -24,27 +24,39 @@
 
 namespace cozz {
 
-Window::Window(uint64_t x, uint64_t y, uint64_t width, uint64_t height)
-    : x_(x), y_(y), width_(width), height_(height) {}
+Window::Window(std::string title, uint64_t x, uint64_t y, uint64_t width, uint64_t height)
+    : title_(title), x_(x), y_(y), width_(width), height_(height) {}
 
 Window::~Window() = default;
+
+std::string Window::GetTitle() const {
+    return title_;
+}
+
+std::pair<int32_t, int32_t> Window::GetPosition() const {
+    return std::make_pair(x_, y_);
+}
 
 uint64_t Window::GetWidth() const { return width_; }
 
 uint64_t Window::GetHeight() const { return height_; }
 
 void Window::OnMove(const WindowMovedEvent& event) {
-    auto new_position = event.GetPosition();
-    x_ = new_position.first;
-    y_ = new_position.second;
-    Moved();
+    if (event.GetWindowId() == GetId()) {
+        auto new_position = event.GetPosition();
+        x_ = new_position.first;
+        y_ = new_position.second;
+        Moved();
+    }
 }
 
 void Window::OnResize(const WindowResizedEvent& event) {
-    auto new_size = event.GetSize();
-    width_ = new_size.first;
-    height_ = new_size.second;
-    Resized();
+    if (event.GetWindowId() == GetId()) {
+        auto new_size = event.GetSize();
+        width_ = new_size.first;
+        height_ = new_size.second;
+        Resized();
+    }
 }
 
 }  // namespace cozz

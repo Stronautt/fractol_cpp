@@ -22,8 +22,9 @@
 
 #include <functional>
 #include <map>
+#include <list>
 #include <stdexcept>
-#include <typeindex>
+#include <typeinfo>
 
 #include "event.hpp"
 #include "event/keyboard_event.hpp"
@@ -41,59 +42,40 @@ class Window;
 
 class EventHandler {
   public:
-    using EventHandlerID = const std::multimap<Event::Type, std::function<void(const Event&)>>::iterator;
+    using HandlerID = std::multimap<Event::Type, std::function<void(const Event&)>>::iterator;
 
     virtual ~EventHandler();
 
     virtual bool Poll() const = 0;
 
     template <class EventType>
-    EventHandlerID RegisterEventCallback(const std::function<void(const EventType&)>& callback) {
-        /* clang-format off */
-        static const std::map<std::type_index, Event::Type> event_types_map = {
-            {std::type_index(typeid(WindowShownEvent)),       Event::Type::kWindowShown},
-            {std::type_index(typeid(WindowHiddenEvent)),      Event::Type::kWindowHidden},
-            {std::type_index(typeid(WindowExposedEvent)),     Event::Type::kWindowExposed},
-            {std::type_index(typeid(WindowMovedEvent)),       Event::Type::kWindowMoved},
-            {std::type_index(typeid(WindowResizedEvent)),     Event::Type::kWindowResized},
-            {std::type_index(typeid(WindowMinimizedEvent)),   Event::Type::kWindowMinimized},
-            {std::type_index(typeid(WindowMaximizedEvent)),   Event::Type::kWindowMaximized},
-            {std::type_index(typeid(WindowRestoredEvent)),    Event::Type::kWindowRestored},
-            {std::type_index(typeid(WindowEnterEvent)),       Event::Type::kWindowEnter},
-            {std::type_index(typeid(WindowLeaveEvent)),       Event::Type::kWindowLeave},
-            {std::type_index(typeid(WindowFocusGainedEvent)), Event::Type::kWindowFocusGained},
-            {std::type_index(typeid(WindowFocusLostEvent)),   Event::Type::kWindowFocusLost},
-            {std::type_index(typeid(WindowCloseEvent)),       Event::Type::kWindowClose},
-            {std::type_index(typeid(WindowTakeFocusEvent)),   Event::Type::kWindowTakeFocus},
-            {std::type_index(typeid(KeyboardEvent)),          Event::Type::kKeyboard},
-            {std::type_index(typeid(MouseMotionEvent)),       Event::Type::kMouseMotion},
-            {std::type_index(typeid(MouseButtonEvent)),       Event::Type::kMouseButton},
-            {std::type_index(typeid(MouseWheelEvent)),        Event::Type::kMouseWheel},
-            {std::type_index(typeid(QuitEvent)),              Event::Type::kQuit},
-        };
-        /* clang-format on */
-
-        static_assert(std::is_convertible<EventType, Event>::value);
-
-        try {
-            return callbacks_map_.emplace(event_types_map.at(std::type_index(typeid(EventType))),
-                                          ConvertCallback(callback));
-        } catch (const std::out_of_range&) {
-            throw std::logic_error("Unknown event type");
-        }
+    HandlerID RegisterEventCallback(const std::function<void(const EventType&)>& callback) {
+        return callbacks_map_.emplace(MakePair(callback));
     }
 
-    virtual void RegisterWindowEventCallbacks(Window& window) final;
+    virtual std::list<HandlerID> RegisterWindowEventCallbacks(Window& window) final;
 
-    virtual void UnregisterEventCallback(EventHandlerID id) final;
+    virtual void UnregisterEventCallback(HandlerID id) final;
+
+    virtual void UnregisterEventCallbacks(const std::list<HandlerID>& ids) final;
 
   protected:
     std::multimap<Event::Type, std::function<void(const Event&)>> callbacks_map_;
 
-    void TriggerCallbacks(const Event& event) const;
+    virtual void TriggerCallbacks(const Event& event) const final;
+
+  private:
+    template <class EventType>
+    std::pair<Event::Type, std::function<void(const Event&)>> MakePair(const std::function<void(const EventType&)>& callback) const {
+        static_assert(std::is_convertible<EventType, Event>::value);
+
+        return std::make_pair(ConvertEventType(typeid(EventType)), ConvertCallback(callback));
+    }
+
+    Event::Type ConvertEventType(const std::type_info& type) const;
 
     template <class EventType>
-    std::function<void(const Event&)> ConvertCallback(const std::function<void(const EventType&)>& callback) {
+    std::function<void(const Event&)> ConvertCallback(const std::function<void(const EventType&)>& callback) const {
         return reinterpret_cast<const std::function<void(const Event&)>&>(callback);
     }
 };

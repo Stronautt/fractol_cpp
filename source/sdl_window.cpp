@@ -19,8 +19,6 @@
 
 #include "sdl_window.hpp"
 
-#include <iostream>
-
 #include <SDL2/SDL.h>
 
 #include "canvas.hpp"
@@ -31,23 +29,22 @@ SDLWindow::SDLWindow(std::string title, uint32_t width, uint32_t height)
     : SDLWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height) {}
 
 SDLWindow::SDLWindow(std::string title, uint32_t x, uint32_t y, uint32_t width, uint32_t height)
-    : Window(x, y, width, height),
+    : Window(title, x, y, width, height),
       window_(SDL_CreateWindow(title.c_str(), x, y, width, height, SDL_WINDOW_RESIZABLE), &SDL_DestroyWindow),
       window_surface_(SDL_GetWindowSurface(window_.get())),
       canvas_(CanvasFromSurface(window_surface_)) {}
 
 void SDLWindow::Update() { SDL_UpdateWindowSurface(window_.get()); }
 
-uint32_t SDLWindow::GetID() const { return SDL_GetWindowID(window_.get()); }
+Window::ID SDLWindow::GetId() const { return SDL_GetWindowID(window_.get()); }
 
 Canvas& SDLWindow::GetCanvas() { return *canvas_; }
 
-void SDLWindow::Moved() { std::cout << "Window at: " << x_ << ";" << y_ << std::endl; }
+void SDLWindow::Moved() {}
 
 void SDLWindow::Resized() {
     window_surface_ = SDL_GetWindowSurface(window_.get());
     canvas_ = CanvasFromSurface(window_surface_);
-    std::cout << "Window resized to: " << width_ << "x" << height_ << std::endl;
 }
 
 std::unique_ptr<Canvas> SDLWindow::CanvasFromSurface(const SDL_Surface* surface) {

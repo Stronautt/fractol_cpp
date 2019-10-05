@@ -26,15 +26,13 @@
 #include <SDL2/SDL.h>
 
 #include "sdl_event_handler.hpp"
+#include "windows_manager.hpp"
 #include "sdl_window.hpp"
+#include "canvas.hpp"
 
 namespace cozz {
 
-Fractol::Fractol(int, char**) : is_running_(true), event_handler_(std::make_unique<SDLEventHandler>()) {
-    windows_.push_back(std::make_unique<SDLWindow>("Hello", 200, 200));
-
-    event_handler_->RegisterWindowEventCallbacks(*windows_[0]);
-
+Fractol::Fractol(int, char**) : is_running_(true), event_handler_(std::make_shared<SDLEventHandler>()), windows_manager_(std::make_shared<WindowsManager>(event_handler_)) {
     event_handler_->RegisterEventCallback<MouseWheelEvent>(
         std::bind(&Fractol::MouseWheelHandler, this, std::placeholders::_1));
     event_handler_->RegisterEventCallback<MouseButtonEvent>(
@@ -127,8 +125,12 @@ void Fractol::Terminate(const QuitEvent&) {
     is_running_ = false;
 }
 
-void DrawOnTheWindow(Window& window) {
-    auto canvas = window.GetCanvas();
+void DrawOnTheWindow(std::shared_ptr<Window> window, uint8_t R, uint8_t G, uint8_t B) {
+    if (window == nullptr) {
+        return;
+    }
+
+    auto canvas = window->GetCanvas();
 
     for (auto& pixel : canvas) {
         pixel = 0xFF00;
@@ -136,9 +138,9 @@ void DrawOnTheWindow(Window& window) {
 
     for (uint64_t x = 0; x < canvas.GetWidth() / 2; x++) {
         for (uint64_t y = 0; y < canvas.GetHeight() / 2; y++) {
-            canvas.At(x, y).R(0xF5);
-            canvas.At(x, y).G(0x57);
-            canvas.At(x, y).B(0x23);
+            canvas.At(x, y).R(R);
+            canvas.At(x, y).G(G);
+            canvas.At(x, y).B(B);
         }
     }
 
@@ -150,10 +152,13 @@ void DrawOnTheWindow(Window& window) {
 }
 
 uint8_t Fractol::Run() {
-    DrawOnTheWindow(*windows_[0]);
+    auto window1 = windows_manager_->CreateWindow<SDLWindow>("Hello", 200, 200);
+    auto window2 = windows_manager_->CreateWindow<SDLWindow>("World", 200, 200);
     while (is_running_) {
+        DrawOnTheWindow(window1.lock(), 0xF5, 0x57, 0x23);
+        DrawOnTheWindow(window2.lock(), 0xFF, 0xFF, 0xFF);
         event_handler_->Poll();
-        std::for_each(windows_.begin(), windows_.end(), [](auto& window) { window->Update(); });
+        windows_manager_->UpdateWindows();
     }
     return 0;
 }
