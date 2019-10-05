@@ -27,6 +27,7 @@
 
 namespace cozz {
 
+class ResourceManager;
 class EventHandler;
 class WindowsManager;
 class MouseWheelEvent;
@@ -44,6 +45,7 @@ class Fractol final {
 
   private:
     std::atomic<bool> is_running_;
+    std::shared_ptr<ResourceManager> resource_manager_;
     std::shared_ptr<EventHandler> event_handler_;
     std::shared_ptr<WindowsManager> windows_manager_;
 

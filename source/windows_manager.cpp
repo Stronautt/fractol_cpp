@@ -22,7 +22,8 @@
 namespace cozz {
 
 WindowsManager::WindowsManager(std::shared_ptr<EventHandler> event_handler) : event_handler_(event_handler) {
-    event_handler_->RegisterEventCallback<WindowCloseEvent>(std::bind(&WindowsManager::OnWindowClose, this, std::placeholders::_1));
+    event_handler_->RegisterEventCallback<WindowCloseEvent>(
+        std::bind(&WindowsManager::OnWindowClose, this, std::placeholders::_1));
 }
 
 void WindowsManager::OnWindowClose(const WindowCloseEvent& event) {
@@ -34,7 +35,7 @@ void WindowsManager::OnWindowClose(const WindowCloseEvent& event) {
 }
 
 void WindowsManager::UpdateWindows() const {
-    std::for_each(windows_.begin(), windows_.end(), [](const auto& window) {  window.second.first->Update(); });
+    std::for_each(windows_.begin(), windows_.end(), [](const auto& window) { window.second.first->Update(); });
 }
 
 std::weak_ptr<Window> WindowsManager::GetById(Window::ID id) const {
@@ -45,8 +46,6 @@ std::weak_ptr<Window> WindowsManager::GetById(Window::ID id) const {
     return {};
 }
 
-std::shared_ptr<EventHandler> WindowsManager::GetEventHandler() const {
-    return event_handler_;
-}
+std::shared_ptr<EventHandler> WindowsManager::GetEventHandler() const { return event_handler_; }
 
 }  // namespace cozz

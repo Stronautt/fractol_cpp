@@ -21,13 +21,20 @@
 
 #include <cmath>
 
+#include <SDL2/SDL_ttf.h>
+
 #include "canvas.hpp"
+#include "font_resource.hpp"
+#include "sdl_utilities.hpp"
 
 namespace cozz {
 
 Painter::Painter(std::weak_ptr<Canvas> canvas) : canvas_(canvas) {}
 
-void Painter::DrawLine(const Canvas::Point& a, const Canvas::Point& b, const Canvas::PixelColor& color, uint16_t thickness) const {
+void Painter::ResetCanvas(std::weak_ptr<Canvas> canvas) { canvas_ = canvas; }
+
+void Painter::DrawLine(const Canvas::Point& a, const Canvas::Point& b, const Canvas::PixelColor& color,
+                       uint16_t thickness) const {
     auto canvas = GetCanvas();
 
     int64_t short_length = b.y - a.y;
@@ -54,16 +61,17 @@ void Painter::DrawLine(const Canvas::Point& a, const Canvas::Point& b, const Can
     }
 }
 
-void Painter::DrawCircle(const Canvas::Point& p, uint64_t radius, const Canvas::PixelColor& color, uint16_t thickness) const {
+void Painter::DrawCircle(const Canvas::Point& p, uint64_t radius, const Canvas::PixelColor& color,
+                         uint16_t thickness) const {
     if (!thickness) {
-        return ;
+        return;
     }
 
     auto canvas = GetCanvas();
 
     if (!radius) {
         canvas->At(p).SetColor(color);
-        return ;
+        return;
     }
 
     do {
@@ -96,7 +104,8 @@ void Painter::DrawFilledCircle(const Canvas::Point& p, uint64_t radius, const Ca
     DrawCircle(p, radius, color, radius + 1);
 }
 
-void Painter::DrawRect(const Canvas::Point& p, uint64_t width, uint64_t height, const Canvas::PixelColor& color, uint16_t thickness) const {
+void Painter::DrawRect(const Canvas::Point& p, uint64_t width, uint64_t height, const Canvas::PixelColor& color,
+                       uint16_t thickness) const {
     if (!width || !height || !thickness) {
         return;
     }
@@ -116,8 +125,21 @@ void Painter::DrawRect(const Canvas::Point& p, uint64_t width, uint64_t height, 
     } while (--thickness);
 }
 
-void Painter::DrawFilledRect(const Canvas::Point& p, uint64_t width, uint64_t height, const Canvas::PixelColor& color) const {
+void Painter::DrawFilledRect(const Canvas::Point& p, uint64_t width, uint64_t height,
+                             const Canvas::PixelColor& color) const {
     DrawRect(p, width, height, color, std::min(width, height) / 2.0 + 1);
+}
+
+void Painter::DrawText(const Canvas::Point& p, const std::string text, std::shared_ptr<FontResource> font,
+              const Canvas::PixelColor& color) {
+    auto font_surface = std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)>(
+        TTF_RenderUTF8_Blended(font->GetFontData().get(), text.c_str(), {color.r, color.g, color.b, color.a}),
+        &SDL_FreeSurface);
+    auto surface = std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)>(
+        sdl2::SurfaceFromCanvas(canvas_.lock()),
+        &SDL_FreeSurface);
+    SDL_Rect destination{static_cast<int>(p.x), static_cast<int>(p.y), 0, 0};
+    SDL_BlitSurface(font_surface.get(), nullptr, surface.get(), &destination);
 }
 
 std::shared_ptr<Canvas> Painter::GetCanvas() const {

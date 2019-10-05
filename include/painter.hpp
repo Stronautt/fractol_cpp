@@ -21,26 +21,37 @@
 #define FRACTOL_INCLUDE_PAINTER_HPP_
 
 #include <memory>
-#include <utility>
 #include <tuple>
+#include <utility>
 
 #include "canvas.hpp"
 
 namespace cozz {
 
+class FontResource;
+
 class Painter final {
   public:
     Painter(std::weak_ptr<Canvas> canvas);
 
-    void DrawLine(const Canvas::Point& a, const Canvas::Point& b, const Canvas::PixelColor& color = {0, 0, 0}, uint16_t thickness = 1) const;
+    void ResetCanvas(std::weak_ptr<Canvas> canvas);
 
-    void DrawCircle(const Canvas::Point& p, uint64_t radius, const Canvas::PixelColor& color = {0, 0, 0}, uint16_t thickness = 1) const;
+    void DrawLine(const Canvas::Point& a, const Canvas::Point& b, const Canvas::PixelColor& color = {0, 0, 0},
+                  uint16_t thickness = 1) const;
+
+    void DrawCircle(const Canvas::Point& p, uint64_t radius, const Canvas::PixelColor& color = {0, 0, 0},
+                    uint16_t thickness = 1) const;
 
     void DrawFilledCircle(const Canvas::Point& p, uint64_t radius, const Canvas::PixelColor& color = {0, 0, 0}) const;
 
-    void DrawRect(const Canvas::Point& p, uint64_t width, uint64_t height, const Canvas::PixelColor& color = {0, 0, 0}, uint16_t thickness = 1) const;
+    void DrawRect(const Canvas::Point& p, uint64_t width, uint64_t height, const Canvas::PixelColor& color = {0, 0, 0},
+                  uint16_t thickness = 1) const;
 
-    void DrawFilledRect(const Canvas::Point& p, uint64_t width, uint64_t height, const Canvas::PixelColor& color = {0, 0, 0}) const;
+    void DrawFilledRect(const Canvas::Point& p, uint64_t width, uint64_t height,
+                        const Canvas::PixelColor& color = {0, 0, 0}) const;
+
+    void DrawText(const Canvas::Point& p, const std::string text, std::shared_ptr<FontResource> font,
+                  const Canvas::PixelColor& color = {0, 0, 0});
 
   private:
     std::weak_ptr<Canvas> canvas_;

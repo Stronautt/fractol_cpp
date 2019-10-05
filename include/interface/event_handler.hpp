@@ -21,8 +21,8 @@
 #define FRACTOL_INCLUDE_INTERFACE_EVENT_HANDLER_HPP_
 
 #include <functional>
-#include <map>
 #include <list>
+#include <map>
 #include <stdexcept>
 #include <typeinfo>
 
@@ -66,7 +66,8 @@ class EventHandler {
 
   private:
     template <class EventType>
-    std::pair<Event::Type, std::function<void(const Event&)>> MakePair(const std::function<void(const EventType&)>& callback) const {
+    std::pair<Event::Type, std::function<void(const Event&)>> MakePair(
+        const std::function<void(const EventType&)>& callback) const {
         static_assert(std::is_convertible<EventType, Event>::value);
 
         return std::make_pair(ConvertEventType(typeid(EventType)), ConvertCallback(callback));

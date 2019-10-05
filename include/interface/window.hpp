@@ -21,9 +21,9 @@
 #define FRACTOL_INCLUDE_INTERFACE_WINDOW_HPP_
 
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <utility>
-#include <memory>
 
 namespace cozz {
 

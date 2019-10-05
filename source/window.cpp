@@ -29,13 +29,9 @@ Window::Window(std::string title, uint64_t x, uint64_t y, uint64_t width, uint64
 
 Window::~Window() = default;
 
-std::string Window::GetTitle() const {
-    return title_;
-}
+std::string Window::GetTitle() const { return title_; }
 
-std::pair<int64_t, int64_t> Window::GetPosition() const {
-    return std::make_pair(x_, y_);
-}
+std::pair<int64_t, int64_t> Window::GetPosition() const { return std::make_pair(x_, y_); }
 
 uint64_t Window::GetWidth() const { return width_; }
 

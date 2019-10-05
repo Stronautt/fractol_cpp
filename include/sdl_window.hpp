@@ -23,9 +23,9 @@
 #include "window.hpp"
 
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <string>
-#include <functional>
 
 extern "C" typedef struct SDL_Surface SDL_Surface;
 extern "C" typedef struct SDL_Window SDL_Window;
@@ -54,9 +54,6 @@ class SDLWindow final : public Window {
     std::unique_ptr<SDL_Window, std::function<void(SDL_Window*)>> window_;
     SDL_Surface* window_surface_;
     std::shared_ptr<Canvas> canvas_;
-
-    std::shared_ptr<Canvas> CanvasFromSurface(const SDL_Surface* surface);
-
 };
 
 }  // namespace cozz

@@ -25,15 +25,23 @@
 
 #include <SDL2/SDL.h>
 
-#include "sdl_event_handler.hpp"
-#include "windows_manager.hpp"
-#include "sdl_window.hpp"
 #include "canvas.hpp"
 #include "painter.hpp"
+#include "resource_manager.hpp"
+#include "sdl_event_handler.hpp"
+#include "sdl_window.hpp"
+#include "windows_manager.hpp"
+#include "font_resource.hpp"
 
 namespace cozz {
 
-Fractol::Fractol(int, char**) : is_running_(true), event_handler_(std::make_shared<SDLEventHandler>()), windows_manager_(std::make_shared<WindowsManager>(event_handler_)) {
+Fractol::Fractol(int, char**)
+    : is_running_(true),
+      resource_manager_(std::make_shared<ResourceManager>()),
+      event_handler_(std::make_shared<SDLEventHandler>()),
+      windows_manager_(std::make_shared<WindowsManager>(event_handler_)) {
+    resource_manager_->LoadFont("Ubuntu24", "resources/fonts/ubuntu.ttf", 24);
+
     event_handler_->RegisterEventCallback<MouseWheelEvent>(
         std::bind(&Fractol::MouseWheelHandler, this, std::placeholders::_1));
     event_handler_->RegisterEventCallback<MouseButtonEvent>(
@@ -93,7 +101,8 @@ void Fractol::MouseMotionHandler(const MouseMotionEvent& event) {
 
         Painter painter(windows_manager_->GetById(event.GetWindowId()).lock()->GetCanvas());
 
-        painter.DrawLine({old_mouse_pos.first, old_mouse_pos.second}, {mouse_pos.first, mouse_pos.second}, {0xFF, 0x00, 0x00}, 2);
+        painter.DrawLine({old_mouse_pos.first, old_mouse_pos.second}, {mouse_pos.first, mouse_pos.second},
+                         {0xFF, 0x00, 0x00}, 2);
 
         old_mouse_pos = mouse_pos;
     }
@@ -133,7 +142,7 @@ void Fractol::Terminate(const QuitEvent&) {
     is_running_ = false;
 }
 
-void DrawOnTheWindow(std::shared_ptr<Window> window, uint8_t R, uint8_t G, uint8_t B) {
+void DrawOnTheWindow(std::shared_ptr<ResourceManager> resource_manager, std::shared_ptr<Window> window, uint8_t R, uint8_t G, uint8_t B) {
     if (window == nullptr) {
         return;
     }
@@ -167,13 +176,15 @@ void DrawOnTheWindow(std::shared_ptr<Window> window, uint8_t R, uint8_t G, uint8
     painter.DrawRect({350, 375}, 100, 50, {0xFF, 0x00, 0x00}, 2);
 
     painter.DrawFilledRect({550, 375}, 100, 50, {0xFF, 0x00, 0x00});
+
+    painter.DrawText({20, 500}, "Hello Katya", resource_manager->Get<FontResource>("Ubuntu24"), {0xFF, 0x00, 0x00});
 }
 
 uint8_t Fractol::Run() {
     auto window1 = windows_manager_->CreateWindow<SDLWindow>("Hello", 800, 800);
     auto window2 = windows_manager_->CreateWindow<SDLWindow>("World", 800, 800);
-    DrawOnTheWindow(window1.lock(), 0xF5, 0x57, 0x23);
-    DrawOnTheWindow(window2.lock(), 0xFF, 0xFF, 0xFF);
+    DrawOnTheWindow(resource_manager_, window1.lock(), 0xF5, 0x57, 0x23);
+    DrawOnTheWindow(resource_manager_, window2.lock(), 0xFF, 0xFF, 0xFF);
     while (is_running_) {
         event_handler_->Poll();
         windows_manager_->UpdateWindows();

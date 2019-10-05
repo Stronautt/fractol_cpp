@@ -22,11 +22,11 @@
 
 #include "window.hpp"
 
-#include <memory>
-#include <map>
-#include <list>
-#include <utility>
 #include <functional>
+#include <list>
+#include <map>
+#include <memory>
+#include <utility>
 
 #include "event_handler.hpp"
 
@@ -45,7 +45,8 @@ class WindowsManager final {
     std::weak_ptr<Window> CreateWindow(std::string title, uint64_t x, uint64_t y, uint64_t width, uint64_t height) {
         auto window = std::make_shared<WindowType>(title, x, y, width, height);
 
-        windows_.emplace(window->GetId(), std::make_pair(window, event_handler_->RegisterWindowEventCallbacks(*window)));
+        windows_.emplace(window->GetId(),
+                         std::make_pair(window, event_handler_->RegisterWindowEventCallbacks(*window)));
 
         return window;
     }

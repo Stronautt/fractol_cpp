@@ -59,7 +59,8 @@ Canvas::PixelFormat::PixelFormat(uint8_t bits_per_pixel, uint8_t bytes_per_pixel
       b_shift(b_shift),
       a_shift(a_shift) {}
 
-Canvas::pixel_iterator::pixel_iterator(uint8_t* pos, const PixelFormat& pixel_format) : pos_(pos), pixel_format_(pixel_format) {}
+Canvas::pixel_iterator::pixel_iterator(uint8_t* pos, const PixelFormat& pixel_format)
+    : pos_(pos), pixel_format_(pixel_format) {}
 
 bool Canvas::pixel_iterator::operator==(const Canvas::pixel_iterator& other) const { return pos_ == other.pos_; }
 
@@ -128,14 +129,12 @@ void Canvas::pixel_iterator::A(uint8_t channel) {
     *this = (pixel & (~pixel_format_.a_mask)) | (channel << pixel_format_.a_shift);
 }
 
-Canvas::PixelColor Canvas::pixel_iterator::GetColor() const {
-  return {R(), G(), B(), A()};
-}
+Canvas::PixelColor Canvas::pixel_iterator::GetColor() const { return {R(), G(), B(), A()}; }
 void Canvas::pixel_iterator::SetColor(const PixelColor& color) {
-  R(color.r);
-  G(color.g);
-  B(color.b);
-  A(color.a);
+    R(color.r);
+    G(color.g);
+    B(color.b);
+    A(color.a);
 }
 
 Canvas::Canvas(uint64_t width, uint64_t height, const PixelFormat& pixel_format)
@@ -164,7 +163,9 @@ Canvas::const_pixel_iterator Canvas::cbegin() const { return const_pixel_iterato
 
 Canvas::pixel_iterator Canvas::end() { return pixel_iterator(&pixels_[height_ * pitch_], pixel_format_); }
 
-Canvas::const_pixel_iterator Canvas::cend() const { return const_pixel_iterator(&pixels_[height_ * pitch_], pixel_format_); }
+Canvas::const_pixel_iterator Canvas::cend() const {
+    return const_pixel_iterator(&pixels_[height_ * pitch_], pixel_format_);
+}
 
 Canvas::pixel_iterator Canvas::At(uint64_t x, uint64_t y) {
     if (x < width_ && y < height_) {
@@ -173,9 +174,7 @@ Canvas::pixel_iterator Canvas::At(uint64_t x, uint64_t y) {
     return pixel_iterator(nullptr, pixel_format_);
 }
 
-Canvas::pixel_iterator Canvas::At(const Point& p) {
-    return At(p.x, p.y);
-}
+Canvas::pixel_iterator Canvas::At(const Point& p) { return At(p.x, p.y); }
 
 uint8_t* Canvas::GetRawPixels() const { return pixels_.get(); }
 

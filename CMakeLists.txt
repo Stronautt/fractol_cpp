@@ -40,16 +40,20 @@ add_library(${LIB_NAME} STATIC source/fractol.cpp
 	                           source/event/mouse_wheel_event.cpp
 	                           source/event/quit_event.cpp
 	                           source/event_handler.cpp
+	                           source/sdl_utilities.cpp
 	                           source/sdl_event_handler.cpp
 	                           source/canvas.cpp
 	                           source/window.cpp
 	                           source/sdl_window.cpp
 	                           source/windows_manager.cpp
-	                           source/painter.cpp)
+	                           source/painter.cpp
+	                           source/resource.cpp
+	                           source/resource_manager.cpp
+	                           source/font_resource.cpp)
 target_include_directories(${LIB_NAME} PUBLIC include
                                               include/interface
                                        PRIVATE source/include
                                        		   ${SDL2_INCLUDE_DIRS})
 
 add_executable(${EXE_NAME} source/main.cpp)
-target_link_libraries(${EXE_NAME} PRIVATE ${LIB_NAME} ${SDL2_LIBRARIES})
+target_link_libraries(${EXE_NAME} PRIVATE ${LIB_NAME} ${SDL2_LIBRARIES} SDL2_ttf)
