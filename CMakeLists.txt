@@ -29,18 +29,18 @@ endif()
 
 set(CMAKE_CXX_FLAGS "-Wextra -Wall -pedantic")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Werror -fsanitize=leak")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -ggdb")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -s")
 
 set(EXE_NAME ${PROJECT_NAME} CACHE STRING "Name of the executable" FORCE)
 set(LIB_NAME ${EXE_NAME}_core CACHE STRING "Name of the core library" FORCE)
 
 add_library(${LIB_NAME} STATIC source/fractol.cpp)
 target_include_directories(${LIB_NAME} PUBLIC include
-                                              include/interface
+                                              include/interfaces
                                        PRIVATE source/include)
-target_link_libraries(${LIB_NAME} PUBLIC zzgraph)
+target_link_libraries(${LIB_NAME} PUBLIC zzgui)
 
 add_executable(${EXE_NAME} source/main.cpp)
 target_link_libraries(${EXE_NAME} PRIVATE ${LIB_NAME})
 
-add_subdirectory(libzzgraph)
+add_subdirectory(libzzgui)

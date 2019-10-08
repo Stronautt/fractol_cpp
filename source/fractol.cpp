@@ -122,7 +122,7 @@ void Fractol::MouseMotionHandler(const MouseMotionEvent& event) {
 }
 
 void Fractol::KeyboardHandler(const KeyboardEvent& event) {
-    char symb;
+    char symb = '?';
     KeyMap key = event.GetKey();
     if (key > KeyMap::kAlphabeticalKeysBegin && key < KeyMap::kAlphabeticalKeysEnd) {
         symb = static_cast<char>(static_cast<uint16_t>(key) - static_cast<uint16_t>(KeyMap::kA)) + 'A';
