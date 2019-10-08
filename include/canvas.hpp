@@ -104,6 +104,16 @@ class Canvas final {
       private:
         uint8_t* pos_;
         const PixelFormat& pixel_format_;
+
+        uint32_t TransformR8to32(uint8_t channel) const;
+        uint32_t TransformG8to32(uint8_t channel) const;
+        uint32_t TransformB8to32(uint8_t channel) const;
+        uint32_t TransformA8to32(uint8_t channel) const;
+
+        uint8_t TransformR32to8(uint32_t pixel) const;
+        uint8_t TransformG32to8(uint32_t pixel) const;
+        uint8_t TransformB32to8(uint32_t pixel) const;
+        uint8_t TransformA32to8(uint32_t pixel) const;
     };
     using const_pixel_iterator = const pixel_iterator;
 

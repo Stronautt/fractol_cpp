@@ -91,50 +91,83 @@ Canvas::pixel_iterator& Canvas::pixel_iterator::operator++() {
 
 uint8_t Canvas::pixel_iterator::R() const {
     uint32_t pixel = *this;
-    return static_cast<uint8_t>(((pixel & pixel_format_.r_mask) >> pixel_format_.r_shift) << pixel_format_.r_loss);
+    return TransformR32to8(pixel);
 }
 
 void Canvas::pixel_iterator::R(uint8_t channel) {
     uint32_t pixel = *this;
-    *this = (pixel & (~pixel_format_.r_mask)) | (channel << pixel_format_.r_shift);
+    *this = (pixel & (~pixel_format_.r_mask)) | TransformR8to32(channel);
 }
 
 uint8_t Canvas::pixel_iterator::G() const {
     uint32_t pixel = *this;
-    return static_cast<uint8_t>(((pixel & pixel_format_.g_mask) >> pixel_format_.g_shift) << pixel_format_.g_loss);
+    return TransformG32to8(pixel);
 }
 
 void Canvas::pixel_iterator::G(uint8_t channel) {
     uint32_t pixel = *this;
-    *this = (pixel & (~pixel_format_.g_mask)) | (channel << pixel_format_.g_shift);
+    *this = (pixel & (~pixel_format_.g_mask)) | TransformG8to32(channel);
 }
 
 uint8_t Canvas::pixel_iterator::B() const {
     uint32_t pixel = *this;
-    return static_cast<uint8_t>(((pixel & pixel_format_.b_mask) >> pixel_format_.b_shift) << pixel_format_.b_loss);
+    return TransformB32to8(pixel);
 }
 
 void Canvas::pixel_iterator::B(uint8_t channel) {
     uint32_t pixel = *this;
-    *this = (pixel & (~pixel_format_.b_mask)) | (channel << pixel_format_.b_shift);
+    *this = (pixel & (~pixel_format_.b_mask)) | TransformB8to32(channel);
 }
 
 uint8_t Canvas::pixel_iterator::A() const {
     uint32_t pixel = *this;
-    return static_cast<uint8_t>(((pixel & pixel_format_.a_mask) >> pixel_format_.a_shift) << pixel_format_.a_loss);
+    return TransformA32to8(pixel);
 }
 
 void Canvas::pixel_iterator::A(uint8_t channel) {
     uint32_t pixel = *this;
-    *this = (pixel & (~pixel_format_.a_mask)) | (channel << pixel_format_.a_shift);
+    *this = (pixel & (~pixel_format_.a_mask)) | TransformA8to32(channel);
 }
 
-Canvas::PixelColor Canvas::pixel_iterator::GetColor() const { return {R(), G(), B(), A()}; }
+Canvas::PixelColor Canvas::pixel_iterator::GetColor() const {
+    uint32_t pixel = *this;
+    return {TransformR32to8(pixel), TransformG32to8(pixel), TransformB32to8(pixel), TransformA32to8(pixel)};
+}
+
 void Canvas::pixel_iterator::SetColor(const PixelColor& color) {
-    R(color.r);
-    G(color.g);
-    B(color.b);
-    A(color.a);
+    *this = TransformR8to32(color.r) | TransformG8to32(color.g) | TransformB8to32(color.b) | TransformA8to32(color.a);
+}
+
+inline uint32_t Canvas::pixel_iterator::TransformR8to32(uint8_t channel) const {
+    return (channel >> pixel_format_.r_loss) << pixel_format_.r_shift;
+}
+
+inline uint32_t Canvas::pixel_iterator::TransformG8to32(uint8_t channel) const {
+    return (channel >> pixel_format_.g_loss) << pixel_format_.g_shift;
+}
+
+inline uint32_t Canvas::pixel_iterator::TransformB8to32(uint8_t channel) const {
+    return (channel >> pixel_format_.b_loss) << pixel_format_.b_shift;
+}
+
+inline uint32_t Canvas::pixel_iterator::TransformA8to32(uint8_t channel) const {
+    return (channel >> pixel_format_.a_loss) << pixel_format_.a_shift & pixel_format_.a_mask;
+}
+
+inline uint8_t Canvas::pixel_iterator::TransformR32to8(uint32_t pixel) const {
+    return ((pixel & pixel_format_.r_mask) >> pixel_format_.r_shift) << pixel_format_.r_loss;
+}
+
+inline uint8_t Canvas::pixel_iterator::TransformG32to8(uint32_t pixel) const {
+    return ((pixel & pixel_format_.g_mask) >> pixel_format_.g_shift) << pixel_format_.g_loss;
+}
+
+inline uint8_t Canvas::pixel_iterator::TransformB32to8(uint32_t pixel) const {
+    return ((pixel & pixel_format_.b_mask) >> pixel_format_.b_shift) << pixel_format_.b_loss;
+}
+
+inline uint8_t Canvas::pixel_iterator::TransformA32to8(uint32_t pixel) const {
+    return ((pixel & pixel_format_.a_mask) >> pixel_format_.a_shift) << pixel_format_.a_loss;
 }
 
 Canvas::Canvas(uint64_t width, uint64_t height, const PixelFormat& pixel_format)

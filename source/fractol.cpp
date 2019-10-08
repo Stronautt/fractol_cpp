@@ -26,12 +26,12 @@
 #include <SDL2/SDL.h>
 
 #include "canvas.hpp"
+#include "font_resource.hpp"
 #include "painter.hpp"
 #include "resource_manager.hpp"
 #include "sdl_event_handler.hpp"
 #include "sdl_window.hpp"
 #include "windows_manager.hpp"
-#include "font_resource.hpp"
 
 namespace cozz {
 
@@ -142,7 +142,8 @@ void Fractol::Terminate(const QuitEvent&) {
     is_running_ = false;
 }
 
-void DrawOnTheWindow(std::shared_ptr<ResourceManager> resource_manager, std::shared_ptr<Window> window, uint8_t R, uint8_t G, uint8_t B) {
+void DrawOnTheWindow(std::shared_ptr<ResourceManager> resource_manager, std::shared_ptr<Window> window, uint8_t R,
+                     uint8_t G, uint8_t B) {
     if (window == nullptr) {
         return;
     }
@@ -164,6 +165,11 @@ void DrawOnTheWindow(std::shared_ptr<ResourceManager> resource_manager, std::sha
             canvas->At(x, y) = 0xFF;
         }
     }
+
+    canvas->At(100, 100).R(0x12);
+    canvas->At(100, 100).G(0x34);
+    canvas->At(100, 100).B(0x56);
+    canvas->At(100, 100).A(0x78);
 
     Painter painter(window->GetCanvas());
 
