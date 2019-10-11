@@ -1,18 +1,18 @@
 /*
- * This file is part of LibZZgraph.
+ * This file is part of LibZZgui.
 
- * LibZZgraph is free software: you can redistribute it and/or modify
+ * LibZZgui is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * LibZZgraph is distributed in the hope that it will be useful,
+ * LibZZgui is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with LibZZgraph. If not, see <https://www.gnu.org/licenses/>.
+ * along with LibZZgui. If not, see <https://www.gnu.org/licenses/>.
  *
  * Author: Pavlo Hrytsenko
 */
@@ -25,6 +25,8 @@
 #include "sdl_utilities.hpp"
 
 namespace cozz {
+
+namespace zzgui {
 
 SDLWindow::SDLWindow(std::string title, uint32_t width, uint32_t height)
     : SDLWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height) {
@@ -51,5 +53,7 @@ void SDLWindow::Resized() {
     window_surface_ = SDL_GetWindowSurface(window_.get());
     canvas_ = sdl2::CanvasFromSurface(window_surface_);
 }
+
+}  // namespace zzgui
 
 }  // namespace cozz

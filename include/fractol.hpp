@@ -27,6 +27,8 @@
 
 namespace cozz {
 
+namespace zzgui {
+
 class ResourceManager;
 class EventHandler;
 class WindowsManager;
@@ -35,6 +37,8 @@ class MouseButtonEvent;
 class MouseMotionEvent;
 class KeyboardEvent;
 class QuitEvent;
+
+}  // namespace zzgui
 
 class Fractol final {
   public:
@@ -45,19 +49,19 @@ class Fractol final {
 
   private:
     std::atomic<bool> is_running_;
-    std::shared_ptr<ResourceManager> resource_manager_;
-    std::shared_ptr<EventHandler> event_handler_;
-    std::shared_ptr<WindowsManager> windows_manager_;
+    std::shared_ptr<zzgui::ResourceManager> resource_manager_;
+    std::shared_ptr<zzgui::EventHandler> event_handler_;
+    std::shared_ptr<zzgui::WindowsManager> windows_manager_;
 
-    void MouseWheelHandler(const MouseWheelEvent& event);
+    void MouseWheelHandler(const zzgui::MouseWheelEvent& event);
 
-    void MouseButtonHandler(const MouseButtonEvent& event);
+    void MouseButtonHandler(const zzgui::MouseButtonEvent& event);
 
-    void MouseMotionHandler(const MouseMotionEvent& event);
+    void MouseMotionHandler(const zzgui::MouseMotionEvent& event);
 
-    void KeyboardHandler(const KeyboardEvent& event);
+    void KeyboardHandler(const zzgui::KeyboardEvent& event);
 
-    void Terminate(const QuitEvent& event);
+    void Terminate(const zzgui::QuitEvent& event);
 };
 
 }  // namespace cozz

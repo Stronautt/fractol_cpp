@@ -37,47 +37,48 @@ namespace cozz {
 
 Fractol::Fractol(int, char**)
     : is_running_(true),
-      resource_manager_(std::make_shared<ResourceManager>()),
-      event_handler_(std::make_shared<SDLEventHandler>()),
-      windows_manager_(std::make_shared<WindowsManager>(event_handler_)) {
+      resource_manager_(std::make_shared<zzgui::ResourceManager>()),
+      event_handler_(std::make_shared<zzgui::SDLEventHandler>()),
+      windows_manager_(std::make_shared<zzgui::WindowsManager>(event_handler_)) {
     resource_manager_->LoadFont("Ubuntu24", "resources/fonts/ubuntu.ttf", 24);
 
-    event_handler_->RegisterEventCallback<MouseWheelEvent>(
+    event_handler_->RegisterEventCallback<zzgui::MouseWheelEvent>(
         std::bind(&Fractol::MouseWheelHandler, this, std::placeholders::_1));
-    event_handler_->RegisterEventCallback<MouseButtonEvent>(
+    event_handler_->RegisterEventCallback<zzgui::MouseButtonEvent>(
         std::bind(&Fractol::MouseButtonHandler, this, std::placeholders::_1));
-    event_handler_->RegisterEventCallback<MouseMotionEvent>(
+    event_handler_->RegisterEventCallback<zzgui::MouseMotionEvent>(
         std::bind(&Fractol::MouseMotionHandler, this, std::placeholders::_1));
-    event_handler_->RegisterEventCallback<KeyboardEvent>(
+    event_handler_->RegisterEventCallback<zzgui::KeyboardEvent>(
         std::bind(&Fractol::KeyboardHandler, this, std::placeholders::_1));
-    event_handler_->RegisterEventCallback<QuitEvent>(std::bind(&Fractol::Terminate, this, std::placeholders::_1));
+    event_handler_->RegisterEventCallback<zzgui::QuitEvent>(
+        std::bind(&Fractol::Terminate, this, std::placeholders::_1));
 }
 
 Fractol::~Fractol() = default;
 
-void Fractol::MouseWheelHandler(const MouseWheelEvent& event) {
+void Fractol::MouseWheelHandler(const zzgui::MouseWheelEvent& event) {
     std::cout << "Wheel scrolled by x: " << event.GetScrolledByX() << ", by y: " << event.GetScrolledByY()
               << "; inversed: " << event.IsInversed() << std::endl;
 }
 
-void Fractol::MouseButtonHandler(const MouseButtonEvent& event) {
+void Fractol::MouseButtonHandler(const zzgui::MouseButtonEvent& event) {
     auto mouse_pos = event.GetPosition();
 
     std::cout << "Mouse at: " << mouse_pos.first << ":" << mouse_pos.second << "; ";
     switch (event.GetButton()) {
-        case KeyMap::kLeftMouseButton:
+        case zzgui::KeyMap::kLeftMouseButton:
             std::cout << "LBM";
             break;
-        case KeyMap::kMiddleMouseButton:
+        case zzgui::KeyMap::kMiddleMouseButton:
             std::cout << "MBM";
             break;
-        case KeyMap::kRightMouseButton:
+        case zzgui::KeyMap::kRightMouseButton:
             std::cout << "RBM";
             break;
-        case KeyMap::kExtra1MouseButton:
+        case zzgui::KeyMap::kExtra1MouseButton:
             std::cout << "X1BM";
             break;
-        case KeyMap::kExtra2MouseButton:
+        case zzgui::KeyMap::kExtra2MouseButton:
             std::cout << "X2BM";
             break;
         default:
@@ -91,7 +92,7 @@ void Fractol::MouseButtonHandler(const MouseButtonEvent& event) {
     std::cout << static_cast<uint16_t>(event.GetClicksCount()) << " times;" << std::endl;
 }
 
-void Fractol::MouseMotionHandler(const MouseMotionEvent& event) {
+void Fractol::MouseMotionHandler(const zzgui::MouseMotionEvent& event) {
     static std::pair<uint64_t, uint64_t> old_mouse_pos;
     auto mouse_pos = event.GetPosition();
 
@@ -99,7 +100,7 @@ void Fractol::MouseMotionHandler(const MouseMotionEvent& event) {
     if (event.IsLeftButtonPressed()) {
         std::cout << "LBM pressed; ";
 
-        Painter painter(windows_manager_->GetById(event.GetWindowId()).lock()->GetCanvas());
+        zzgui::Painter painter(windows_manager_->GetById(event.GetWindowId()).lock()->GetCanvas());
 
         painter.DrawLine({old_mouse_pos.first, old_mouse_pos.second}, {mouse_pos.first, mouse_pos.second},
                          {0xFF, 0x00, 0x00}, 2);
@@ -121,13 +122,13 @@ void Fractol::MouseMotionHandler(const MouseMotionEvent& event) {
     std::cout << std::endl;
 }
 
-void Fractol::KeyboardHandler(const KeyboardEvent& event) {
+void Fractol::KeyboardHandler(const zzgui::KeyboardEvent& event) {
     char symb = '?';
-    KeyMap key = event.GetKey();
-    if (key > KeyMap::kAlphabeticalKeysBegin && key < KeyMap::kAlphabeticalKeysEnd) {
-        symb = static_cast<char>(static_cast<uint16_t>(key) - static_cast<uint16_t>(KeyMap::kA)) + 'A';
-    } else if (key > KeyMap::kNumericKeysBegin && key < KeyMap::kNumericKeysEnd) {
-        symb = static_cast<char>(static_cast<uint16_t>(key) - static_cast<uint16_t>(KeyMap::kNum0)) + '0';
+    zzgui::KeyMap key = event.GetKey();
+    if (key > zzgui::KeyMap::kAlphabeticalKeysBegin && key < zzgui::KeyMap::kAlphabeticalKeysEnd) {
+        symb = static_cast<char>(static_cast<uint16_t>(key) - static_cast<uint16_t>(zzgui::KeyMap::kA)) + 'A';
+    } else if (key > zzgui::KeyMap::kNumericKeysBegin && key < zzgui::KeyMap::kNumericKeysEnd) {
+        symb = static_cast<char>(static_cast<uint16_t>(key) - static_cast<uint16_t>(zzgui::KeyMap::kNum0)) + '0';
     }
 
     if (event.IsPressed()) {
@@ -137,13 +138,13 @@ void Fractol::KeyboardHandler(const KeyboardEvent& event) {
     }
 }
 
-void Fractol::Terminate(const QuitEvent&) {
+void Fractol::Terminate(const zzgui::QuitEvent&) {
     std::cout << "Application is terminating" << std::endl;
     is_running_ = false;
 }
 
-void DrawOnTheWindow(std::shared_ptr<ResourceManager> resource_manager, std::shared_ptr<Window> window, uint8_t R,
-                     uint8_t G, uint8_t B) {
+void DrawOnTheWindow(std::shared_ptr<zzgui::ResourceManager> resource_manager, std::shared_ptr<zzgui::Window> window,
+                     uint8_t R, uint8_t G, uint8_t B) {
     if (window == nullptr) {
         return;
     }
@@ -171,7 +172,7 @@ void DrawOnTheWindow(std::shared_ptr<ResourceManager> resource_manager, std::sha
     canvas->At(100, 100).B(0x56);
     canvas->At(100, 100).A(0x78);
 
-    Painter painter(window->GetCanvas());
+    zzgui::Painter painter(window->GetCanvas());
 
     painter.DrawLine({0, 0}, {184, 17}, {0xFF, 0x00, 0x00});
 
@@ -183,12 +184,13 @@ void DrawOnTheWindow(std::shared_ptr<ResourceManager> resource_manager, std::sha
 
     painter.DrawFilledRect({550, 375}, 100, 50, {0xFF, 0x00, 0x00});
 
-    painter.DrawText({20, 500}, "Hello Katya", resource_manager->Get<FontResource>("Ubuntu24"), {0xFF, 0x00, 0x00});
+    painter.DrawText({20, 500}, "Hello Katya", resource_manager->Get<zzgui::FontResource>("Ubuntu24"),
+                     {0xFF, 0x00, 0x00});
 }
 
 uint8_t Fractol::Run() {
-    auto window1 = windows_manager_->CreateWindow<SDLWindow>("Hello", 800, 800);
-    auto window2 = windows_manager_->CreateWindow<SDLWindow>("World", 800, 800);
+    auto window1 = windows_manager_->CreateWindow<zzgui::SDLWindow>("Hello", 800, 800);
+    auto window2 = windows_manager_->CreateWindow<zzgui::SDLWindow>("World", 800, 800);
     DrawOnTheWindow(resource_manager_, window1.lock(), 0xF5, 0x57, 0x23);
     DrawOnTheWindow(resource_manager_, window2.lock(), 0xFF, 0xFF, 0xFF);
     while (is_running_) {

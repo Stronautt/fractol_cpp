@@ -1,18 +1,18 @@
 /*
- * This file is part of LibZZgraph.
+ * This file is part of LibZZgui.
 
- * LibZZgraph is free software: you can redistribute it and/or modify
+ * LibZZgui is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * LibZZgraph is distributed in the hope that it will be useful,
+ * LibZZgui is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with LibZZgraph. If not, see <https://www.gnu.org/licenses/>.
+ * along with LibZZgui. If not, see <https://www.gnu.org/licenses/>.
  *
  * Author: Pavlo Hrytsenko
 */
@@ -20,6 +20,8 @@
 #include "event.hpp"
 
 namespace cozz {
+
+namespace zzgui {
 
 Event::Event(Type type, uint32_t window_id)
     : type_(type), timestamp_(std::chrono::system_clock::now()), window_id_(window_id) {}
@@ -31,5 +33,7 @@ Event::Type Event::GetType() const { return type_; }
 std::chrono::system_clock::time_point Event::GetTimestamp() const { return timestamp_; }
 
 uint32_t Event::GetWindowId() const { return window_id_; }
+
+}  // namespace zzgui
 
 }  // namespace cozz

@@ -1,38 +1,53 @@
 /*
- * This file is part of LibZZmvc.
+ * This file is part of LibZZgui.
 
- * LibZZmvc is free software: you can redistribute it and/or modify
+ * LibZZgui is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * LibZZmvc is distributed in the hope that it will be useful,
+ * LibZZgui is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with LibZZmvc. If not, see <https://www.gnu.org/licenses/>.
+ * along with LibZZgui. If not, see <https://www.gnu.org/licenses/>.
  *
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef LIBZZMVC_INCLUDE_INTERFACES_CONTROLLER_HPP_
-#define LIBZZMVC_INCLUDE_INTERFACES_CONTROLLER_HPP_
+#ifndef LIBZZGUI_INCLUDE_INTERFACES_CONTROLLER_HPP_
+#define LIBZZGUI_INCLUDE_INTERFACES_CONTROLLER_HPP_
+
+#include <memory>
 
 namespace cozz {
 
-namespace zzmvc {
+namespace zzgui {
+
+class Model;
+class View;
 
 class Controller {
   public:
-    virtual ~Controller() = default;
+    virtual ~Controller();
 
     virtual void Render() = 0;
+
+    std::weak_ptr<Model> GetModel() const;
+
+    std::weak_ptr<View> GetView() const;
+
+  protected:
+    std::shared_ptr<Model> model_;
+    std::shared_ptr<View> view_;
+
+    Controller(std::shared_ptr<Model> model, std::shared_ptr<View> view);
 };
 
-}  // namespace zzmvc
+}  // namespace zzgui
 
 }  // namespace cozz
 
-#endif  // LIBZZMVC_INCLUDE_INTERFACES_CONTROLLER_HPP_
+#endif  // LIBZZGUI_INCLUDE_INTERFACES_CONTROLLER_HPP_

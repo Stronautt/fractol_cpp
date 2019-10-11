@@ -17,16 +17,19 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "event/window_resized_event.hpp"
+#include "controller.hpp"
 
 namespace cozz {
 
 namespace zzgui {
 
-WindowResizedEvent::WindowResizedEvent(uint32_t window_id, uint64_t new_width, uint64_t new_height)
-    : WindowEvent(window_id), new_width_(new_width), new_height_(new_height) {}
+Controller::Controller(std::shared_ptr<Model> model, std::shared_ptr<View> view) : model_(model), view_(view) {}
 
-std::pair<uint64_t, uint64_t> WindowResizedEvent::GetSize() const { return std::make_pair(new_width_, new_height_); }
+Controller::~Controller() = default;
+
+std::weak_ptr<Model> Controller::GetModel() const { return model_; }
+
+std::weak_ptr<View> Controller::GetView() const { return view_; }
 
 }  // namespace zzgui
 
