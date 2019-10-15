@@ -20,13 +20,30 @@
 #ifndef LIBZZGUI_INCLUDE_INTERFACES_MODEL_HPP_
 #define LIBZZGUI_INCLUDE_INTERFACES_MODEL_HPP_
 
+#include <memory>
+
 namespace cozz {
 
 namespace zzgui {
 
+class EventHandler;
+class Controller;
+
 class Model {
   public:
-    virtual ~Model() = default;
+    virtual ~Model();
+
+    virtual void Update(float delta) = 0;
+
+    std::weak_ptr<EventHandler> GetEventHandler() const;
+
+    std::weak_ptr<Controller> GetController() const;
+
+  protected:
+    std::weak_ptr<EventHandler> event_handler_;
+    std::weak_ptr<Controller> controller_;
+
+    Model(std::weak_ptr<EventHandler> event_handler, std::weak_ptr<Controller> controller);
 };
 
 }  // namespace zzgui

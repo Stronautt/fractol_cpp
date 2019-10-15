@@ -17,41 +17,25 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef LIBZZGUI_INCLUDE_CONTROLLERS_MANAGER_HPP_
-#define LIBZZGUI_INCLUDE_CONTROLLERS_MANAGER_HPP_
-
-#include <memory>
-#include <vector>
+#include "model.hpp"
 
 namespace cozz {
 
 namespace zzgui {
 
-class Controller;
+Model::Model(std::weak_ptr<EventHandler> event_handler, std::weak_ptr<Controller> controller)
+    : event_handler_(event_handler), controller_(controller) {
+    if (event_handler_.expired() || controller_.expired()) {
+        throw std::runtime_error("Bad event handler or controller");
+    }
+}
 
-class ControllersManager final {
-  public:
-    static float GetDeltaTime();
+Model::~Model() = default;
 
-    void Push(std::shared_ptr<Controller> controller);
+std::weak_ptr<EventHandler> Model::GetEventHandler() const { return event_handler_; }
 
-    void Pop();
-
-    void Render() const;
-
-    void Set(std::shared_ptr<Controller> controller);
-
-    void Clear();
-
-  private:
-    static thread_local float delta_time_;
-    std::vector<std::shared_ptr<Controller>> controllers_;
-
-    static void UpdateDeltaTime();
-};
+std::weak_ptr<Controller> Model::GetController() const { return controller_; }
 
 }  // namespace zzgui
 
 }  // namespace cozz
-
-#endif  // LIBZZGUI_INCLUDE_CONTROLLERS_MANAGER_HPP_

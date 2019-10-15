@@ -20,6 +20,7 @@
 #include "controllers_manager.hpp"
 
 #include <algorithm>
+#include <chrono>
 
 #include "controller.hpp"
 
@@ -27,12 +28,26 @@ namespace cozz {
 
 namespace zzgui {
 
+thread_local float ControllersManager::delta_time_ = 0;
+
+float ControllersManager::GetDeltaTime() { return delta_time_; }
+
+void ControllersManager::UpdateDeltaTime() {
+    static thread_local auto tp = std::chrono::high_resolution_clock::now();
+
+    delta_time_ = std::chrono::duration_cast<std::chrono::duration<float, std::ratio<1>>>(
+                      std::chrono::high_resolution_clock::now() - tp)
+                      .count();
+}
+
 void ControllersManager::Push(std::shared_ptr<Controller> controller) { controllers_.emplace_back(controller); }
 
 void ControllersManager::Pop() { controllers_.pop_back(); }
 
 void ControllersManager::Render() const {
-    std::for_each(controllers_.begin(), controllers_.end(), [](auto& controller) { controller->Render(); });
+    std::for_each(controllers_.begin(), controllers_.end(),
+                  [](auto& controller) { controller->Render(GetDeltaTime()); });
+    UpdateDeltaTime();
 }
 
 void ControllersManager::Set(std::shared_ptr<Controller> controller) {

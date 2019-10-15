@@ -20,13 +20,44 @@
 #ifndef LIBZZGUI_INCLUDE_INTERFACES_VIEW_HPP_
 #define LIBZZGUI_INCLUDE_INTERFACES_VIEW_HPP_
 
+#include <memory>
+
 namespace cozz {
 
 namespace zzgui {
 
+class EventHandler;
+class Model;
+class Controller;
+
 class View {
   public:
-    virtual ~View() = default;
+    virtual ~View();
+
+    virtual void Render(float delta) = 0;
+
+    virtual void Resize(uint64_t width, uint64_t height) = 0;
+
+    virtual void Show() = 0;
+
+    virtual void Pause() = 0;
+
+    virtual void Resume() = 0;
+
+    virtual void Hide() = 0;
+
+    std::weak_ptr<EventHandler> GetEventHandler() const;
+
+    std::weak_ptr<Controller> GetController() const;
+
+    std::weak_ptr<Model> GetModel() const;
+
+  protected:
+    std::weak_ptr<EventHandler> event_handler_;
+    std::weak_ptr<Model> model_;
+    std::weak_ptr<Controller> controller_;
+
+    View(std::weak_ptr<EventHandler> event_handler, std::weak_ptr<Model> model, std::weak_ptr<Controller> controller);
 };
 
 }  // namespace zzgui

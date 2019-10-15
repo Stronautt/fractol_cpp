@@ -26,24 +26,38 @@ namespace cozz {
 
 namespace zzgui {
 
+class EventHandler;
 class Model;
 class View;
 
 class Controller {
   public:
+    Controller() = delete;
+
     virtual ~Controller();
 
-    virtual void Render() = 0;
+    void Render(float delta);
+
+    void Pause();
+
+    void Resume();
+
+    void Resize(uint64_t width, uint64_t height);
+
+    void SetModelAndView(std::weak_ptr<Model> model, std::weak_ptr<View> view);
+
+    std::weak_ptr<EventHandler> GetEventHandler() const;
 
     std::weak_ptr<Model> GetModel() const;
 
     std::weak_ptr<View> GetView() const;
 
   protected:
-    std::shared_ptr<Model> model_;
-    std::shared_ptr<View> view_;
+    std::weak_ptr<EventHandler> event_handler_;
+    std::weak_ptr<Model> model_;
+    std::weak_ptr<View> view_;
 
-    Controller(std::shared_ptr<Model> model, std::shared_ptr<View> view);
+    Controller(std::weak_ptr<EventHandler> event_handler, std::weak_ptr<Model> model, std::weak_ptr<View> view);
 };
 
 }  // namespace zzgui

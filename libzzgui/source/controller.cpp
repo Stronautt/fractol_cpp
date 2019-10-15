@@ -19,13 +19,61 @@
 
 #include "controller.hpp"
 
+#include "controllers_manager.hpp"
+#include "model.hpp"
+#include "view.hpp"
+
 namespace cozz {
 
 namespace zzgui {
 
-Controller::Controller(std::shared_ptr<Model> model, std::shared_ptr<View> view) : model_(model), view_(view) {}
+Controller::Controller(std::weak_ptr<EventHandler> event_handler, std::weak_ptr<Model> model, std::weak_ptr<View> view)
+    : event_handler_(event_handler) {
+    if (event_handler_.expired()) {
+        throw std::runtime_error("Bad event handler");
+    }
+    SetModelAndView(model, view);
+}
 
 Controller::~Controller() = default;
+
+void Controller::Render(float delta) {
+    if (!model_.expired()) {
+        model_.lock()->Update(delta);
+    }
+    if (!view_.expired()) {
+        view_.lock()->Render(delta);
+    }
+}
+
+void Controller::Pause() {
+    if (!view_.expired()) {
+        view_.lock()->Pause();
+    }
+}
+
+void Controller::Resume() {
+    if (!view_.expired()) {
+        view_.lock()->Resume();
+    }
+}
+
+void Controller::Resize(uint64_t width, uint64_t height) {
+    if (!view_.expired()) {
+        view_.lock()->Resize(width, height);
+    }
+}
+
+void Controller::SetModelAndView(std::weak_ptr<Model> model, std::weak_ptr<View> view) {
+    if (model.expired() || view.expired()) {
+        throw std::runtime_error("Bad model or view");
+    } else {
+        model_ = model;
+        view_ = view;
+    }
+}
+
+std::weak_ptr<EventHandler> Controller::GetEventHandler() const { return event_handler_; }
 
 std::weak_ptr<Model> Controller::GetModel() const { return model_; }
 
