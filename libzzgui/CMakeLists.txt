@@ -57,7 +57,9 @@ add_library(${LIB_NAME} STATIC source/event/event.cpp
                                source/model.cpp
                                source/view.cpp
                                source/controller.cpp
-                               source/controllers_manager.cpp)
+                               source/controllers_manager.cpp
+                               source/application.cpp
+                               source/sdl_application.cpp)
 target_include_directories(${LIB_NAME} PUBLIC include
                                               include/interfaces
                                        PRIVATE source/include

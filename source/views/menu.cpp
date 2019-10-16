@@ -17,13 +17,30 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "fractol.hpp"
+#include "views/menu.hpp"
 
-#include "controllers/menu.hpp"
-#include "controllers_manager.hpp"
+#include <iostream>
+
+#include "model.hpp"
 
 namespace cozz {
 
-Fractol::Fractol(int, char**) { controller_manager_->Set(std::make_shared<MenuController>()); }
+MenuView::MenuView(std::weak_ptr<zzgui::Model> model) : View(model) {}
+
+MenuView::~MenuView() = default;
+
+void MenuView::Create() {}
+
+void MenuView::Render(float /*delta*/) {}
+
+void MenuView::Resize(uint64_t /*width*/, uint64_t /*height*/) {}
+
+void MenuView::Show() {}
+
+void MenuView::Pause() {}
+
+void MenuView::Resume() {}
+
+void MenuView::Hide() {}
 
 }  // namespace cozz

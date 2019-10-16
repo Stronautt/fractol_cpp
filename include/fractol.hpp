@@ -20,48 +20,13 @@
 #ifndef FRACTOL_INCLUDE_FRACTOL_HPP_
 #define FRACTOL_INCLUDE_FRACTOL_HPP_
 
-#include <atomic>
-#include <cstdint>
-#include <memory>
-#include <vector>
+#include "sdl_application.hpp"
 
 namespace cozz {
 
-namespace zzgui {
-
-class ResourceManager;
-class EventHandler;
-class WindowsManager;
-class MouseWheelEvent;
-class MouseButtonEvent;
-class MouseMotionEvent;
-class KeyboardEvent;
-class QuitEvent;
-
-}  // namespace zzgui
-
-class Fractol final {
+class Fractol final : public zzgui::SdlApplication {
   public:
     Fractol(int argc, char** argv);
-    ~Fractol();
-
-    uint8_t Run();
-
-  private:
-    std::atomic<bool> is_running_;
-    std::shared_ptr<zzgui::ResourceManager> resource_manager_;
-    std::shared_ptr<zzgui::EventHandler> event_handler_;
-    std::shared_ptr<zzgui::WindowsManager> windows_manager_;
-
-    void MouseWheelHandler(const zzgui::MouseWheelEvent& event);
-
-    void MouseButtonHandler(const zzgui::MouseButtonEvent& event);
-
-    void MouseMotionHandler(const zzgui::MouseMotionEvent& event);
-
-    void KeyboardHandler(const zzgui::KeyboardEvent& event);
-
-    void Terminate(const zzgui::QuitEvent& event);
 };
 
 }  // namespace cozz

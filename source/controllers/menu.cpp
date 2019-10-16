@@ -17,13 +17,17 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "fractol.hpp"
-
 #include "controllers/menu.hpp"
-#include "controllers_manager.hpp"
+
+#include "models/menu.hpp"
+#include "views/menu.hpp"
 
 namespace cozz {
 
-Fractol::Fractol(int, char**) { controller_manager_->Set(std::make_shared<MenuController>()); }
+MenuController::MenuController() : Controller(std::make_shared<MenuView>(std::make_shared<MenuModel>())) {}
+
+MenuController::~MenuController() = default;
+
+void MenuController::Create() {}
 
 }  // namespace cozz

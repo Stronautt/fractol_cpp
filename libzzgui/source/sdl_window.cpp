@@ -36,8 +36,8 @@ SDLWindow::SDLWindow(std::string title, uint32_t width, uint32_t height)
 }
 
 SDLWindow::SDLWindow(std::string title, uint32_t x, uint32_t y, uint32_t width, uint32_t height)
-    : Window(title, x, y, width, height),
-      window_(SDL_CreateWindow(title.c_str(), x, y, width, height, SDL_WINDOW_RESIZABLE), &SDL_DestroyWindow),
+    : Window(title, !x ? SDL_WINDOWPOS_CENTERED : x, !y ? SDL_WINDOWPOS_CENTERED : y, width, height),
+      window_(SDL_CreateWindow(title.c_str(), x_, y_, width_, height_, SDL_WINDOW_RESIZABLE), &SDL_DestroyWindow),
       window_surface_(SDL_GetWindowSurface(window_.get())),
       canvas_(sdl2::CanvasFromSurface(window_surface_)) {}
 

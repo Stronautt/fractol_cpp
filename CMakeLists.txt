@@ -34,7 +34,11 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -s")
 set(EXE_NAME ${PROJECT_NAME} CACHE STRING "Name of the executable" FORCE)
 set(LIB_NAME ${EXE_NAME}_core CACHE STRING "Name of the core library" FORCE)
 
-add_library(${LIB_NAME} STATIC source/fractol.cpp)
+add_library(${LIB_NAME} STATIC source/fractol.cpp
+							   source/models/menu.cpp
+							   source/views/menu.cpp
+							   source/controllers/menu.cpp)
+
 target_include_directories(${LIB_NAME} PUBLIC include
                                               include/interfaces
                                        PRIVATE source/include)

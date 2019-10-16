@@ -23,16 +23,41 @@ namespace cozz {
 
 namespace zzgui {
 
-Model::Model(std::weak_ptr<EventHandler> event_handler, std::weak_ptr<Controller> controller)
-    : event_handler_(event_handler), controller_(controller) {
-    if (event_handler_.expired() || controller_.expired()) {
-        throw std::runtime_error("Bad event handler or controller");
-    }
-}
-
 Model::~Model() = default;
 
+void Model::SetEventHandler(std::weak_ptr<EventHandler> event_handler) {
+    if (event_handler.expired()) {
+        throw std::runtime_error("Bad event handler");
+    }
+    event_handler_ = event_handler;
+}
+
+void Model::SetWindowsManager(std::weak_ptr<WindowsManager> windows_manager) {
+    if (windows_manager.expired()) {
+        throw std::runtime_error("Bad event handler");
+    }
+    windows_manager_ = windows_manager;
+}
+
+void Model::SetResourceManager(std::weak_ptr<ResourceManager> resource_manager) {
+    if (resource_manager.expired()) {
+        throw std::runtime_error("Bad event handler");
+    }
+    resource_manager_ = resource_manager;
+}
+
+void Model::SetController(std::weak_ptr<Controller> controller) {
+    if (controller.expired()) {
+        throw std::runtime_error("Bad event handler");
+    }
+    controller_ = controller;
+}
+
 std::weak_ptr<EventHandler> Model::GetEventHandler() const { return event_handler_; }
+
+std::weak_ptr<WindowsManager> Model::GetWindowsManager() const { return windows_manager_; }
+
+std::weak_ptr<ResourceManager> Model::GetResourceManager() const { return resource_manager_; }
 
 std::weak_ptr<Controller> Model::GetController() const { return controller_; }
 

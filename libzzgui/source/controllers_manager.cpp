@@ -21,33 +21,45 @@
 
 #include <algorithm>
 #include <chrono>
+#include <iostream>
 
+#include "application.hpp"
 #include "controller.hpp"
+#include "model.hpp"
+#include "view.hpp"
 
 namespace cozz {
 
 namespace zzgui {
 
-thread_local float ControllersManager::delta_time_ = 0;
-
-float ControllersManager::GetDeltaTime() { return delta_time_; }
-
-void ControllersManager::UpdateDeltaTime() {
-    static thread_local auto tp = std::chrono::high_resolution_clock::now();
-
-    delta_time_ = std::chrono::duration_cast<std::chrono::duration<float, std::ratio<1>>>(
-                      std::chrono::high_resolution_clock::now() - tp)
-                      .count();
+ControllersManager::ControllersManager(std::weak_ptr<EventHandler> event_handler_,
+                                       std::weak_ptr<WindowsManager> windows_manager_,
+                                       std::weak_ptr<ResourceManager> resource_manager_)
+    : event_handler_(event_handler_), windows_manager_(windows_manager_), resource_manager_(resource_manager_) {
+    if (event_handler_.expired() || windows_manager_.expired() || resource_manager_.expired()) {
+        throw std::logic_error("Bad event handler, windows manager or resource manager");
+    }
 }
 
-void ControllersManager::Push(std::shared_ptr<Controller> controller) { controllers_.emplace_back(controller); }
+void ControllersManager::Push(std::shared_ptr<Controller> controller) {
+    auto model = controller->GetModel().lock();
+    auto view = controller->GetView().lock();
+    controller->SetEventHandler(event_handler_);
+    controller->SetWindowsManager(windows_manager_);
+    controller->SetResourceManager(resource_manager_);
+    model->SetController(controller);
+    view->SetController(controller);
+    controller->Create();
+    model->Create();
+    view->Create();
+    controllers_.emplace_back(controller);
+}
 
 void ControllersManager::Pop() { controllers_.pop_back(); }
 
 void ControllersManager::Render() const {
     std::for_each(controllers_.begin(), controllers_.end(),
-                  [](auto& controller) { controller->Render(GetDeltaTime()); });
-    UpdateDeltaTime();
+                  [](auto& controller) { controller->Render(Application::GetDeltaTime()); });
 }
 
 void ControllersManager::Set(std::shared_ptr<Controller> controller) {
@@ -56,6 +68,12 @@ void ControllersManager::Set(std::shared_ptr<Controller> controller) {
 }
 
 void ControllersManager::Clear() { controllers_.clear(); }
+
+std::weak_ptr<EventHandler> ControllersManager::GetEventHandler() const { return event_handler_; }
+
+std::weak_ptr<WindowsManager> ControllersManager::GetWindowsManager() const { return windows_manager_; }
+
+std::weak_ptr<ResourceManager> ControllersManager::GetResourceManager() const { return resource_manager_; }
 
 }  // namespace zzgui
 

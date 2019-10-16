@@ -27,12 +27,16 @@ namespace cozz {
 namespace zzgui {
 
 class EventHandler;
+class WindowsManager;
+class ResourceManager;
 class Model;
 class Controller;
 
 class View {
   public:
     virtual ~View();
+
+    virtual void Create() = 0;
 
     virtual void Render(float delta) = 0;
 
@@ -46,7 +50,19 @@ class View {
 
     virtual void Hide() = 0;
 
+    void SetEventHandler(std::weak_ptr<EventHandler> event_handler);
+
+    void SetWindowsManager(std::weak_ptr<WindowsManager> windows_manager);
+
+    void SetResourceManager(std::weak_ptr<ResourceManager> resource_manager);
+
+    void SetController(std::weak_ptr<Controller> controller);
+
     std::weak_ptr<EventHandler> GetEventHandler() const;
+
+    std::weak_ptr<WindowsManager> GetWindowsManager() const;
+
+    std::weak_ptr<ResourceManager> GetResourceManager() const;
 
     std::weak_ptr<Controller> GetController() const;
 
@@ -54,10 +70,12 @@ class View {
 
   protected:
     std::weak_ptr<EventHandler> event_handler_;
+    std::weak_ptr<WindowsManager> windows_manager_;
+    std::weak_ptr<ResourceManager> resource_manager_;
     std::weak_ptr<Model> model_;
     std::weak_ptr<Controller> controller_;
 
-    View(std::weak_ptr<EventHandler> event_handler, std::weak_ptr<Model> model, std::weak_ptr<Controller> controller);
+    View(std::weak_ptr<Model> model);
 };
 
 }  // namespace zzgui

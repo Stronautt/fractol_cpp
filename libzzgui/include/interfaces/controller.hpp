@@ -27,6 +27,8 @@ namespace cozz {
 namespace zzgui {
 
 class EventHandler;
+class WindowsManager;
+class ResourceManager;
 class Model;
 class View;
 
@@ -36,7 +38,9 @@ class Controller {
 
     virtual ~Controller();
 
-    void Render(float delta);
+    virtual void Create() = 0;
+
+    virtual void Render(float delta);
 
     void Pause();
 
@@ -44,9 +48,19 @@ class Controller {
 
     void Resize(uint64_t width, uint64_t height);
 
-    void SetModelAndView(std::weak_ptr<Model> model, std::weak_ptr<View> view);
+    void SetModelAndView(std::shared_ptr<Model> model, std::shared_ptr<View> view);
+
+    void SetEventHandler(std::weak_ptr<EventHandler> event_handler);
+
+    void SetWindowsManager(std::weak_ptr<WindowsManager> windows_manager);
+
+    void SetResourceManager(std::weak_ptr<ResourceManager> resource_manager);
 
     std::weak_ptr<EventHandler> GetEventHandler() const;
+
+    std::weak_ptr<WindowsManager> GetWindowsManager() const;
+
+    std::weak_ptr<ResourceManager> GetResourceManager() const;
 
     std::weak_ptr<Model> GetModel() const;
 
@@ -54,10 +68,13 @@ class Controller {
 
   protected:
     std::weak_ptr<EventHandler> event_handler_;
-    std::weak_ptr<Model> model_;
-    std::weak_ptr<View> view_;
+    std::weak_ptr<WindowsManager> windows_manager_;
+    std::weak_ptr<ResourceManager> resource_manager_;
 
-    Controller(std::weak_ptr<EventHandler> event_handler, std::weak_ptr<Model> model, std::weak_ptr<View> view);
+    std::shared_ptr<Model> model_;
+    std::shared_ptr<View> view_;
+
+    Controller(std::shared_ptr<View> view);
 };
 
 }  // namespace zzgui

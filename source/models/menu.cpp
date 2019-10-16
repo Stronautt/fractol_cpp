@@ -17,13 +17,26 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "fractol.hpp"
+#include "models/menu.hpp"
 
-#include "controllers/menu.hpp"
-#include "controllers_manager.hpp"
+#include <iostream>
+
+#include "resource_manager.hpp"
+#include "sdl_window.hpp"
+#include "windows_manager.hpp"
 
 namespace cozz {
 
-Fractol::Fractol(int, char**) { controller_manager_->Set(std::make_shared<MenuController>()); }
+MenuModel::MenuModel() {}
+
+MenuModel::~MenuModel() = default;
+
+void MenuModel::Create() {
+    resource_manager_.lock()->LoadFont("Ubuntu24", "resources/fonts/ubuntu.ttf", 24);
+
+    window_ = windows_manager_.lock()->CreateWindow<zzgui::SDLWindow>("Main Menu", 800, 600);
+}
+
+void MenuModel::Update(float /*delta*/) {}
 
 }  // namespace cozz

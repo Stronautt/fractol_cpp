@@ -27,11 +27,15 @@ namespace cozz {
 
 namespace zzgui {
 
+class EventHandler;
+class WindowsManager;
+class ResourceManager;
 class Controller;
 
 class ControllersManager final {
   public:
-    static float GetDeltaTime();
+    ControllersManager(std::weak_ptr<EventHandler> event_handler_, std::weak_ptr<WindowsManager> windows_manager_,
+                       std::weak_ptr<ResourceManager> resource_manager_);
 
     void Push(std::shared_ptr<Controller> controller);
 
@@ -43,11 +47,18 @@ class ControllersManager final {
 
     void Clear();
 
-  private:
-    static thread_local float delta_time_;
-    std::vector<std::shared_ptr<Controller>> controllers_;
+    std::weak_ptr<EventHandler> GetEventHandler() const;
 
-    static void UpdateDeltaTime();
+    std::weak_ptr<WindowsManager> GetWindowsManager() const;
+
+    std::weak_ptr<ResourceManager> GetResourceManager() const;
+
+  private:
+    std::weak_ptr<EventHandler> event_handler_;
+    std::weak_ptr<WindowsManager> windows_manager_;
+    std::weak_ptr<ResourceManager> resource_manager_;
+
+    std::vector<std::shared_ptr<Controller>> controllers_;
 };
 
 }  // namespace zzgui

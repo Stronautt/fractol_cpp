@@ -27,45 +27,28 @@ namespace cozz {
 
 namespace zzgui {
 
-Controller::Controller(std::weak_ptr<EventHandler> event_handler, std::weak_ptr<Model> model, std::weak_ptr<View> view)
-    : event_handler_(event_handler) {
-    if (event_handler_.expired()) {
-        throw std::runtime_error("Bad event handler");
+Controller::Controller(std::shared_ptr<View> view) {
+    if (!view) {
+        throw std::runtime_error("Bad model or view");
     }
-    SetModelAndView(model, view);
+    SetModelAndView(view->GetModel().lock(), view);
 }
 
 Controller::~Controller() = default;
 
 void Controller::Render(float delta) {
-    if (!model_.expired()) {
-        model_.lock()->Update(delta);
-    }
-    if (!view_.expired()) {
-        view_.lock()->Render(delta);
-    }
+    model_->Update(delta);
+    view_->Render(delta);
 }
 
-void Controller::Pause() {
-    if (!view_.expired()) {
-        view_.lock()->Pause();
-    }
-}
+void Controller::Pause() { view_->Pause(); }
 
-void Controller::Resume() {
-    if (!view_.expired()) {
-        view_.lock()->Resume();
-    }
-}
+void Controller::Resume() { view_->Resume(); }
 
-void Controller::Resize(uint64_t width, uint64_t height) {
-    if (!view_.expired()) {
-        view_.lock()->Resize(width, height);
-    }
-}
+void Controller::Resize(uint64_t width, uint64_t height) { view_->Resize(width, height); }
 
-void Controller::SetModelAndView(std::weak_ptr<Model> model, std::weak_ptr<View> view) {
-    if (model.expired() || view.expired()) {
+void Controller::SetModelAndView(std::shared_ptr<Model> model, std::shared_ptr<View> view) {
+    if (!model || !view) {
         throw std::runtime_error("Bad model or view");
     } else {
         model_ = model;
@@ -73,7 +56,38 @@ void Controller::SetModelAndView(std::weak_ptr<Model> model, std::weak_ptr<View>
     }
 }
 
+void Controller::SetEventHandler(std::weak_ptr<EventHandler> event_handler) {
+    if (event_handler.expired()) {
+        throw std::runtime_error("Bad event handler");
+    }
+    event_handler_ = event_handler;
+    model_->SetEventHandler(event_handler);
+    view_->SetEventHandler(event_handler);
+}
+
+void Controller::SetWindowsManager(std::weak_ptr<WindowsManager> windows_manager) {
+    if (windows_manager.expired()) {
+        throw std::runtime_error("Bad event handler");
+    }
+    windows_manager_ = windows_manager;
+    model_->SetWindowsManager(windows_manager);
+    view_->SetWindowsManager(windows_manager);
+}
+
+void Controller::SetResourceManager(std::weak_ptr<ResourceManager> resource_manager) {
+    if (resource_manager.expired()) {
+        throw std::runtime_error("Bad event handler");
+    }
+    resource_manager_ = resource_manager;
+    model_->SetResourceManager(resource_manager);
+    view_->SetResourceManager(resource_manager);
+}
+
 std::weak_ptr<EventHandler> Controller::GetEventHandler() const { return event_handler_; }
+
+std::weak_ptr<WindowsManager> Controller::GetWindowsManager() const { return windows_manager_; }
+
+std::weak_ptr<ResourceManager> Controller::GetResourceManager() const { return resource_manager_; }
 
 std::weak_ptr<Model> Controller::GetModel() const { return model_; }
 
