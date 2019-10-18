@@ -17,44 +17,28 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_MODELS_MENU_HPP_
-#define FRACTOL_INCLUDE_MODELS_MENU_HPP_
+#include "widgets/label.hpp"
 
-#include "model.hpp"
-
-#include <memory>
-#include <vector>
+#include "font_resource.hpp"
+#include "painter.hpp"
 
 namespace cozz {
 
-class MenuController;
-
 namespace zzgui {
 
-class Window;
-class Widget;
+Label::Label(const std::string& text, std::shared_ptr<FontResource> font, uint64_t x, uint64_t y)
+    : Widget(x, y, 0, 0), text_(text), font_(font) {}
+
+void Label::Draw(std::shared_ptr<Painter> painter) { painter->DrawText({x_, y_}, text_, font_); }
+
+void Label::SetText(const std::string& text) { text_ = text; }
+
+const std::string& Label::GetText() const { return text_; }
+
+void Label::SetFont(std::shared_ptr<FontResource> font) { font_ = font; }
+
+std::shared_ptr<FontResource> Label::GetFont() const { return font_; }
 
 }  // namespace zzgui
 
-class MenuModel final : public zzgui::Model<MenuController> {
-  public:
-    MenuModel();
-    ~MenuModel();
-
-    virtual void Create() override;
-
-    virtual void Update(float delta) override;
-
-    std::weak_ptr<zzgui::Window> GetWindow() const;
-
-    const std::vector<std::unique_ptr<zzgui::Widget>>& GetWidgets() const;
-
-  private:
-    std::weak_ptr<zzgui::Window> window_;
-
-    std::vector<std::unique_ptr<zzgui::Widget>> widgets_;
-};
-
 }  // namespace cozz
-
-#endif  // FRACTOL_INCLUDE_MODELS_MENU_HPP_

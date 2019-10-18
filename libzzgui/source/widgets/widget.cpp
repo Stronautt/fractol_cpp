@@ -17,44 +17,31 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_MODELS_MENU_HPP_
-#define FRACTOL_INCLUDE_MODELS_MENU_HPP_
-
-#include "model.hpp"
-
-#include <memory>
-#include <vector>
+#include "widget.hpp"
 
 namespace cozz {
 
-class MenuController;
-
 namespace zzgui {
 
-class Window;
-class Widget;
+Widget::Widget(uint64_t x, uint64_t y, uint64_t width, uint64_t height)
+    : x_(x), y_(y), width_(width), height_(height) {}
+
+Widget::~Widget() = default;
+
+std::pair<uint64_t, uint64_t> Widget::GetPosition() const { return std::make_pair(x_, y_); }
+
+std::pair<uint64_t, uint64_t> Widget::GetSize() const { return std::make_pair(width_, height_); }
+
+void Widget::SetPosition(uint64_t x, uint64_t y) {
+    x_ = x;
+    y_ = y;
+}
+
+void Widget::SetSize(uint64_t width, uint64_t height) {
+    width_ = width;
+    height_ = height;
+}
 
 }  // namespace zzgui
 
-class MenuModel final : public zzgui::Model<MenuController> {
-  public:
-    MenuModel();
-    ~MenuModel();
-
-    virtual void Create() override;
-
-    virtual void Update(float delta) override;
-
-    std::weak_ptr<zzgui::Window> GetWindow() const;
-
-    const std::vector<std::unique_ptr<zzgui::Widget>>& GetWidgets() const;
-
-  private:
-    std::weak_ptr<zzgui::Window> window_;
-
-    std::vector<std::unique_ptr<zzgui::Widget>> widgets_;
-};
-
 }  // namespace cozz
-
-#endif  // FRACTOL_INCLUDE_MODELS_MENU_HPP_

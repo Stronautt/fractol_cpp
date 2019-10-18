@@ -18,11 +18,14 @@
 */
 
 #include "models/menu.hpp"
+#include "controllers/menu.hpp"
 
 #include <iostream>
 
+#include "model.tpp"
 #include "resource_manager.hpp"
 #include "sdl_window.hpp"
+#include "widgets/label.hpp"
 #include "windows_manager.hpp"
 
 namespace cozz {
@@ -32,11 +35,17 @@ MenuModel::MenuModel() {}
 MenuModel::~MenuModel() = default;
 
 void MenuModel::Create() {
-    resource_manager_.lock()->LoadFont("Ubuntu24", "resources/fonts/ubuntu.ttf", 24);
+    auto ubuntu24_font = resource_manager_.lock()->LoadFont("Ubuntu24", "resources/fonts/ubuntu.ttf", 24);
 
     window_ = windows_manager_.lock()->CreateWindow<zzgui::SDLWindow>("Main Menu", 800, 600);
+
+    widgets_.emplace_back(std::make_unique<zzgui::Label>("Hello World", ubuntu24_font, 100, 100));
 }
 
 void MenuModel::Update(float /*delta*/) {}
+
+std::weak_ptr<zzgui::Window> MenuModel::GetWindow() const { return window_; }
+
+const std::vector<std::unique_ptr<zzgui::Widget>>& MenuModel::GetWidgets() const { return widgets_; }
 
 }  // namespace cozz

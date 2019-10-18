@@ -17,10 +17,11 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "controllers/menu.hpp"
-
 #include "models/menu.hpp"
+#include "controllers/menu.hpp"
 #include "views/menu.hpp"
+
+#include "controller.tpp"
 
 namespace cozz {
 

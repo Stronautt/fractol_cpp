@@ -53,7 +53,7 @@ class Painter final {
                         const Canvas::PixelColor& color = {0, 0, 0}) const;
 
     void DrawText(const Canvas::Point& p, const std::string text, std::shared_ptr<FontResource> font,
-                  const Canvas::PixelColor& color = {0, 0, 0});
+                  const Canvas::PixelColor& color = {0xFF, 0xFF, 0xFF});
 
   private:
     std::weak_ptr<Canvas> canvas_;

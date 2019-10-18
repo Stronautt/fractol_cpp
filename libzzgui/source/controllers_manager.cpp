@@ -24,9 +24,9 @@
 #include <iostream>
 
 #include "application.hpp"
-#include "controller.hpp"
-#include "model.hpp"
-#include "view.hpp"
+#include "base_controller.hpp"
+#include "base_model.hpp"
+#include "base_view.hpp"
 
 namespace cozz {
 
@@ -41,14 +41,14 @@ ControllersManager::ControllersManager(std::weak_ptr<EventHandler> event_handler
     }
 }
 
-void ControllersManager::Push(std::shared_ptr<Controller> controller) {
-    auto model = controller->GetModel().lock();
-    auto view = controller->GetView().lock();
+void ControllersManager::Push(std::shared_ptr<BaseController> controller) {
+    auto model = controller->GetBaseModel().lock();
+    auto view = controller->GetBaseView().lock();
     controller->SetEventHandler(event_handler_);
     controller->SetWindowsManager(windows_manager_);
     controller->SetResourceManager(resource_manager_);
-    model->SetController(controller);
-    view->SetController(controller);
+    model->SetBaseController(controller);
+    view->SetBaseController(controller);
     controller->Create();
     model->Create();
     view->Create();
@@ -62,7 +62,7 @@ void ControllersManager::Render() const {
                   [](auto& controller) { controller->Render(Application::GetDeltaTime()); });
 }
 
-void ControllersManager::Set(std::shared_ptr<Controller> controller) {
+void ControllersManager::Set(std::shared_ptr<BaseController> controller) {
     Clear();
     Push(controller);
 }

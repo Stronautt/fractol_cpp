@@ -54,14 +54,14 @@ add_library(${LIB_NAME} STATIC source/event/event.cpp
                                source/resource.cpp
                                source/resource_manager.cpp
                                source/font_resource.cpp
-                               source/model.cpp
-                               source/view.cpp
-                               source/controller.cpp
                                source/controllers_manager.cpp
                                source/application.cpp
-                               source/sdl_application.cpp)
+                               source/sdl_application.cpp
+                               source/widgets/widget.cpp
+                               source/widgets/label.cpp)
 target_include_directories(${LIB_NAME} PUBLIC include
                                               include/interfaces
+                                              include/template
                                        PRIVATE source/include
                                                ${SDL2_INCLUDE_DIRS})
 target_link_libraries(${LIB_NAME} PRIVATE ${SDL2_LIBRARIES} SDL2_ttf)

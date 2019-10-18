@@ -26,9 +26,18 @@
 
 namespace cozz {
 
-class MenuView final : public zzgui::View {
+class MenuModel;
+class MenuController;
+
+namespace zzgui {
+
+class Painter;
+
+}  // namespace zzgui
+
+class MenuView final : public zzgui::View<MenuModel, MenuController> {
   public:
-    MenuView(std::weak_ptr<zzgui::Model> model);
+    MenuView(std::weak_ptr<MenuModel> model);
     ~MenuView();
 
     virtual void Create() override;
@@ -44,6 +53,9 @@ class MenuView final : public zzgui::View {
     virtual void Resume() override;
 
     virtual void Hide() override;
+
+  private:
+    std::shared_ptr<zzgui::Painter> painter_;
 };
 
 }  // namespace cozz

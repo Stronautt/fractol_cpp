@@ -24,7 +24,10 @@
 
 namespace cozz {
 
-class MenuController final : public zzgui::Controller {
+class MenuModel;
+class MenuView;
+
+class MenuController final : public zzgui::Controller<MenuModel, MenuView> {
   public:
     MenuController();
     ~MenuController();

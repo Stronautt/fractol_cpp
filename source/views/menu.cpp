@@ -17,21 +17,36 @@
  * Author: Pavlo Hrytsenko
 */
 
+#include "models/menu.hpp"
+#include "controllers/menu.hpp"
 #include "views/menu.hpp"
 
 #include <iostream>
 
 #include "model.hpp"
+#include "painter.hpp"
+#include "view.tpp"
+#include "widget.hpp"
+#include "window.hpp"
 
 namespace cozz {
 
-MenuView::MenuView(std::weak_ptr<zzgui::Model> model) : View(model) {}
+MenuView::MenuView(std::weak_ptr<MenuModel> model) : View(model) {}
 
 MenuView::~MenuView() = default;
 
-void MenuView::Create() {}
+void MenuView::Create() {
+    auto window = GetModel().lock()->GetWindow().lock();
+    painter_ = std::make_shared<zzgui::Painter>(window->GetCanvas());
+}
 
-void MenuView::Render(float /*delta*/) {}
+void MenuView::Render(float /*delta*/) {
+    auto model = GetModel().lock();
+
+    for (const auto& widget : model->GetWidgets()) {
+        widget->Draw(painter_);
+    }
+}
 
 void MenuView::Resize(uint64_t /*width*/, uint64_t /*height*/) {}
 

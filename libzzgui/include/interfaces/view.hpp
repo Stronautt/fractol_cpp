@@ -20,62 +20,55 @@
 #ifndef LIBZZGUI_INCLUDE_INTERFACES_VIEW_HPP_
 #define LIBZZGUI_INCLUDE_INTERFACES_VIEW_HPP_
 
+#include "base_view.hpp"
+
 #include <memory>
 
 namespace cozz {
 
 namespace zzgui {
 
-class EventHandler;
-class WindowsManager;
-class ResourceManager;
-class Model;
-class Controller;
-
-class View {
+template <class ModelType, class ControllerType>
+class View : public BaseView {
   public:
     virtual ~View();
 
-    virtual void Create() = 0;
+    virtual void SetEventHandler(std::weak_ptr<EventHandler> event_handler) override;
 
-    virtual void Render(float delta) = 0;
+    virtual void SetWindowsManager(std::weak_ptr<WindowsManager> windows_manager) override;
 
-    virtual void Resize(uint64_t width, uint64_t height) = 0;
+    virtual void SetResourceManager(std::weak_ptr<ResourceManager> resource_manager) override;
 
-    virtual void Show() = 0;
+    virtual void SetBaseModel(std::weak_ptr<BaseModel> model) override;
 
-    virtual void Pause() = 0;
+    virtual void SetBaseController(std::weak_ptr<BaseController> controller) override;
 
-    virtual void Resume() = 0;
+    void SetModel(std::weak_ptr<ModelType> model);
 
-    virtual void Hide() = 0;
+    void SetController(std::weak_ptr<ControllerType> controller);
 
-    void SetEventHandler(std::weak_ptr<EventHandler> event_handler);
+    virtual std::weak_ptr<EventHandler> GetEventHandler() const override;
 
-    void SetWindowsManager(std::weak_ptr<WindowsManager> windows_manager);
+    virtual std::weak_ptr<WindowsManager> GetWindowsManager() const override;
 
-    void SetResourceManager(std::weak_ptr<ResourceManager> resource_manager);
+    virtual std::weak_ptr<ResourceManager> GetResourceManager() const override;
 
-    void SetController(std::weak_ptr<Controller> controller);
+    virtual std::weak_ptr<BaseModel> GetBaseModel() const override;
 
-    std::weak_ptr<EventHandler> GetEventHandler() const;
+    virtual std::weak_ptr<BaseController> GetBaseController() const override;
 
-    std::weak_ptr<WindowsManager> GetWindowsManager() const;
+    std::weak_ptr<ModelType> GetModel() const;
 
-    std::weak_ptr<ResourceManager> GetResourceManager() const;
-
-    std::weak_ptr<Controller> GetController() const;
-
-    std::weak_ptr<Model> GetModel() const;
+    std::weak_ptr<ControllerType> GetController() const;
 
   protected:
     std::weak_ptr<EventHandler> event_handler_;
     std::weak_ptr<WindowsManager> windows_manager_;
     std::weak_ptr<ResourceManager> resource_manager_;
-    std::weak_ptr<Model> model_;
-    std::weak_ptr<Controller> controller_;
+    std::weak_ptr<ModelType> model_;
+    std::weak_ptr<ControllerType> controller_;
 
-    View(std::weak_ptr<Model> model);
+    View(std::weak_ptr<ModelType> model);
 };
 
 }  // namespace zzgui

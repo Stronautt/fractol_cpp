@@ -27,6 +27,8 @@ namespace zzgui {
 
 thread_local float Application::delta_time_ = 0;
 
+Application::~Application() = default;
+
 float Application::GetDeltaTime() { return delta_time_; }
 
 void Application::UpdateDeltaTime() {

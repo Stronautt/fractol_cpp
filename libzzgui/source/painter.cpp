@@ -134,6 +134,9 @@ void Painter::DrawFilledRect(const Canvas::Point& p, uint64_t width, uint64_t he
 
 void Painter::DrawText(const Canvas::Point& p, const std::string text, std::shared_ptr<FontResource> font,
                        const Canvas::PixelColor& color) {
+    if (!font) {
+        return;
+    }
     auto font_surface = std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)>(
         TTF_RenderUTF8_Blended(font->GetFontData().get(), text.c_str(), {color.r, color.g, color.b, color.a}),
         &SDL_FreeSurface);

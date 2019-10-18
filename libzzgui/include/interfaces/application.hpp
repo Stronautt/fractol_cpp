@@ -30,7 +30,7 @@ class QuitEvent;
 
 class Application {
   public:
-    virtual ~Application() = default;
+    virtual ~Application();
 
     static float GetDeltaTime();
 

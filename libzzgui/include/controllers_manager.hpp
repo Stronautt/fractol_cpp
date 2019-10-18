@@ -30,20 +30,20 @@ namespace zzgui {
 class EventHandler;
 class WindowsManager;
 class ResourceManager;
-class Controller;
+class BaseController;
 
 class ControllersManager final {
   public:
     ControllersManager(std::weak_ptr<EventHandler> event_handler_, std::weak_ptr<WindowsManager> windows_manager_,
                        std::weak_ptr<ResourceManager> resource_manager_);
 
-    void Push(std::shared_ptr<Controller> controller);
+    void Push(std::shared_ptr<BaseController> controller);
 
     void Pop();
 
     void Render() const;
 
-    void Set(std::shared_ptr<Controller> controller);
+    void Set(std::shared_ptr<BaseController> controller);
 
     void Clear();
 
@@ -58,7 +58,7 @@ class ControllersManager final {
     std::weak_ptr<WindowsManager> windows_manager_;
     std::weak_ptr<ResourceManager> resource_manager_;
 
-    std::vector<std::shared_ptr<Controller>> controllers_;
+    std::vector<std::shared_ptr<BaseController>> controllers_;
 };
 
 }  // namespace zzgui

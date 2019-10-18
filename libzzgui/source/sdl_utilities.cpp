@@ -30,6 +30,9 @@ namespace zzgui {
 namespace sdl2 {
 
 std::shared_ptr<Canvas> CanvasFromSurface(const SDL_Surface* surface) {
+    if (!surface) {
+        return nullptr;
+    }
     return std::make_shared<Canvas>(
         surface->w, surface->h, static_cast<uint8_t*>(surface->pixels),
         Canvas::PixelFormat(surface->format->BitsPerPixel, surface->format->BytesPerPixel, surface->format->Rmask,
@@ -40,6 +43,9 @@ std::shared_ptr<Canvas> CanvasFromSurface(const SDL_Surface* surface) {
 }
 
 SDL_Surface* SurfaceFromCanvas(std::shared_ptr<Canvas> canvas) {
+    if (!canvas) {
+        return nullptr;
+    }
     auto pixel_format = canvas->GetPixelFormat();
     return SDL_CreateRGBSurfaceFrom(canvas->GetRawPixels(), canvas->GetWidth(), canvas->GetHeight(),
                                     pixel_format.bits_per_pixel, canvas->GetPitch(), pixel_format.r_mask,

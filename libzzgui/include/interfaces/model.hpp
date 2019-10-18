@@ -20,6 +20,8 @@
 #ifndef LIBZZGUI_INCLUDE_INTERFACES_MODEL_HPP_
 #define LIBZZGUI_INCLUDE_INTERFACES_MODEL_HPP_
 
+#include "base_model.hpp"
+
 #include <memory>
 
 namespace cozz {
@@ -29,37 +31,37 @@ namespace zzgui {
 class EventHandler;
 class WindowsManager;
 class ResourceManager;
-class Controller;
 
-class Model {
+template <class ControllerType>
+class Model : public BaseModel {
   public:
     virtual ~Model();
 
-    virtual void Create() = 0;
+    virtual void SetEventHandler(std::weak_ptr<EventHandler> event_handler) override;
 
-    virtual void Update(float delta) = 0;
+    virtual void SetWindowsManager(std::weak_ptr<WindowsManager> windows_manager) override;
 
-    void SetEventHandler(std::weak_ptr<EventHandler> event_handler);
+    virtual void SetResourceManager(std::weak_ptr<ResourceManager> resource_manager) override;
 
-    void SetWindowsManager(std::weak_ptr<WindowsManager> windows_manager);
+    virtual void SetBaseController(std::weak_ptr<BaseController> controller) override;
 
-    void SetResourceManager(std::weak_ptr<ResourceManager> resource_manager);
+    void SetController(std::weak_ptr<ControllerType> controller);
 
-    void SetController(std::weak_ptr<Controller> controller);
+    virtual std::weak_ptr<EventHandler> GetEventHandler() const override;
 
-    std::weak_ptr<EventHandler> GetEventHandler() const;
+    virtual std::weak_ptr<WindowsManager> GetWindowsManager() const override;
 
-    std::weak_ptr<WindowsManager> GetWindowsManager() const;
+    virtual std::weak_ptr<ResourceManager> GetResourceManager() const override;
 
-    std::weak_ptr<ResourceManager> GetResourceManager() const;
+    virtual std::weak_ptr<BaseController> GetBaseController() const override;
 
-    std::weak_ptr<Controller> GetController() const;
+    std::weak_ptr<ControllerType> GetController() const;
 
   protected:
     std::weak_ptr<EventHandler> event_handler_;
     std::weak_ptr<WindowsManager> windows_manager_;
     std::weak_ptr<ResourceManager> resource_manager_;
-    std::weak_ptr<Controller> controller_;
+    std::weak_ptr<ControllerType> controller_;
 };
 
 }  // namespace zzgui
