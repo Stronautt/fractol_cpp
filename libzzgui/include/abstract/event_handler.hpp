@@ -22,9 +22,9 @@
 
 #include <functional>
 #include <list>
-#include <map>
 #include <stdexcept>
 #include <typeinfo>
+#include <unordered_map>
 
 #include "event.hpp"
 #include "event/keyboard_event.hpp"
@@ -44,16 +44,14 @@ class Window;
 
 class EventHandler {
   public:
-    using HandlerID = std::multimap<Event::Type, std::function<void(const Event&)>>::iterator;
+    using HandlerID = std::unordered_multimap<Event::Type, std::function<void(const Event&)>>::iterator;
 
     virtual ~EventHandler();
 
     virtual bool Poll() const = 0;
 
     template <class EventType>
-    HandlerID RegisterEventCallback(const std::function<void(const EventType&)>& callback) {
-        return callbacks_map_.emplace(MakePair(callback));
-    }
+    HandlerID RegisterEventCallback(const std::function<void(const EventType&)>& callback);
 
     virtual std::list<HandlerID> RegisterWindowEventCallbacks(Window& window) final;
 
@@ -62,29 +60,25 @@ class EventHandler {
     virtual void UnregisterEventCallbacks(const std::list<HandlerID>& ids) final;
 
   protected:
-    std::multimap<Event::Type, std::function<void(const Event&)>> callbacks_map_;
+    std::unordered_multimap<Event::Type, std::function<void(const Event&)>> callbacks_map_;
 
     virtual void TriggerCallbacks(const Event& event) const final;
 
   private:
     template <class EventType>
     std::pair<Event::Type, std::function<void(const Event&)>> MakePair(
-        const std::function<void(const EventType&)>& callback) const {
-        static_assert(std::is_convertible<EventType, Event>::value);
-
-        return std::make_pair(ConvertEventType(typeid(EventType)), ConvertCallback(callback));
-    }
+        const std::function<void(const EventType&)>& callback) const;
 
     Event::Type ConvertEventType(const std::type_info& type) const;
 
     template <class EventType>
-    std::function<void(const Event&)> ConvertCallback(const std::function<void(const EventType&)>& callback) const {
-        return reinterpret_cast<const std::function<void(const Event&)>&>(callback);
-    }
+    std::function<void(const Event&)> ConvertCallback(const std::function<void(const EventType&)>& callback) const;
 };
 
 }  // namespace zzgui
 
 }  // namespace cozz
+
+#include "event_handler.tpp"
 
 #endif  // LIBZZGUI_INCLUDE_INTERFACES_EVENT_HANDLER_HPP_

@@ -17,45 +17,23 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_MODELS_MENU_HPP_
-#define FRACTOL_INCLUDE_MODELS_MENU_HPP_
-
-#include "model.hpp"
-
-#include <memory>
-#include <vector>
+#include "widgets_manager.hpp"
 
 namespace cozz {
 
-class MenuController;
-
 namespace zzgui {
 
-class Window;
-class Widget;
-class WidgetsManager;
+template <class WidgetType, class... Args>
+std::shared_ptr<WidgetType> WidgetsManager::Create(Args... args) {
+    auto widget = std::make_shared<WidgetType>(args...);
+
+    registered_callbacks_.emplace_front(event_handler_.lock()->RegisterEventCallback<MouseButtonEvent>(std::bind(&Widget::OnMouseButton, widget.get(), std::placeholders::_1)));
+    registered_callbacks_.emplace_front(event_handler_.lock()->RegisterEventCallback<MouseMotionEvent>(std::bind(&Widget::OnMouseMotion, widget.get(), std::placeholders::_1)));
+
+    widgets_.emplace_front(widget);
+    return widget;
+}
 
 }  // namespace zzgui
 
-class MenuModel final : public zzgui::Model<MenuController> {
-  public:
-    MenuModel();
-    ~MenuModel();
-
-    virtual void Create() override;
-
-    virtual void Update(float delta) override;
-
-    std::weak_ptr<zzgui::Window> GetWindow() const;
-
-    std::weak_ptr<zzgui::WidgetsManager> GetWidgetsManager() const;
-
-  private:
-    std::weak_ptr<zzgui::Window> window_;
-
-    std::shared_ptr<zzgui::WidgetsManager> widgets_manager_;
-};
-
 }  // namespace cozz
-
-#endif  // FRACTOL_INCLUDE_MODELS_MENU_HPP_

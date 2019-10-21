@@ -19,18 +19,19 @@
 
 #include "widget.hpp"
 
+#include "event/mouse_button_event.hpp"
+#include "event/mouse_motion_event.hpp"
+
 namespace cozz {
 
 namespace zzgui {
 
 Widget::Widget(uint64_t x, uint64_t y, uint64_t width, uint64_t height)
-    : x_(x), y_(y), width_(width), height_(height) {}
+    : x_(x), y_(y), padding_left_(5), padding_right_(5), padding_top_(5), padding_bottom_(5) {
+    SetSize(width, height);
+}
 
 Widget::~Widget() = default;
-
-std::pair<uint64_t, uint64_t> Widget::GetPosition() const { return std::make_pair(x_, y_); }
-
-std::pair<uint64_t, uint64_t> Widget::GetSize() const { return std::make_pair(width_, height_); }
 
 void Widget::SetPosition(uint64_t x, uint64_t y) {
     x_ = x;
@@ -38,8 +39,66 @@ void Widget::SetPosition(uint64_t x, uint64_t y) {
 }
 
 void Widget::SetSize(uint64_t width, uint64_t height) {
-    width_ = width;
-    height_ = height;
+    width_ = width + padding_left_ + padding_right_;
+    height_ = height + padding_top_ + padding_bottom_;
+}
+
+void Widget::SetPadding(uint64_t left, uint64_t right, uint64_t top, uint64_t bottom) {
+    auto raw_width = width_ - padding_left_ - padding_right_;
+    auto raw_height = height_ - padding_top_ - padding_bottom_;
+
+    padding_left_ = left;
+    padding_right_ = right;
+    padding_top_ = top;
+    padding_bottom_ = bottom;
+
+    SetSize(raw_width, raw_height);
+}
+
+std::pair<uint64_t, uint64_t> Widget::GetPosition() const { return std::make_pair(x_, y_); }
+
+std::pair<uint64_t, uint64_t> Widget::GetSize() const { return std::make_pair(width_, height_); }
+
+std::tuple<uint64_t, uint64_t, uint64_t, uint64_t> Widget::GetPadding() const {
+    return std::make_tuple(padding_left_, padding_right_, padding_top_, padding_bottom_);
+}
+
+void Widget::OnMouseMotion(const MouseMotionEvent& event) {
+    auto mouse_position = event.GetPosition();
+
+    if (InBounds(mouse_position.first, mouse_position.second)) {
+        hover_ = true;
+    } else {
+        hover_ = false;
+    }
+}
+
+void Widget::OnMouseButton(const MouseButtonEvent& event) {
+    if (!event.IsPressed()) {
+        if (!button_queue_.empty()) {
+            this->DoOnMouseButton(event);
+            button_queue_.pop_front();
+            if (event.GetButton() == KeyMap::kLeftMouseButton && click_callback_) {
+                click_callback_(event);
+            }
+        }
+    } else {
+        auto mouse_position = event.GetPosition();
+
+        if (InBounds(mouse_position.first, mouse_position.second)) {
+            DoOnMouseButton(event);
+            button_queue_.emplace_back(event.GetButton());
+        }
+    }
+}
+
+void Widget::OnClick(std::function<void(const MouseButtonEvent&)> func) { click_callback_ = func; }
+
+bool Widget::InBounds(uint64_t x, uint64_t y) {
+    if (x >= x_ && x <= x_ + width_ && y >= y_ && y <= y_ + height_) {
+        return true;
+    }
+    return false;
 }
 
 }  // namespace zzgui

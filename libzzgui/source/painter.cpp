@@ -138,9 +138,10 @@ void Painter::DrawText(const Canvas::Point& p, const std::string text, std::shar
         return;
     }
     auto font_surface = std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)>(
-        TTF_RenderUTF8_Blended(font->GetFontData().get(), text.c_str(), {color.r, color.g, color.b, color.a}),
+        TTF_RenderUTF8_Blended(static_cast<TTF_Font*>(font->GetFontData().get()), text.c_str(),
+                               {color.r, color.g, color.b, color.a}),
         &SDL_FreeSurface);
-    auto surface = std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)>(sdl2::SurfaceFromCanvas(canvas_.lock()),
+    auto surface = std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)>(sdl2::SurfaceFromCanvas(GetCanvas()),
                                                                             &SDL_FreeSurface);
     SDL_Rect destination{static_cast<int>(p.x), static_cast<int>(p.y), 0, 0};
     SDL_BlitSurface(font_surface.get(), nullptr, surface.get(), &destination);

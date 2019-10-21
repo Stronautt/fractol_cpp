@@ -25,6 +25,8 @@ namespace cozz {
 
 namespace zzgui {
 
+Canvas::PixelColor::PixelColor() : PixelColor(0, 0, 0, 0) {}
+
 Canvas::PixelColor::PixelColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) : r(r), g(g), b(b), a(a) {}
 
 Canvas::PixelFormat::PixelFormat()
@@ -212,6 +214,10 @@ Canvas::pixel_iterator Canvas::At(uint64_t x, uint64_t y) {
 Canvas::pixel_iterator Canvas::At(const Point& p) { return At(p.x, p.y); }
 
 uint8_t* Canvas::GetRawPixels() const { return pixels_.get(); }
+
+void Canvas::Clear(const Canvas::PixelColor& color) {
+    std::for_each(begin(), end(), [&color](auto& pixel) { pixel.SetColor(color); });
+}
 
 }  // namespace zzgui
 

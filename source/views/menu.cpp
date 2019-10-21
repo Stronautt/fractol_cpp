@@ -17,16 +17,17 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "models/menu.hpp"
-#include "controllers/menu.hpp"
 #include "views/menu.hpp"
 
-#include <iostream>
-
+#include "controllers/menu.hpp"
+#include "font_resource.hpp"
 #include "model.hpp"
+#include "models/menu.hpp"
 #include "painter.hpp"
+#include "resource_manager.hpp"
 #include "view.tpp"
 #include "widget.hpp"
+#include "widgets_manager.hpp"
 #include "window.hpp"
 
 namespace cozz {
@@ -36,19 +37,33 @@ MenuView::MenuView(std::weak_ptr<MenuModel> model) : View(model) {}
 MenuView::~MenuView() = default;
 
 void MenuView::Create() {
-    auto window = GetModel().lock()->GetWindow().lock();
-    painter_ = std::make_shared<zzgui::Painter>(window->GetCanvas());
-}
-
-void MenuView::Render(float /*delta*/) {
     auto model = GetModel().lock();
 
-    for (const auto& widget : model->GetWidgets()) {
-        widget->Draw(painter_);
+    if (model) {
+        Resized(model->GetWindow());
     }
 }
 
-void MenuView::Resize(uint64_t /*width*/, uint64_t /*height*/) {}
+void MenuView::Render(float delta) {
+    auto model = GetModel().lock();
+    auto window = model->GetWindow().lock();
+    auto canvas = window->GetCanvas().lock();
+
+    canvas->Clear({0xFF, 0xFF, 0xFF});
+    for (const auto& widget : model->GetWidgetsManager().lock()->GetWidgets()) {
+        widget->Draw(painter_);
+    }
+    painter_->DrawText({0, 0}, std::to_string((uint64_t)(1.0 / delta)) + "FPS",
+                       resource_manager_.lock()->Get<zzgui::FontResource>("Ubuntu12"), {0, 0, 0});
+}
+
+void MenuView::Resized(std::weak_ptr<zzgui::Window> window) {
+    const auto window_ptr = window.lock();
+
+    if (window_ptr) {
+        painter_ = std::make_shared<zzgui::Painter>(window_ptr->GetCanvas());
+    }
+}
 
 void MenuView::Show() {}
 

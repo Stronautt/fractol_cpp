@@ -25,6 +25,7 @@
 #include <string>
 #include <utility>
 
+#include "canvas.hpp"
 #include "widget.hpp"
 
 namespace cozz {
@@ -34,7 +35,7 @@ namespace zzgui {
 class FontResource;
 class Painter;
 
-class Label final : public Widget {
+class Label : public Widget {
   public:
     Label(const std::string& text, std::shared_ptr<FontResource> font, uint64_t x, uint64_t y);
 
@@ -42,15 +43,39 @@ class Label final : public Widget {
 
     void SetText(const std::string& text);
 
-    const std::string& GetText() const;
-
     void SetFont(std::shared_ptr<FontResource> font);
+
+    void SetBorderThickness(uint16_t thickness);
+
+    void SetBorderColor(const Canvas::PixelColor& border_color);
+
+    void SetBackgroundColor(const Canvas::PixelColor& background_color);
+
+    void SetForegroundColor(const Canvas::PixelColor& foreground_color);
+
+    const std::string& GetText() const;
 
     std::shared_ptr<FontResource> GetFont() const;
 
-  private:
+    uint16_t GetBorderThickness() const;
+
+    const Canvas::PixelColor& GetBorderColor() const;
+
+    const Canvas::PixelColor& GetBackgroundColor() const;
+
+    const Canvas::PixelColor& GetForegroundColor() const;
+
+    virtual void DoOnMouseButton(const MouseButtonEvent& event) override;
+
+  protected:
     std::string text_;
     std::shared_ptr<FontResource> font_;
+
+    uint16_t border_thickness_;
+
+    Canvas::PixelColor border_color_;
+    Canvas::PixelColor background_color_;
+    Canvas::PixelColor foreground_color_;
 };
 
 }  // namespace zzgui

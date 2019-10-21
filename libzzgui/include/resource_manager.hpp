@@ -37,16 +37,7 @@ class ResourceManager final {
     std::shared_ptr<FontResource> LoadFont(const std::string& name, const std::string& font_path, uint16_t font_size);
 
     template <class ResourceType>
-    std::shared_ptr<ResourceType> Get(const std::string& name) const {
-        static_assert(std::is_convertible<ResourceType, Resource>::value);
-
-        auto resource = resources_.find(name);
-        if (resource != resources_.end()) {
-            return std::dynamic_pointer_cast<ResourceType>(resource->second);
-        } else {
-            throw std::runtime_error("Uknown resource name: " + name);
-        }
-    }
+    std::shared_ptr<ResourceType> Get(const std::string& name) const;
 
   private:
     std::map<std::string, std::shared_ptr<Resource>> resources_;
@@ -55,5 +46,7 @@ class ResourceManager final {
 }  // namespace zzgui
 
 }  // namespace cozz
+
+#include "resource_manager.tpp"
 
 #endif  // LIBZZGUI_INCLUDE_RESOURCE_MANAGER_HPP_

@@ -23,8 +23,7 @@
 #include "resource.hpp"
 
 #include <memory>
-
-extern "C" typedef struct _TTF_Font TTF_Font;
+#include <utility>
 
 namespace cozz {
 
@@ -34,10 +33,12 @@ class FontResource final : public Resource {
   public:
     FontResource(const std::string& name, const std::string& font_path, uint16_t font_size);
 
-    std::shared_ptr<TTF_Font> GetFontData() const;
+    std::shared_ptr<void> GetFontData() const;
+
+    std::pair<uint64_t, uint64_t> CalcTextSize(const std::string& text) const;
 
   private:
-    std::shared_ptr<TTF_Font> font_;
+    std::shared_ptr<void> font_;
 };
 
 }  // namespace zzgui

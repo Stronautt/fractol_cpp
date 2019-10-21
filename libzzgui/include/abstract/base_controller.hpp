@@ -17,39 +17,35 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef LIBZZGUI_INCLUDE_INTERFACES_BASE_VIEW_HPP_
-#define LIBZZGUI_INCLUDE_INTERFACES_BASE_VIEW_HPP_
+#ifndef LIBZZGUI_INCLUDE_INTERFACES_BASE_CONTROLLER_HPP_
+#define LIBZZGUI_INCLUDE_INTERFACES_BASE_CONTROLLER_HPP_
 
-#include <cstdint>
 #include <memory>
 
 namespace cozz {
 
 namespace zzgui {
 
+class Window;
 class EventHandler;
 class WindowsManager;
 class ResourceManager;
 class BaseModel;
-class BaseController;
+class BaseView;
 
-class BaseView {
+class BaseController {
   public:
-    virtual ~BaseView() = default;
+    virtual ~BaseController() = default;
 
     virtual void Create() = 0;
 
     virtual void Render(float delta) = 0;
 
-    virtual void Resize(uint64_t width, uint64_t height) = 0;
-
-    virtual void Show() = 0;
-
     virtual void Pause() = 0;
 
     virtual void Resume() = 0;
 
-    virtual void Hide() = 0;
+    virtual void Resized(std::weak_ptr<Window> window) = 0;
 
     virtual void SetEventHandler(std::weak_ptr<EventHandler> event_handler) = 0;
 
@@ -57,9 +53,9 @@ class BaseView {
 
     virtual void SetResourceManager(std::weak_ptr<ResourceManager> resource_manager) = 0;
 
-    virtual void SetBaseModel(std::weak_ptr<BaseModel> model) = 0;
+    virtual void SetBaseModel(std::shared_ptr<BaseModel> model) = 0;
 
-    virtual void SetBaseController(std::weak_ptr<BaseController> controller) = 0;
+    virtual void SetBaseView(std::shared_ptr<BaseView> controller) = 0;
 
     virtual std::weak_ptr<EventHandler> GetEventHandler() const = 0;
 
@@ -69,11 +65,11 @@ class BaseView {
 
     virtual std::weak_ptr<BaseModel> GetBaseModel() const = 0;
 
-    virtual std::weak_ptr<BaseController> GetBaseController() const = 0;
+    virtual std::weak_ptr<BaseView> GetBaseView() const = 0;
 };
 
 }  // namespace zzgui
 
 }  // namespace cozz
 
-#endif  // LIBZZGUI_INCLUDE_INTERFACES_BASE_VIEW_HPP_
+#endif  // LIBZZGUI_INCLUDE_INTERFACES_BASE_CONTROLLER_HPP_

@@ -39,19 +39,10 @@ class WindowsManager final {
     WindowsManager(std::shared_ptr<EventHandler> event_handler);
 
     template <class WindowType>
-    std::weak_ptr<Window> CreateWindow(std::string title, uint64_t width, uint64_t height) {
-        return CreateWindow<WindowType>(title, 0, 0, width, height);
-    }
+    std::weak_ptr<Window> CreateWindow(std::string title, uint64_t width, uint64_t height);
 
     template <class WindowType>
-    std::weak_ptr<Window> CreateWindow(std::string title, uint64_t x, uint64_t y, uint64_t width, uint64_t height) {
-        auto window = std::make_shared<WindowType>(title, x, y, width, height);
-
-        windows_.emplace(window->GetId(),
-                         std::make_pair(window, event_handler_->RegisterWindowEventCallbacks(*window)));
-
-        return window;
-    }
+    std::weak_ptr<Window> CreateWindow(std::string title, uint64_t x, uint64_t y, uint64_t width, uint64_t height);
 
     void UpdateWindows() const;
 
@@ -69,5 +60,7 @@ class WindowsManager final {
 }  // namespace zzgui
 
 }  // namespace cozz
+
+#include "windows_manager.tpp"
 
 #endif  // LIBZZGUI_INCLUDE_WINDOW_MANAGER_HPP_

@@ -58,10 +58,12 @@ add_library(${LIB_NAME} STATIC source/event/event.cpp
                                source/application.cpp
                                source/sdl_application.cpp
                                source/widgets/widget.cpp
-                               source/widgets/label.cpp)
+                               source/widgets/label.cpp
+                               source/widgets/button.cpp
+                               source/widgets_manager.cpp)
 target_include_directories(${LIB_NAME} PUBLIC include
-                                              include/interfaces
-                                              include/template
+                                              include/abstract
+                                              source/template
                                        PRIVATE source/include
                                                ${SDL2_INCLUDE_DIRS})
 target_link_libraries(${LIB_NAME} PRIVATE ${SDL2_LIBRARIES} SDL2_ttf)

@@ -37,7 +37,8 @@ class Canvas final {
     };
 
     struct PixelColor {
-        PixelColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 0xFF);
+        PixelColor();
+        PixelColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 0);
 
         uint8_t r;
         uint8_t g;
@@ -140,6 +141,8 @@ class Canvas final {
     pixel_iterator At(const Point& p);
 
     uint8_t* GetRawPixels() const;
+
+    void Clear(const Canvas::PixelColor& color);
 
   private:
     // Size of the canvas

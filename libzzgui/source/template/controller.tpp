@@ -19,8 +19,8 @@
 
 #include "controller.hpp"
 
-// #include "model.hpp"
-// #include "view.hpp"
+#include "event/window_resized_event.hpp"
+#include "window.hpp"
 
 namespace cozz {
 
@@ -51,7 +51,7 @@ template <class ModelType, class ViewType>
 void Controller<ModelType, ViewType>::Resume() { view_->Resume(); }
 
 template <class ModelType, class ViewType>
-void Controller<ModelType, ViewType>::Resize(uint64_t width, uint64_t height) { view_->Resize(width, height); }
+void Controller<ModelType, ViewType>::Resized(std::weak_ptr<Window> window) { view_->Resized(window); }
 
 template <class ModelType, class ViewType>
 void Controller<ModelType, ViewType>::SetEventHandler(std::weak_ptr<EventHandler> event_handler) {
@@ -61,6 +61,7 @@ void Controller<ModelType, ViewType>::SetEventHandler(std::weak_ptr<EventHandler
     event_handler_ = event_handler;
     model_->SetEventHandler(event_handler);
     view_->SetEventHandler(event_handler);
+    event_handler_.lock()->RegisterEventCallback<WindowResizedEvent>(std::bind(&Controller<ModelType, ViewType>::OnWindowResize, this, std::placeholders::_1));
 }
 
 template <class ModelType, class ViewType>
@@ -143,6 +144,22 @@ std::weak_ptr<ModelType> Controller<ModelType, ViewType>::GetModel() const {
 template <class ModelType, class ViewType>
 std::weak_ptr<ViewType> Controller<ModelType, ViewType>::GetView() const {
     return view_;
+}
+
+template <class ModelType, class ViewType>
+void Controller<ModelType, ViewType>::RegisterWindow(std::weak_ptr<Window> window) {
+    registered_windows_.emplace_back(window);
+}
+
+template <class ModelType, class ViewType>
+void Controller<ModelType, ViewType>::OnWindowResize(const WindowResizedEvent& event) {
+    for (const auto& window : registered_windows_) {
+        if (!window.expired()) {
+            if (window.lock()->GetId() == event.GetWindowId()) {
+                Resized(window);
+            }
+        }
+    }
 }
 
 }  // namespace zzgui

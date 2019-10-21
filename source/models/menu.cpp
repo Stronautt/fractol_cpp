@@ -18,14 +18,15 @@
 */
 
 #include "models/menu.hpp"
+
+#include "controller.tpp"
 #include "controllers/menu.hpp"
-
-#include <iostream>
-
 #include "model.tpp"
 #include "resource_manager.hpp"
 #include "sdl_window.hpp"
-#include "widgets/label.hpp"
+#include "widget.hpp"
+#include "widgets/button.hpp"
+#include "widgets_manager.hpp"
 #include "windows_manager.hpp"
 
 namespace cozz {
@@ -35,17 +36,25 @@ MenuModel::MenuModel() {}
 MenuModel::~MenuModel() = default;
 
 void MenuModel::Create() {
-    auto ubuntu24_font = resource_manager_.lock()->LoadFont("Ubuntu24", "resources/fonts/ubuntu.ttf", 24);
+    auto ubuntu24_font = resource_manager_.lock()->LoadFont("Ubuntu12", "resources/fonts/ubuntu.ttf", 12);
 
     window_ = windows_manager_.lock()->CreateWindow<zzgui::SDLWindow>("Main Menu", 800, 600);
 
-    widgets_.emplace_back(std::make_unique<zzgui::Label>("Hello World", ubuntu24_font, 100, 100));
+    GetController().lock()->RegisterWindow(window_);
+
+    widgets_manager_ = std::make_shared<zzgui::WidgetsManager>(event_handler_);
+
+    widgets_manager_->Create<zzgui::Button>("Hello World!", ubuntu24_font, 100, 100)
+        ->OnClick([this, ubuntu24_font](auto) {
+            static uint64_t x = 100, y = 100;
+            widgets_manager_->Create<zzgui::Button>("Привет Мир!", ubuntu24_font, x += 30, y += 30);
+        });
 }
 
 void MenuModel::Update(float /*delta*/) {}
 
 std::weak_ptr<zzgui::Window> MenuModel::GetWindow() const { return window_; }
 
-const std::vector<std::unique_ptr<zzgui::Widget>>& MenuModel::GetWidgets() const { return widgets_; }
+std::weak_ptr<zzgui::WidgetsManager> MenuModel::GetWidgetsManager() const { return widgets_manager_; }
 
 }  // namespace cozz

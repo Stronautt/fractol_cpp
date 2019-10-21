@@ -21,7 +21,6 @@
 
 #include <algorithm>
 #include <chrono>
-#include <iostream>
 
 #include "application.hpp"
 #include "base_controller.hpp"

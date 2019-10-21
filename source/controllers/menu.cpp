@@ -18,10 +18,10 @@
 */
 
 #include "models/menu.hpp"
-#include "controllers/menu.hpp"
-#include "views/menu.hpp"
 
 #include "controller.tpp"
+#include "controllers/menu.hpp"
+#include "views/menu.hpp"
 
 namespace cozz {
 

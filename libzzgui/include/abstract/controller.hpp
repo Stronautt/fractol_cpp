@@ -24,9 +24,13 @@
 
 #include <memory>
 
+#include "event_handler.hpp"
+
 namespace cozz {
 
 namespace zzgui {
+
+class WindowResizedEvent;
 
 template <class ModelType, class ViewType>
 class Controller : public BaseController {
@@ -39,7 +43,7 @@ class Controller : public BaseController {
 
     virtual void Resume() override;
 
-    virtual void Resize(uint64_t width, uint64_t height) override;
+    virtual void Resized(std::weak_ptr<Window> window) override;
 
     virtual void SetEventHandler(std::weak_ptr<EventHandler> event_handler) override;
 
@@ -69,6 +73,8 @@ class Controller : public BaseController {
 
     std::weak_ptr<ViewType> GetView() const;
 
+    void RegisterWindow(std::weak_ptr<Window> window);
+
   protected:
     std::weak_ptr<EventHandler> event_handler_;
     std::weak_ptr<WindowsManager> windows_manager_;
@@ -77,7 +83,12 @@ class Controller : public BaseController {
     std::shared_ptr<ModelType> model_;
     std::shared_ptr<ViewType> view_;
 
+    std::list<std::weak_ptr<Window>> registered_windows_;
+
     Controller(std::shared_ptr<ViewType> view);
+
+  private:
+    void OnWindowResize(const WindowResizedEvent& event);
 };
 
 }  // namespace zzgui

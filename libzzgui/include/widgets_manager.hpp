@@ -17,45 +17,44 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_MODELS_MENU_HPP_
-#define FRACTOL_INCLUDE_MODELS_MENU_HPP_
+#ifndef LIBZZGUI_INCLUDE_WIDGETS_MANAGER_HPP_
+#define LIBZZGUI_INCLUDE_WIDGETS_MANAGER_HPP_
 
-#include "model.hpp"
-
+#include <list>
 #include <memory>
-#include <vector>
+
+#include "event_handler.hpp"
+#include "widget.hpp"
 
 namespace cozz {
 
-class MenuController;
-
 namespace zzgui {
 
-class Window;
 class Widget;
-class WidgetsManager;
+
+class WidgetsManager final {
+  public:
+    explicit WidgetsManager(std::weak_ptr<EventHandler> event_handler);
+
+    ~WidgetsManager();
+
+    template <class WidgetType, class... Args>
+    std::shared_ptr<WidgetType> Create(Args... args);
+
+    const std::list<std::shared_ptr<Widget>>& GetWidgets() const;
+
+  private:
+    std::weak_ptr<EventHandler> event_handler_;
+
+    std::list<std::shared_ptr<Widget>> widgets_;
+
+    std::list<EventHandler::HandlerID> registered_callbacks_;
+};
 
 }  // namespace zzgui
 
-class MenuModel final : public zzgui::Model<MenuController> {
-  public:
-    MenuModel();
-    ~MenuModel();
-
-    virtual void Create() override;
-
-    virtual void Update(float delta) override;
-
-    std::weak_ptr<zzgui::Window> GetWindow() const;
-
-    std::weak_ptr<zzgui::WidgetsManager> GetWidgetsManager() const;
-
-  private:
-    std::weak_ptr<zzgui::Window> window_;
-
-    std::shared_ptr<zzgui::WidgetsManager> widgets_manager_;
-};
-
 }  // namespace cozz
 
-#endif  // FRACTOL_INCLUDE_MODELS_MENU_HPP_
+#include "widgets_manager.tpp"
+
+#endif  // LIBZZGUI_INCLUDE_WIDGETS_MANAGER_HPP_

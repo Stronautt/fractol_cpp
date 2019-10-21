@@ -17,45 +17,22 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef LIBZZGUI_INCLUDE_INTERFACES_WIDGET_HPP_
-#define LIBZZGUI_INCLUDE_INTERFACES_WIDGET_HPP_
-
-#include <cstdint>
-#include <memory>
-#include <utility>
+#include "widgets_manager.hpp"
 
 namespace cozz {
 
 namespace zzgui {
 
-class Painter;
+WidgetsManager::WidgetsManager(std::weak_ptr<EventHandler> event_handler) : event_handler_(event_handler) {
+    if (event_handler_.expired()) {
+        throw std::runtime_error("Bad event handler");
+    }
+}
 
-class Widget {
-  public:
-    virtual ~Widget();
+WidgetsManager::~WidgetsManager() { event_handler_.lock()->UnregisterEventCallbacks(registered_callbacks_); }
 
-    virtual void Draw(std::shared_ptr<Painter> painter) = 0;
-
-    void SetPosition(uint64_t x, uint64_t y);
-
-    void SetSize(uint64_t width, uint64_t height);
-
-    std::pair<uint64_t, uint64_t> GetPosition() const;
-
-    std::pair<uint64_t, uint64_t> GetSize() const;
-
-  protected:
-    uint64_t x_;
-    uint64_t y_;
-
-    uint64_t width_;
-    uint64_t height_;
-
-    Widget(uint64_t x, uint64_t y, uint64_t width, uint64_t height);
-};
+const std::list<std::shared_ptr<Widget>>& WidgetsManager::GetWidgets() const { return widgets_; }
 
 }  // namespace zzgui
 
 }  // namespace cozz
-
-#endif  // LIBZZGUI_INCLUDE_INTERFACES_WIDGET_HPP_

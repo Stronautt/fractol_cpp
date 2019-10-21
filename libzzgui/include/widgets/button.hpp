@@ -17,45 +17,26 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_MODELS_MENU_HPP_
-#define FRACTOL_INCLUDE_MODELS_MENU_HPP_
+#ifndef LIBZZGUI_INCLUDE_WIDGETS_BUTTON_HPP_
+#define LIBZZGUI_INCLUDE_WIDGETS_BUTTON_HPP_
 
-#include "model.hpp"
-
-#include <memory>
-#include <vector>
+#include "label.hpp"
 
 namespace cozz {
 
-class MenuController;
-
 namespace zzgui {
 
-class Window;
-class Widget;
-class WidgetsManager;
+class Button final : public Label {
+  public:
+    Button(const std::string& text, std::shared_ptr<FontResource> font, uint64_t x, uint64_t y);
+
+    virtual void Draw(std::shared_ptr<Painter> painter) override;
+
+    virtual void DoOnMouseButton(const MouseButtonEvent& event) override;
+};
 
 }  // namespace zzgui
 
-class MenuModel final : public zzgui::Model<MenuController> {
-  public:
-    MenuModel();
-    ~MenuModel();
-
-    virtual void Create() override;
-
-    virtual void Update(float delta) override;
-
-    std::weak_ptr<zzgui::Window> GetWindow() const;
-
-    std::weak_ptr<zzgui::WidgetsManager> GetWidgetsManager() const;
-
-  private:
-    std::weak_ptr<zzgui::Window> window_;
-
-    std::shared_ptr<zzgui::WidgetsManager> widgets_manager_;
-};
-
 }  // namespace cozz
 
-#endif  // FRACTOL_INCLUDE_MODELS_MENU_HPP_
+#endif  // LIBZZGUI_INCLUDE_WIDGETS_BUTTON_HPP_

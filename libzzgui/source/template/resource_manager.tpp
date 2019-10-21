@@ -17,45 +17,24 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_MODELS_MENU_HPP_
-#define FRACTOL_INCLUDE_MODELS_MENU_HPP_
-
-#include "model.hpp"
-
-#include <memory>
-#include <vector>
+#include "resource_manager.hpp"
 
 namespace cozz {
 
-class MenuController;
-
 namespace zzgui {
 
-class Window;
-class Widget;
-class WidgetsManager;
+template <class ResourceType>
+std::shared_ptr<ResourceType> ResourceManager::Get(const std::string& name) const {
+    static_assert(std::is_convertible<ResourceType, Resource>::value);
+
+    auto resource = resources_.find(name);
+    if (resource != resources_.end()) {
+        return std::dynamic_pointer_cast<ResourceType>(resource->second);
+    } else {
+        throw std::runtime_error("Uknown resource name: " + name);
+    }
+}
 
 }  // namespace zzgui
 
-class MenuModel final : public zzgui::Model<MenuController> {
-  public:
-    MenuModel();
-    ~MenuModel();
-
-    virtual void Create() override;
-
-    virtual void Update(float delta) override;
-
-    std::weak_ptr<zzgui::Window> GetWindow() const;
-
-    std::weak_ptr<zzgui::WidgetsManager> GetWidgetsManager() const;
-
-  private:
-    std::weak_ptr<zzgui::Window> window_;
-
-    std::shared_ptr<zzgui::WidgetsManager> widgets_manager_;
-};
-
 }  // namespace cozz
-
-#endif  // FRACTOL_INCLUDE_MODELS_MENU_HPP_

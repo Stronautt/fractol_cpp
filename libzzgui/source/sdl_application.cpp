@@ -19,12 +19,15 @@
 
 #include "sdl_application.hpp"
 
+#include <chrono>
 #include <memory>
+#include <thread>
 
 #include "controllers_manager.hpp"
 #include "event_handler.hpp"
 #include "resource_manager.hpp"
 #include "sdl_event_handler.hpp"
+#include "widgets_manager.hpp"
 #include "windows_manager.hpp"
 
 namespace cozz {
@@ -46,11 +49,21 @@ SdlApplication::~SdlApplication() = default;
 void SdlApplication::Terminate(const QuitEvent&) { is_running_ = false; }
 
 uint8_t SdlApplication::Run() {
+    static thread_local auto tp = std::chrono::high_resolution_clock::now();
+    std::chrono::milliseconds delay;
+
     while (is_running_) {
         event_handler_->Poll();
-        controller_manager_->Render();
-        windows_manager_->UpdateWindows();
-        UpdateDeltaTime();
+        if (is_running_) {
+            controller_manager_->Render();
+            windows_manager_->UpdateWindows();
+            UpdateDeltaTime();
+
+            const auto& now = std::chrono::high_resolution_clock::now();
+            delay = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::milliseconds(17) - (now - tp));
+            std::this_thread::sleep_for(delay);
+            tp = now;
+        }
     }
     return 0;
 }

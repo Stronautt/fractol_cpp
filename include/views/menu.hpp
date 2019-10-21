@@ -31,6 +31,7 @@ class MenuController;
 
 namespace zzgui {
 
+class Window;
 class Painter;
 
 }  // namespace zzgui
@@ -44,7 +45,7 @@ class MenuView final : public zzgui::View<MenuModel, MenuController> {
 
     virtual void Render(float delta) override;
 
-    virtual void Resize(uint64_t width, uint64_t height) override;
+    virtual void Resized(std::weak_ptr<zzgui::Window> window) override;
 
     virtual void Show() override;
 

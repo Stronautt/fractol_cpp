@@ -31,13 +31,23 @@ FontResource::FontResource(const std::string& name, const std::string& font_path
     if (!TTF_WasInit() && TTF_Init() == -1) {
         throw std::runtime_error("Unable to init TTF library: " + std::string(TTF_GetError()));
     }
-    font_ = std::shared_ptr<TTF_Font>(TTF_OpenFont(font_path.c_str(), font_size), &TTF_CloseFont);
+    font_ = std::shared_ptr<void>(TTF_OpenFont(font_path.c_str(), font_size), &TTF_CloseFont);
     if (font_ == nullptr) {
         throw std::runtime_error("Unable to load font: " + std::string(TTF_GetError()));
     }
 }
 
-std::shared_ptr<TTF_Font> FontResource::GetFontData() const { return font_; }
+std::shared_ptr<void> FontResource::GetFontData() const { return font_; }
+
+std::pair<uint64_t, uint64_t> FontResource::CalcTextSize(const std::string& text) const {
+    int widht;
+    int height;
+
+    if (TTF_SizeUTF8(static_cast<TTF_Font*>(font_.get()), text.c_str(), &widht, &height)) {
+        throw std::runtime_error("Can't calc text size: " + std::string(TTF_GetError()));
+    }
+    return std::make_pair(widht, height);
+}
 
 }  // namespace zzgui
 
