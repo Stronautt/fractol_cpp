@@ -22,7 +22,7 @@
 #include "controller.tpp"
 #include "controllers/menu.hpp"
 #include "model.tpp"
-#include "resource_manager.hpp"
+#include "resources_manager.hpp"
 #include "sdl_window.hpp"
 #include "widget.hpp"
 #include "widgets/button.hpp"
@@ -36,7 +36,7 @@ MenuModel::MenuModel() {}
 MenuModel::~MenuModel() = default;
 
 void MenuModel::Create() {
-    auto ubuntu24_font = resource_manager_.lock()->LoadFont("Ubuntu12", "resources/fonts/ubuntu.ttf", 12);
+    auto ubuntu24_font = resources_manager_.lock()->LoadFont("Ubuntu12", "resources/fonts/ubuntu.ttf", 12);
 
     window_ = windows_manager_.lock()->CreateWindow<zzgui::SDLWindow>("Main Menu", 800, 600);
 

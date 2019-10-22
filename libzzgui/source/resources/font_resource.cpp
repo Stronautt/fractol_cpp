@@ -17,7 +17,7 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "font_resource.hpp"
+#include "resources/font_resource.hpp"
 
 #include <SDL2/SDL_ttf.h>
 

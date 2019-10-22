@@ -17,8 +17,8 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef LIBZZGUI_INCLUDE_RESOURCE_MANAGER_HPP_
-#define LIBZZGUI_INCLUDE_RESOURCE_MANAGER_HPP_
+#ifndef LIBZZGUI_INCLUDE_RESOURCES_MANAGER_HPP_
+#define LIBZZGUI_INCLUDE_RESOURCES_MANAGER_HPP_
 
 #include <map>
 #include <memory>
@@ -32,7 +32,7 @@ namespace zzgui {
 class Resource;
 class FontResource;
 
-class ResourceManager final {
+class ResourcesManager final {
   public:
     std::shared_ptr<FontResource> LoadFont(const std::string& name, const std::string& font_path, uint16_t font_size);
 
@@ -47,6 +47,6 @@ class ResourceManager final {
 
 }  // namespace cozz
 
-#include "resource_manager.tpp"
+#include "resources_manager.tpp"
 
-#endif  // LIBZZGUI_INCLUDE_RESOURCE_MANAGER_HPP_
+#endif  // LIBZZGUI_INCLUDE_RESOURCES_MANAGER_HPP_

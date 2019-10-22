@@ -25,7 +25,7 @@
 
 #include "controllers_manager.hpp"
 #include "event_handler.hpp"
-#include "resource_manager.hpp"
+#include "resources_manager.hpp"
 #include "sdl_event_handler.hpp"
 #include "widgets_manager.hpp"
 #include "windows_manager.hpp"
@@ -38,8 +38,8 @@ SdlApplication::SdlApplication()
     : is_running_(true),
       event_handler_(std::make_shared<zzgui::SDLEventHandler>()),
       windows_manager_(std::make_shared<zzgui::WindowsManager>(event_handler_)),
-      resource_manager_(std::make_shared<zzgui::ResourceManager>()),
-      controller_manager_(std::make_unique<ControllersManager>(event_handler_, windows_manager_, resource_manager_)) {
+      resources_manager_(std::make_shared<zzgui::ResourcesManager>()),
+      controller_manager_(std::make_unique<ControllersManager>(event_handler_, windows_manager_, resources_manager_)) {
     event_handler_->RegisterEventCallback<QuitEvent>(
         std::bind(&SdlApplication::Terminate, this, std::placeholders::_1));
 }

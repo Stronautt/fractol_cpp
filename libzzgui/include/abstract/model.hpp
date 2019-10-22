@@ -30,7 +30,7 @@ namespace zzgui {
 
 class EventHandler;
 class WindowsManager;
-class ResourceManager;
+class ResourcesManager;
 
 template <class ControllerType>
 class Model : public BaseModel {
@@ -41,7 +41,7 @@ class Model : public BaseModel {
 
     virtual void SetWindowsManager(std::weak_ptr<WindowsManager> windows_manager) override;
 
-    virtual void SetResourceManager(std::weak_ptr<ResourceManager> resource_manager) override;
+    virtual void SetResourcesManager(std::weak_ptr<ResourcesManager> resources_manager) override;
 
     virtual void SetBaseController(std::weak_ptr<BaseController> controller) override;
 
@@ -51,7 +51,7 @@ class Model : public BaseModel {
 
     virtual std::weak_ptr<WindowsManager> GetWindowsManager() const override;
 
-    virtual std::weak_ptr<ResourceManager> GetResourceManager() const override;
+    virtual std::weak_ptr<ResourcesManager> GetResourcesManager() const override;
 
     virtual std::weak_ptr<BaseController> GetBaseController() const override;
 
@@ -60,7 +60,7 @@ class Model : public BaseModel {
   protected:
     std::weak_ptr<EventHandler> event_handler_;
     std::weak_ptr<WindowsManager> windows_manager_;
-    std::weak_ptr<ResourceManager> resource_manager_;
+    std::weak_ptr<ResourcesManager> resources_manager_;
     std::weak_ptr<ControllerType> controller_;
 };
 

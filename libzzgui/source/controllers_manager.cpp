@@ -33,9 +33,9 @@ namespace zzgui {
 
 ControllersManager::ControllersManager(std::weak_ptr<EventHandler> event_handler_,
                                        std::weak_ptr<WindowsManager> windows_manager_,
-                                       std::weak_ptr<ResourceManager> resource_manager_)
-    : event_handler_(event_handler_), windows_manager_(windows_manager_), resource_manager_(resource_manager_) {
-    if (event_handler_.expired() || windows_manager_.expired() || resource_manager_.expired()) {
+                                       std::weak_ptr<ResourcesManager> resources_manager_)
+    : event_handler_(event_handler_), windows_manager_(windows_manager_), resources_manager_(resources_manager_) {
+    if (event_handler_.expired() || windows_manager_.expired() || resources_manager_.expired()) {
         throw std::logic_error("Bad event handler, windows manager or resource manager");
     }
 }
@@ -45,7 +45,7 @@ void ControllersManager::Push(std::shared_ptr<BaseController> controller) {
     auto view = controller->GetBaseView().lock();
     controller->SetEventHandler(event_handler_);
     controller->SetWindowsManager(windows_manager_);
-    controller->SetResourceManager(resource_manager_);
+    controller->SetResourcesManager(resources_manager_);
     model->SetBaseController(controller);
     view->SetBaseController(controller);
     controller->Create();
@@ -72,7 +72,7 @@ std::weak_ptr<EventHandler> ControllersManager::GetEventHandler() const { return
 
 std::weak_ptr<WindowsManager> ControllersManager::GetWindowsManager() const { return windows_manager_; }
 
-std::weak_ptr<ResourceManager> ControllersManager::GetResourceManager() const { return resource_manager_; }
+std::weak_ptr<ResourcesManager> ControllersManager::GetResourcesManager() const { return resources_manager_; }
 
 }  // namespace zzgui
 

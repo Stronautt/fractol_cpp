@@ -20,11 +20,11 @@
 #include "views/menu.hpp"
 
 #include "controllers/menu.hpp"
-#include "font_resource.hpp"
 #include "model.hpp"
 #include "models/menu.hpp"
 #include "painter.hpp"
-#include "resource_manager.hpp"
+#include "resources/font_resource.hpp"
+#include "resources_manager.hpp"
 #include "view.tpp"
 #include "widget.hpp"
 #include "widgets_manager.hpp"
@@ -54,7 +54,7 @@ void MenuView::Render(float delta) {
         widget->Draw(painter_);
     }
     painter_->DrawText({0, 0}, std::to_string((uint64_t)(1.0 / delta)) + "FPS",
-                       resource_manager_.lock()->Get<zzgui::FontResource>("Ubuntu12"), {0, 0, 0});
+                       resources_manager_.lock()->Get<zzgui::FontResource>("Ubuntu12"), {0, 0, 0});
 }
 
 void MenuView::Resized(std::weak_ptr<zzgui::Window> window) {

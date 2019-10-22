@@ -17,14 +17,14 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "resource_manager.hpp"
+#include "resources_manager.hpp"
 
 namespace cozz {
 
 namespace zzgui {
 
 template <class ResourceType>
-std::shared_ptr<ResourceType> ResourceManager::Get(const std::string& name) const {
+std::shared_ptr<ResourceType> ResourcesManager::Get(const std::string& name) const {
     static_assert(std::is_convertible<ResourceType, Resource>::value);
 
     auto resource = resources_.find(name);

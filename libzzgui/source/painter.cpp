@@ -24,7 +24,7 @@
 #include <SDL2/SDL_ttf.h>
 
 #include "canvas.hpp"
-#include "font_resource.hpp"
+#include "resources/font_resource.hpp"
 #include "sdl_utilities.hpp"
 
 namespace cozz {

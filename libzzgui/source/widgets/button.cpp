@@ -20,9 +20,9 @@
 #include "widgets/button.hpp"
 
 #include "event/mouse_button_event.hpp"
-#include "font_resource.hpp"
 #include "key_map.hpp"
 #include "painter.hpp"
+#include "resources/font_resource.hpp"
 
 namespace cozz {
 

@@ -19,8 +19,8 @@
 
 #include "widgets/label.hpp"
 
-#include "font_resource.hpp"
 #include "painter.hpp"
+#include "resources/font_resource.hpp"
 
 namespace cozz {
 

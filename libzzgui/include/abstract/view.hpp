@@ -37,7 +37,7 @@ class View : public BaseView {
 
     virtual void SetWindowsManager(std::weak_ptr<WindowsManager> windows_manager) override;
 
-    virtual void SetResourceManager(std::weak_ptr<ResourceManager> resource_manager) override;
+    virtual void SetResourcesManager(std::weak_ptr<ResourcesManager> resources_manager) override;
 
     virtual void SetBaseModel(std::weak_ptr<BaseModel> model) override;
 
@@ -51,7 +51,7 @@ class View : public BaseView {
 
     virtual std::weak_ptr<WindowsManager> GetWindowsManager() const override;
 
-    virtual std::weak_ptr<ResourceManager> GetResourceManager() const override;
+    virtual std::weak_ptr<ResourcesManager> GetResourcesManager() const override;
 
     virtual std::weak_ptr<BaseModel> GetBaseModel() const override;
 
@@ -64,7 +64,7 @@ class View : public BaseView {
   protected:
     std::weak_ptr<EventHandler> event_handler_;
     std::weak_ptr<WindowsManager> windows_manager_;
-    std::weak_ptr<ResourceManager> resource_manager_;
+    std::weak_ptr<ResourcesManager> resources_manager_;
     std::weak_ptr<ModelType> model_;
     std::weak_ptr<ControllerType> controller_;
 

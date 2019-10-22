@@ -51,9 +51,9 @@ add_library(${LIB_NAME} STATIC source/event/event.cpp
                                source/sdl_window.cpp
                                source/windows_manager.cpp
                                source/painter.cpp
-                               source/resource.cpp
-                               source/resource_manager.cpp
-                               source/font_resource.cpp
+                               source/resources/resource.cpp
+                               source/resources/font_resource.cpp
+                               source/resources_manager.cpp
                                source/controllers_manager.cpp
                                source/application.cpp
                                source/sdl_application.cpp

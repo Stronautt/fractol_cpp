@@ -32,7 +32,7 @@ namespace zzgui {
 
 class EventHandler;
 class WindowsManager;
-class ResourceManager;
+class ResourcesManager;
 class ControllersManager;
 class QuitEvent;
 
@@ -48,7 +48,7 @@ class SdlApplication : public Application {
 
     std::shared_ptr<EventHandler> event_handler_;
     std::shared_ptr<WindowsManager> windows_manager_;
-    std::shared_ptr<ResourceManager> resource_manager_;
+    std::shared_ptr<ResourcesManager> resources_manager_;
 
     std::unique_ptr<ControllersManager> controller_manager_;
 

@@ -29,7 +29,7 @@ namespace zzgui {
 class Window;
 class EventHandler;
 class WindowsManager;
-class ResourceManager;
+class ResourcesManager;
 class BaseModel;
 class BaseView;
 
@@ -51,7 +51,7 @@ class BaseController {
 
     virtual void SetWindowsManager(std::weak_ptr<WindowsManager> windows_manager) = 0;
 
-    virtual void SetResourceManager(std::weak_ptr<ResourceManager> resource_manager) = 0;
+    virtual void SetResourcesManager(std::weak_ptr<ResourcesManager> resources_manager) = 0;
 
     virtual void SetBaseModel(std::shared_ptr<BaseModel> model) = 0;
 
@@ -61,7 +61,7 @@ class BaseController {
 
     virtual std::weak_ptr<WindowsManager> GetWindowsManager() const = 0;
 
-    virtual std::weak_ptr<ResourceManager> GetResourceManager() const = 0;
+    virtual std::weak_ptr<ResourcesManager> GetResourcesManager() const = 0;
 
     virtual std::weak_ptr<BaseModel> GetBaseModel() const = 0;
 

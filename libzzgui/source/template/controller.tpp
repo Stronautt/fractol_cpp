@@ -75,13 +75,13 @@ void Controller<ModelType, ViewType>::SetWindowsManager(std::weak_ptr<WindowsMan
 }
 
 template <class ModelType, class ViewType>
-void Controller<ModelType, ViewType>::SetResourceManager(std::weak_ptr<ResourceManager> resource_manager) {
-    if (resource_manager.expired()) {
+void Controller<ModelType, ViewType>::SetResourcesManager(std::weak_ptr<ResourcesManager> resources_manager) {
+    if (resources_manager.expired()) {
         throw std::runtime_error("Bad resource manager");
     }
-    resource_manager_ = resource_manager;
-    model_->SetResourceManager(resource_manager);
-    view_->SetResourceManager(resource_manager);
+    resources_manager_ = resources_manager;
+    model_->SetResourcesManager(resources_manager);
+    view_->SetResourcesManager(resources_manager);
 }
 
 template <class ModelType, class ViewType>
@@ -122,8 +122,8 @@ std::weak_ptr<WindowsManager> Controller<ModelType, ViewType>::GetWindowsManager
 }
 
 template <class ModelType, class ViewType>
-std::weak_ptr<ResourceManager> Controller<ModelType, ViewType>::GetResourceManager() const {
-    return resource_manager_;
+std::weak_ptr<ResourcesManager> Controller<ModelType, ViewType>::GetResourcesManager() const {
+    return resources_manager_;
 }
 
 template <class ModelType, class ViewType>

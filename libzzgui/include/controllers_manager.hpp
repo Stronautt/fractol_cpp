@@ -29,13 +29,13 @@ namespace zzgui {
 
 class EventHandler;
 class WindowsManager;
-class ResourceManager;
+class ResourcesManager;
 class BaseController;
 
 class ControllersManager final {
   public:
     ControllersManager(std::weak_ptr<EventHandler> event_handler_, std::weak_ptr<WindowsManager> windows_manager_,
-                       std::weak_ptr<ResourceManager> resource_manager_);
+                       std::weak_ptr<ResourcesManager> resources_manager_);
 
     void Push(std::shared_ptr<BaseController> controller);
 
@@ -51,12 +51,12 @@ class ControllersManager final {
 
     std::weak_ptr<WindowsManager> GetWindowsManager() const;
 
-    std::weak_ptr<ResourceManager> GetResourceManager() const;
+    std::weak_ptr<ResourcesManager> GetResourcesManager() const;
 
   private:
     std::weak_ptr<EventHandler> event_handler_;
     std::weak_ptr<WindowsManager> windows_manager_;
-    std::weak_ptr<ResourceManager> resource_manager_;
+    std::weak_ptr<ResourcesManager> resources_manager_;
 
     std::vector<std::shared_ptr<BaseController>> controllers_;
 };
