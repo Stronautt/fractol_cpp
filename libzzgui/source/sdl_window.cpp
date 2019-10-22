@@ -22,6 +22,7 @@
 #include <SDL2/SDL.h>
 
 #include "canvas.hpp"
+#include "resources/image_resource.hpp"
 #include "sdl_utilities.hpp"
 
 namespace cozz {
@@ -37,21 +38,38 @@ SDLWindow::SDLWindow(std::string title, uint32_t width, uint32_t height)
 
 SDLWindow::SDLWindow(std::string title, uint32_t x, uint32_t y, uint32_t width, uint32_t height)
     : Window(title, !x ? SDL_WINDOWPOS_CENTERED : x, !y ? SDL_WINDOWPOS_CENTERED : y, width, height),
-      window_(SDL_CreateWindow(title.c_str(), x_, y_, width_, height_, SDL_WINDOW_RESIZABLE), &SDL_DestroyWindow),
-      window_surface_(SDL_GetWindowSurface(window_.get())),
-      canvas_(sdl2::CanvasFromSurface(window_surface_)) {}
+      window_(static_cast<void*>(SDL_CreateWindow(title.c_str(), x_, y_, width_, height_, 0)),
+              reinterpret_cast<void (*)(void*)>(&SDL_DestroyWindow)),
+      window_surface_(SDL_GetWindowSurface(static_cast<SDL_Window*>(window_.get()))),
+      canvas_(sdl2::CanvasFromSurface(static_cast<SDL_Surface*>(window_surface_))) {}
 
-void SDLWindow::Update() { SDL_UpdateWindowSurface(window_.get()); }
+void SDLWindow::Update() { SDL_UpdateWindowSurface(static_cast<SDL_Window*>(window_.get())); }
 
-Window::ID SDLWindow::GetId() const { return SDL_GetWindowID(window_.get()); }
+void SDLWindow::SetIcon(std::shared_ptr<ImageResource> icon) {
+    SDL_SetWindowIcon(static_cast<SDL_Window*>(window_.get()), static_cast<SDL_Surface*>(icon->GetImgData().get()));
+}
+
+void SDLWindow::SetResizable(bool value) {
+    SDL_SetWindowResizable(static_cast<SDL_Window*>(window_.get()), static_cast<SDL_bool>(value));
+}
+
+void SDLWindow::SetFullscreen(bool value) {
+    SDL_SetWindowFullscreen(static_cast<SDL_Window*>(window_.get()), value ? SDL_WINDOW_FULLSCREEN : 0);
+}
+
+void SDLWindow::SetFullscreenDesktop(bool value) {
+    SDL_SetWindowFullscreen(static_cast<SDL_Window*>(window_.get()), value ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+}
+
+Window::ID SDLWindow::GetId() const { return SDL_GetWindowID(static_cast<SDL_Window*>(window_.get())); }
 
 std::weak_ptr<Canvas> SDLWindow::GetCanvas() { return canvas_; }
 
 void SDLWindow::Moved() {}
 
 void SDLWindow::Resized() {
-    window_surface_ = SDL_GetWindowSurface(window_.get());
-    canvas_ = sdl2::CanvasFromSurface(window_surface_);
+    window_surface_ = SDL_GetWindowSurface(static_cast<SDL_Window*>(window_.get()));
+    canvas_ = sdl2::CanvasFromSurface(static_cast<SDL_Surface*>(window_surface_));
 }
 
 }  // namespace zzgui

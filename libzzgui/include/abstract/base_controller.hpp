@@ -27,6 +27,7 @@ namespace cozz {
 namespace zzgui {
 
 class Window;
+class ControllersManager;
 class EventHandler;
 class WindowsManager;
 class ResourcesManager;
@@ -47,6 +48,8 @@ class BaseController {
 
     virtual void Resized(std::weak_ptr<Window> window) = 0;
 
+    virtual void SetControllersManager(std::weak_ptr<ControllersManager> controllers_manager) = 0;
+
     virtual void SetEventHandler(std::weak_ptr<EventHandler> event_handler) = 0;
 
     virtual void SetWindowsManager(std::weak_ptr<WindowsManager> windows_manager) = 0;
@@ -56,6 +59,8 @@ class BaseController {
     virtual void SetBaseModel(std::shared_ptr<BaseModel> model) = 0;
 
     virtual void SetBaseView(std::shared_ptr<BaseView> controller) = 0;
+
+    virtual std::weak_ptr<ControllersManager> GetControllersManager() const = 0;
 
     virtual std::weak_ptr<EventHandler> GetEventHandler() const = 0;
 

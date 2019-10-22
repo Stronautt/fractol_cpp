@@ -21,6 +21,7 @@
 
 #include "controller.tpp"
 #include "controllers/menu.hpp"
+#include "controllers_manager.hpp"
 #include "views/menu.hpp"
 
 namespace cozz {
@@ -30,5 +31,17 @@ MenuController::MenuController() : Controller(std::make_shared<MenuView>(std::ma
 MenuController::~MenuController() = default;
 
 void MenuController::Create() {}
+
+void MenuController::OnWindowClose(const zzgui::WindowCloseEvent&) {
+    controllers_manager_.lock()->Erase(shared_from_this());
+}
+
+void MenuController::OnMandelbrotFractalButtonClick(const zzgui::MouseButtonEvent&) const {
+    controllers_manager_.lock()->Push(std::make_shared<MenuController>());
+}
+
+void MenuController::OnExitButtonClick(const zzgui::MouseButtonEvent&) const {
+    event_handler_.lock()->PushEvent(zzgui::QuitEvent());
+}
 
 }  // namespace cozz

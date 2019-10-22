@@ -24,13 +24,28 @@ namespace cozz {
 namespace zzgui {
 
 template <class WidgetType, class... Args>
-std::shared_ptr<WidgetType> WidgetsManager::Create(Args... args) {
+std::shared_ptr<WidgetType> WidgetsManager::Create(Window::ID id, const Args&... args) {
     auto widget = std::make_shared<WidgetType>(args...);
 
-    registered_callbacks_.emplace_front(event_handler_.lock()->RegisterEventCallback<MouseButtonEvent>(std::bind(&Widget::OnMouseButton, widget.get(), std::placeholders::_1)));
-    registered_callbacks_.emplace_front(event_handler_.lock()->RegisterEventCallback<MouseMotionEvent>(std::bind(&Widget::OnMouseMotion, widget.get(), std::placeholders::_1)));
+    registered_callbacks_.emplace_front(event_handler_.lock()->RegisterEventCallback<MouseButtonEvent>(
+        std::bind(&Widget::OnMouseButton, widget.get(), std::placeholders::_1), id));
+    registered_callbacks_.emplace_front(event_handler_.lock()->RegisterEventCallback<MouseMotionEvent>(
+        std::bind(&Widget::OnMouseMotion, widget.get(), std::placeholders::_1), id));
 
-    widgets_.emplace_front(widget);
+    widgets_.emplace_back(widget);
+    return widget;
+}
+
+template <class WidgetType, class... Args>
+std::shared_ptr<WidgetType> WidgetsManager::Create(const Args&... args) {
+    auto widget = std::make_shared<WidgetType>(args...);
+
+    registered_callbacks_.emplace_front(event_handler_.lock()->RegisterEventCallback<MouseButtonEvent>(
+        std::bind(&Widget::OnMouseButton, widget.get(), std::placeholders::_1)));
+    registered_callbacks_.emplace_front(event_handler_.lock()->RegisterEventCallback<MouseMotionEvent>(
+        std::bind(&Widget::OnMouseMotion, widget.get(), std::placeholders::_1)));
+
+    widgets_.emplace_back(widget);
     return widget;
 }
 

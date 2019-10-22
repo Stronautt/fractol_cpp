@@ -39,6 +39,16 @@ uint64_t Window::GetWidth() const { return width_; }
 
 uint64_t Window::GetHeight() const { return height_; }
 
+void Window::OnClose(const WindowCloseEvent& event) {
+    if (event.GetWindowId() == GetId()) {
+        if (on_close_callback_) {
+            on_close_callback_(event);
+        }
+    }
+}
+
+void Window::IfClosed(std::function<void(const WindowCloseEvent&)> callback) { on_close_callback_ = callback; }
+
 void Window::OnMove(const WindowMovedEvent& event) {
     if (event.GetWindowId() == GetId()) {
         auto new_position = event.GetPosition();

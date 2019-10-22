@@ -31,6 +31,7 @@ namespace cozz {
 namespace zzgui {
 
 class FontResource;
+class ImageResource;
 
 class Painter final {
   public:
@@ -53,7 +54,11 @@ class Painter final {
                         const Canvas::PixelColor& color = {0, 0, 0}) const;
 
     void DrawText(const Canvas::Point& p, const std::string text, std::shared_ptr<FontResource> font,
-                  const Canvas::PixelColor& color = {0xFF, 0xFF, 0xFF});
+                  const Canvas::PixelColor& color = {0xFF, 0xFF, 0xFF}) const;
+
+    void DrawImage(const Canvas::Point& p, std::shared_ptr<ImageResource> img) const;
+
+    void DrawImage(const Canvas::Point& p, std::shared_ptr<ImageResource> img, uint64_t width, uint64_t height) const;
 
   private:
     std::weak_ptr<Canvas> canvas_;

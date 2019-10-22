@@ -46,12 +46,20 @@ void ControllersManager::Push(std::shared_ptr<BaseController> controller) {
     controller->SetEventHandler(event_handler_);
     controller->SetWindowsManager(windows_manager_);
     controller->SetResourcesManager(resources_manager_);
+    controller->SetControllersManager(weak_from_this());
     model->SetBaseController(controller);
     view->SetBaseController(controller);
     controller->Create();
     model->Create();
     view->Create();
     controllers_.emplace_back(controller);
+}
+
+void ControllersManager::Erase(std::shared_ptr<BaseController> controller) {
+    auto desired = std::find(controllers_.begin(), controllers_.end(), controller);
+    if (desired != controllers_.end()) {
+        controllers_.erase(desired, desired + 1);
+    }
 }
 
 void ControllersManager::Pop() { controllers_.pop_back(); }

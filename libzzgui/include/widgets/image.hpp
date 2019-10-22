@@ -17,46 +17,38 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef LIBZZGUI_INCLUDE_SDL_APPLICATION_HPP_
-#define LIBZZGUI_INCLUDE_SDL_APPLICATION_HPP_
+#ifndef LIBZZGUI_INCLUDE_WIDGETS_IMAGE_HPP_
+#define LIBZZGUI_INCLUDE_WIDGETS_IMAGE_HPP_
 
-#include "application.hpp"
+#include "widget.hpp"
 
-#include <atomic>
-#include <cstdint>
 #include <memory>
 
 namespace cozz {
 
 namespace zzgui {
 
-class EventHandler;
-class WindowsManager;
-class ResourcesManager;
-class ControllersManager;
-class QuitEvent;
+class ImageResource;
+class Painter;
 
-class SdlApplication : public Application {
+class Image : public Widget {
   public:
-    SdlApplication();
-    virtual ~SdlApplication();
+    Image(std::shared_ptr<ImageResource> img, uint64_t x, uint64_t y);
 
-    virtual uint8_t Run() override;
+    virtual void Draw(std::shared_ptr<Painter> painter) override;
+
+    void SetImage(std::shared_ptr<ImageResource> img);
+
+    std::shared_ptr<ImageResource> GetImage() const;
+
+    virtual void DoOnMouseButton(const MouseButtonEvent& event) override;
 
   protected:
-    std::atomic<bool> is_running_;
-
-    std::shared_ptr<EventHandler> event_handler_;
-    std::shared_ptr<WindowsManager> windows_manager_;
-    std::shared_ptr<ResourcesManager> resources_manager_;
-
-    std::shared_ptr<ControllersManager> controller_manager_;
-
-    virtual void Terminate(const QuitEvent& event) override;
+    std::shared_ptr<ImageResource> img_;
 };
 
 }  // namespace zzgui
 
 }  // namespace cozz
 
-#endif  // LIBZZGUI_INCLUDE_SDL_APPLICATION_HPP_
+#endif  // LIBZZGUI_INCLUDE_WIDGETS_IMAGE_HPP_

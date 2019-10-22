@@ -19,9 +19,23 @@
 
 #include "resources_manager.hpp"
 
+#include "resources/font_resource.hpp"
+#include "resources/image_resource.hpp"
+
 namespace cozz {
 
 namespace zzgui {
+
+template <class ResourceType, class... Args>
+std::shared_ptr<ResourceType> ResourcesManager::Load(const std::string& name, const Args&... args) {
+    if (resources_.find(name) != resources_.end()) {
+        return std::dynamic_pointer_cast<ResourceType>(resources_.at(name));
+    } else {
+        auto resource = std::make_shared<ResourceType>(name, args...);
+        resources_.emplace(name, resource);
+        return resource;
+    }
+}
 
 template <class ResourceType>
 std::shared_ptr<ResourceType> ResourcesManager::Get(const std::string& name) const {

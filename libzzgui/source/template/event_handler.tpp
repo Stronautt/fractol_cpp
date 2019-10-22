@@ -24,19 +24,33 @@ namespace cozz {
 namespace zzgui {
 
 template <class EventType>
-EventHandler::HandlerID EventHandler::RegisterEventCallback(const std::function<void(const EventType&)>& callback) {
-    return callbacks_map_.emplace(MakePair(callback));
+void EventHandler::PushEvent(const EventType& event) const {
+    TriggerCallbacks(event);
 }
 
 template <class EventType>
-std::pair<Event::Type, std::function<void(const Event&)>> EventHandler::MakePair(const std::function<void(const EventType&)>& callback) const {
+EventHandler::HandlerID EventHandler::RegisterEventCallback(const std::function<void(const EventType&)>& callback) {
+    return callbacks_map_.emplace(MakePair(callback, std::make_pair(false, 0)));
+}
+
+template <class EventType>
+EventHandler::HandlerID EventHandler::RegisterEventCallback(const std::function<void(const EventType&)>& callback,
+                                                            Window::ID id) {
+    return callbacks_map_.emplace(MakePair(callback, std::make_pair(true, id)));
+}
+
+template <class EventType>
+std::pair<Event::Type, std::tuple<bool, Window::ID, std::function<void(const Event&)>>> EventHandler::MakePair(
+    const std::function<void(const EventType&)>& callback, const std::pair<bool, Window::ID>& window_id) const {
     static_assert(std::is_convertible<EventType, Event>::value);
 
-    return std::make_pair(ConvertEventType(typeid(EventType)), ConvertCallback(callback));
+    return std::make_pair(ConvertEventType(typeid(EventType)),
+                          std::make_tuple(window_id.first, window_id.second, ConvertCallback(callback)));
 }
 
 template <class EventType>
-std::function<void(const Event&)> EventHandler::ConvertCallback(const std::function<void(const EventType&)>& callback) const {
+std::function<void(const Event&)> EventHandler::ConvertCallback(
+    const std::function<void(const EventType&)>& callback) const {
     return reinterpret_cast<const std::function<void(const Event&)>&>(callback);
 }
 

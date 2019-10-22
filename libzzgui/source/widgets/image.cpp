@@ -17,39 +17,29 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_CONTROLLERS_MENU_HPP_
-#define FRACTOL_INCLUDE_CONTROLLERS_MENU_HPP_
+#include "widgets/image.hpp"
 
-#include "controller.hpp"
-
-#include "event/window_event.hpp"
+#include "event/mouse_button_event.hpp"
+#include "painter.hpp"
+#include "resources/image_resource.hpp"
 
 namespace cozz {
 
-class MenuModel;
-class MenuView;
-
 namespace zzgui {
 
-class MouseButtonEvent;
+Image::Image(std::shared_ptr<ImageResource> img, uint64_t x, uint64_t y) : Widget(x, y, 0, 0), img_(img) {
+    if (!img_) {
+        throw std::runtime_error("Bad image");
+    }
+    SetPadding(0);
+    auto img_size = img_->GetSize();
+    SetSize(img_size.first, img_size.second);
+}
+
+void Image::Draw(std::shared_ptr<Painter> painter) { painter->DrawImage({x_, y_}, img_, width_, height_); }
+
+void Image::DoOnMouseButton(const MouseButtonEvent&) {}
 
 }  // namespace zzgui
 
-class MenuController final : public zzgui::Controller<MenuModel, MenuView>,
-                             public std::enable_shared_from_this<MenuController> {
-  public:
-    MenuController();
-    ~MenuController();
-
-    virtual void Create() override;
-
-    void OnWindowClose(const zzgui::WindowCloseEvent& event);
-
-    void OnMandelbrotFractalButtonClick(const zzgui::MouseButtonEvent& event) const;
-
-    void OnExitButtonClick(const zzgui::MouseButtonEvent& event) const;
-};
-
 }  // namespace cozz
-
-#endif  // FRACTOL_INCLUDE_CONTROLLERS_MENU_HPP_

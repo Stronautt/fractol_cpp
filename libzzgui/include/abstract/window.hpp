@@ -21,14 +21,18 @@
 #define LIBZZGUI_INCLUDE_INTERFACES_WINDOW_HPP_
 
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <string>
 #include <utility>
+
+#include "event/window_event.hpp"
 
 namespace cozz {
 
 namespace zzgui {
 
+class ImageResource;
 class Canvas;
 class WindowMovedEvent;
 class WindowResizedEvent;
@@ -40,6 +44,14 @@ class Window {
     virtual ~Window();
 
     virtual void Update() = 0;
+
+    virtual void SetIcon(std::shared_ptr<ImageResource> icon) = 0;
+
+    virtual void SetResizable(bool value) = 0;
+
+    virtual void SetFullscreen(bool value) = 0;
+
+    virtual void SetFullscreenDesktop(bool value) = 0;
 
     virtual ID GetId() const = 0;
 
@@ -53,6 +65,10 @@ class Window {
 
     virtual uint64_t GetHeight() const final;
 
+    virtual void OnClose(const WindowCloseEvent& event) final;
+
+    virtual void IfClosed(std::function<void(const WindowCloseEvent&)> callback) final;
+
     virtual void OnMove(const WindowMovedEvent& event) final;
 
     virtual void OnResize(const WindowResizedEvent& event) final;
@@ -65,6 +81,8 @@ class Window {
 
     uint64_t width_;
     uint64_t height_;
+
+    std::function<void(const WindowCloseEvent&)> on_close_callback_;
 
     Window(std::string title, uint64_t x, uint64_t y, uint64_t width, uint64_t height);
 

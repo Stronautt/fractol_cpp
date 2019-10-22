@@ -53,6 +53,7 @@ add_library(${LIB_NAME} STATIC source/event/event.cpp
                                source/painter.cpp
                                source/resources/resource.cpp
                                source/resources/font_resource.cpp
+                               source/resources/image_resource.cpp
                                source/resources_manager.cpp
                                source/controllers_manager.cpp
                                source/application.cpp
@@ -60,10 +61,11 @@ add_library(${LIB_NAME} STATIC source/event/event.cpp
                                source/widgets/widget.cpp
                                source/widgets/label.cpp
                                source/widgets/button.cpp
+                               source/widgets/image.cpp
                                source/widgets_manager.cpp)
 target_include_directories(${LIB_NAME} PUBLIC include
                                               include/abstract
                                               source/template
                                        PRIVATE source/include
                                                ${SDL2_INCLUDE_DIRS})
-target_link_libraries(${LIB_NAME} PRIVATE ${SDL2_LIBRARIES} SDL2_ttf)
+target_link_libraries(${LIB_NAME} PRIVATE ${SDL2_LIBRARIES} SDL2_ttf SDL2_image)

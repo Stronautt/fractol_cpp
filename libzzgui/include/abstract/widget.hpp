@@ -45,9 +45,13 @@ class Widget {
 
     virtual void Draw(std::shared_ptr<Painter> painter) = 0;
 
-    void SetPosition(uint64_t x, uint64_t y);
+    virtual void SetPosition(uint64_t x, uint64_t y);
 
-    void SetSize(uint64_t width, uint64_t height);
+    virtual void SetSize(uint64_t width, uint64_t height);
+
+    void SetPadding(uint64_t padding);
+
+    void SetPadding(uint64_t horizontal, uint64_t vertical);
 
     void SetPadding(uint64_t left, uint64_t right, uint64_t top, uint64_t bottom);
 

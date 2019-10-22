@@ -19,17 +19,17 @@
 
 #include "resources_manager.hpp"
 
-#include "resources/font_resource.hpp"
-
 namespace cozz {
 
 namespace zzgui {
 
 std::shared_ptr<FontResource> ResourcesManager::LoadFont(const std::string& name, const std::string& font_path,
                                                          uint16_t font_size) {
-    auto font = std::make_shared<FontResource>(name, font_path, font_size);
-    resources_.emplace(name, font);
-    return font;
+    return Load<FontResource>(name, font_path, font_size);
+}
+
+std::shared_ptr<ImageResource> ResourcesManager::LoadImage(const std::string& name, const std::string& img_path) {
+    return Load<ImageResource>(name, img_path);
 }
 
 }  // namespace zzgui

@@ -36,7 +36,9 @@ Controller<ModelType, ViewType>::Controller(std::shared_ptr<ViewType> view) {
 }
 
 template <class ModelType, class ViewType>
-Controller<ModelType, ViewType>::~Controller() = default;
+Controller<ModelType, ViewType>::~Controller() {
+    event_handler_.lock()->UnregisterEventCallbacks(registered_event_callbacks_);
+}
 
 template <class ModelType, class ViewType>
 void Controller<ModelType, ViewType>::Render(float delta) {
@@ -45,13 +47,27 @@ void Controller<ModelType, ViewType>::Render(float delta) {
 }
 
 template <class ModelType, class ViewType>
-void Controller<ModelType, ViewType>::Pause() { view_->Pause(); }
+void Controller<ModelType, ViewType>::Pause() {
+    view_->Pause();
+}
 
 template <class ModelType, class ViewType>
-void Controller<ModelType, ViewType>::Resume() { view_->Resume(); }
+void Controller<ModelType, ViewType>::Resume() {
+    view_->Resume();
+}
 
 template <class ModelType, class ViewType>
-void Controller<ModelType, ViewType>::Resized(std::weak_ptr<Window> window) { view_->Resized(window); }
+void Controller<ModelType, ViewType>::Resized(std::weak_ptr<Window> window) {
+    view_->Resized(window);
+}
+
+template <class ModelType, class ViewType>
+void Controller<ModelType, ViewType>::SetControllersManager(std::weak_ptr<ControllersManager> controllers_manager) {
+    if (controllers_manager.expired()) {
+        throw std::runtime_error("Bad controllers manager");
+    }
+    controllers_manager_ = controllers_manager;
+}
 
 template <class ModelType, class ViewType>
 void Controller<ModelType, ViewType>::SetEventHandler(std::weak_ptr<EventHandler> event_handler) {
@@ -61,7 +77,8 @@ void Controller<ModelType, ViewType>::SetEventHandler(std::weak_ptr<EventHandler
     event_handler_ = event_handler;
     model_->SetEventHandler(event_handler);
     view_->SetEventHandler(event_handler);
-    event_handler_.lock()->RegisterEventCallback<WindowResizedEvent>(std::bind(&Controller<ModelType, ViewType>::OnWindowResize, this, std::placeholders::_1));
+    registered_event_callbacks_.emplace_back(event_handler_.lock()->RegisterEventCallback<WindowResizedEvent>(
+        std::bind(&Controller<ModelType, ViewType>::OnWindowResize, this, std::placeholders::_1)));
 }
 
 template <class ModelType, class ViewType>
@@ -89,7 +106,6 @@ void Controller<ModelType, ViewType>::SetBaseModel(std::shared_ptr<BaseModel> mo
     SetModel(std::static_pointer_cast<ModelType>(model));
 }
 
-
 template <class ModelType, class ViewType>
 void Controller<ModelType, ViewType>::SetBaseView(std::shared_ptr<BaseView> view) {
     SetView(std::static_pointer_cast<ViewType>(view));
@@ -109,6 +125,11 @@ void Controller<ModelType, ViewType>::SetView(std::shared_ptr<ViewType> view) {
         throw std::runtime_error("Bad view");
     }
     view_ = view;
+}
+
+template <class ModelType, class ViewType>
+std::weak_ptr<ControllersManager> Controller<ModelType, ViewType>::GetControllersManager() const {
+    return controllers_manager_;
 }
 
 template <class ModelType, class ViewType>

@@ -31,10 +31,16 @@ namespace zzgui {
 
 class Resource;
 class FontResource;
+class ImageResource;
 
 class ResourcesManager final {
   public:
     std::shared_ptr<FontResource> LoadFont(const std::string& name, const std::string& font_path, uint16_t font_size);
+
+    std::shared_ptr<ImageResource> LoadImage(const std::string& name, const std::string& img_path);
+
+    template <class ResourceType, class... Args>
+    std::shared_ptr<ResourceType> Load(const std::string& name, const Args&... args);
 
     template <class ResourceType>
     std::shared_ptr<ResourceType> Get(const std::string& name) const;

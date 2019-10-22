@@ -62,7 +62,6 @@ void View<ModelType, ControllerType>::SetBaseModel(std::weak_ptr<BaseModel> mode
     SetModel(std::static_pointer_cast<ModelType>(model.lock()));
 }
 
-
 template <class ModelType, class ControllerType>
 void View<ModelType, ControllerType>::SetBaseController(std::weak_ptr<BaseController> controller) {
     SetController(std::static_pointer_cast<ControllerType>(controller.lock()));

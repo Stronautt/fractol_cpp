@@ -25,6 +25,7 @@
 
 #include "canvas.hpp"
 #include "resources/font_resource.hpp"
+#include "resources/image_resource.hpp"
 #include "sdl_utilities.hpp"
 
 namespace cozz {
@@ -133,7 +134,7 @@ void Painter::DrawFilledRect(const Canvas::Point& p, uint64_t width, uint64_t he
 }
 
 void Painter::DrawText(const Canvas::Point& p, const std::string text, std::shared_ptr<FontResource> font,
-                       const Canvas::PixelColor& color) {
+                       const Canvas::PixelColor& color) const {
     if (!font) {
         return;
     }
@@ -145,6 +146,23 @@ void Painter::DrawText(const Canvas::Point& p, const std::string text, std::shar
                                                                             &SDL_FreeSurface);
     SDL_Rect destination{static_cast<int>(p.x), static_cast<int>(p.y), 0, 0};
     SDL_BlitSurface(font_surface.get(), nullptr, surface.get(), &destination);
+}
+
+void Painter::DrawImage(const Canvas::Point& p, std::shared_ptr<ImageResource> img) const {
+    if (!img) {
+        return;
+    }
+    auto img_size = img->GetSize();
+    DrawImage(p, img, img_size.first, img_size.second);
+}
+
+void Painter::DrawImage(const Canvas::Point& p, std::shared_ptr<ImageResource> img, uint64_t width,
+                        uint64_t height) const {
+    auto surface = std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)>(sdl2::SurfaceFromCanvas(GetCanvas()),
+                                                                            &SDL_FreeSurface);
+    SDL_Rect destination{static_cast<int>(p.x), static_cast<int>(p.y), static_cast<int>(width),
+                         static_cast<int>(height)};
+    SDL_BlitScaled(static_cast<SDL_Surface*>(img->GetImgData().get()), nullptr, surface.get(), &destination);
 }
 
 std::shared_ptr<Canvas> Painter::GetCanvas() const {

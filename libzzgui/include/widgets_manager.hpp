@@ -25,6 +25,7 @@
 
 #include "event_handler.hpp"
 #include "widget.hpp"
+#include "window.hpp"
 
 namespace cozz {
 
@@ -39,7 +40,10 @@ class WidgetsManager final {
     ~WidgetsManager();
 
     template <class WidgetType, class... Args>
-    std::shared_ptr<WidgetType> Create(Args... args);
+    std::shared_ptr<WidgetType> Create(Window::ID id, const Args&... args);
+
+    template <class WidgetType, class... Args>
+    std::shared_ptr<WidgetType> Create(const Args&... args);
 
     const std::list<std::shared_ptr<Widget>>& GetWidgets() const;
 

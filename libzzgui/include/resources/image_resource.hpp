@@ -17,46 +17,32 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef LIBZZGUI_INCLUDE_SDL_APPLICATION_HPP_
-#define LIBZZGUI_INCLUDE_SDL_APPLICATION_HPP_
+#ifndef LIBZZGUI_INCLUDE_IMAGE_RESOURCE_HPP_
+#define LIBZZGUI_INCLUDE_IMAGE_RESOURCE_HPP_
 
-#include "application.hpp"
+#include "resource.hpp"
 
-#include <atomic>
-#include <cstdint>
 #include <memory>
+#include <utility>
 
 namespace cozz {
 
 namespace zzgui {
 
-class EventHandler;
-class WindowsManager;
-class ResourcesManager;
-class ControllersManager;
-class QuitEvent;
-
-class SdlApplication : public Application {
+class ImageResource final : public Resource {
   public:
-    SdlApplication();
-    virtual ~SdlApplication();
+    ImageResource(const std::string& name, const std::string& img_path);
 
-    virtual uint8_t Run() override;
+    std::shared_ptr<void> GetImgData() const;
 
-  protected:
-    std::atomic<bool> is_running_;
+    std::pair<uint64_t, uint64_t> GetSize() const;
 
-    std::shared_ptr<EventHandler> event_handler_;
-    std::shared_ptr<WindowsManager> windows_manager_;
-    std::shared_ptr<ResourcesManager> resources_manager_;
-
-    std::shared_ptr<ControllersManager> controller_manager_;
-
-    virtual void Terminate(const QuitEvent& event) override;
+  private:
+    std::shared_ptr<void> img_;
 };
 
 }  // namespace zzgui
 
 }  // namespace cozz
 
-#endif  // LIBZZGUI_INCLUDE_SDL_APPLICATION_HPP_
+#endif  // LIBZZGUI_INCLUDE_IMAGE_RESOURCE_HPP_

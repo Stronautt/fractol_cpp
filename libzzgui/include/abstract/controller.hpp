@@ -45,6 +45,8 @@ class Controller : public BaseController {
 
     virtual void Resized(std::weak_ptr<Window> window) override;
 
+    virtual void SetControllersManager(std::weak_ptr<ControllersManager> controllers_manager) override;
+
     virtual void SetEventHandler(std::weak_ptr<EventHandler> event_handler) override;
 
     virtual void SetWindowsManager(std::weak_ptr<WindowsManager> windows_manager) override;
@@ -58,6 +60,8 @@ class Controller : public BaseController {
     void SetModel(std::shared_ptr<ModelType> model);
 
     void SetView(std::shared_ptr<ViewType> view);
+
+    virtual std::weak_ptr<ControllersManager> GetControllersManager() const override;
 
     virtual std::weak_ptr<EventHandler> GetEventHandler() const override;
 
@@ -76,6 +80,7 @@ class Controller : public BaseController {
     void RegisterWindow(std::weak_ptr<Window> window);
 
   protected:
+    std::weak_ptr<ControllersManager> controllers_manager_;
     std::weak_ptr<EventHandler> event_handler_;
     std::weak_ptr<WindowsManager> windows_manager_;
     std::weak_ptr<ResourcesManager> resources_manager_;
@@ -83,6 +88,7 @@ class Controller : public BaseController {
     std::shared_ptr<ModelType> model_;
     std::shared_ptr<ViewType> view_;
 
+    std::list<EventHandler::HandlerID> registered_event_callbacks_;
     std::list<std::weak_ptr<Window>> registered_windows_;
 
     Controller(std::shared_ptr<ViewType> view);

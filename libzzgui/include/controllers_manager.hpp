@@ -32,12 +32,14 @@ class WindowsManager;
 class ResourcesManager;
 class BaseController;
 
-class ControllersManager final {
+class ControllersManager final : public std::enable_shared_from_this<ControllersManager> {
   public:
     ControllersManager(std::weak_ptr<EventHandler> event_handler_, std::weak_ptr<WindowsManager> windows_manager_,
                        std::weak_ptr<ResourcesManager> resources_manager_);
 
     void Push(std::shared_ptr<BaseController> controller);
+
+    void Erase(std::shared_ptr<BaseController> controller);
 
     void Pop();
 

@@ -27,6 +27,7 @@
 #include "resources_manager.hpp"
 #include "view.tpp"
 #include "widget.hpp"
+#include "widgets/label.hpp"
 #include "widgets_manager.hpp"
 #include "window.hpp"
 
@@ -38,13 +39,10 @@ MenuView::~MenuView() = default;
 
 void MenuView::Create() {
     auto model = GetModel().lock();
-
-    if (model) {
-        Resized(model->GetWindow());
-    }
+    Resized(model->GetWindow());
 }
 
-void MenuView::Render(float delta) {
+void MenuView::Render(float /*delta*/) {
     auto model = GetModel().lock();
     auto window = model->GetWindow().lock();
     auto canvas = window->GetCanvas().lock();
@@ -53,8 +51,6 @@ void MenuView::Render(float delta) {
     for (const auto& widget : model->GetWidgetsManager().lock()->GetWidgets()) {
         widget->Draw(painter_);
     }
-    painter_->DrawText({0, 0}, std::to_string((uint64_t)(1.0 / delta)) + "FPS",
-                       resources_manager_.lock()->Get<zzgui::FontResource>("Ubuntu12"), {0, 0, 0});
 }
 
 void MenuView::Resized(std::weak_ptr<zzgui::Window> window) {

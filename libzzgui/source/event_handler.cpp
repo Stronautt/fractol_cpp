@@ -30,8 +30,10 @@ using std::placeholders::_1;
 EventHandler::~EventHandler() = default;
 
 std::list<EventHandler::HandlerID> EventHandler::RegisterWindowEventCallbacks(Window& window) {
-    return {RegisterEventCallback<WindowMovedEvent>(std::bind(&Window::OnMove, &window, _1)),
-            RegisterEventCallback<WindowResizedEvent>(std::bind(&Window::OnResize, &window, _1))};
+    const auto& window_id = window.GetId();
+    return {RegisterEventCallback<WindowMovedEvent>(std::bind(&Window::OnMove, &window, _1), window_id),
+            RegisterEventCallback<WindowResizedEvent>(std::bind(&Window::OnResize, &window, _1), window_id),
+            RegisterEventCallback<WindowCloseEvent>(std::bind(&Window::OnClose, &window, _1), window_id)};
 }
 
 void EventHandler::UnregisterEventCallback(HandlerID id) { callbacks_map_.erase(id); }
@@ -42,7 +44,12 @@ void EventHandler::UnregisterEventCallbacks(const std::list<HandlerID>& ids) {
 
 void EventHandler::TriggerCallbacks(const Event& e) const {
     for (auto it = callbacks_map_.find(e.GetType()); it != callbacks_map_.end() && it->first == e.GetType(); it++) {
-        const auto& event_callback = it->second;
+        const auto& window_linked = std::get<0>(it->second);
+        const auto& linked_id = std::get<1>(it->second);
+        if (window_linked && e.GetWindowId() != linked_id) {
+            continue;
+        }
+        const auto& event_callback = std::get<2>(it->second);
         event_callback(e);
     }
 }

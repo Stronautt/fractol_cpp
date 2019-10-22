@@ -37,13 +37,31 @@ class Painter;
 
 class Label : public Widget {
   public:
+    enum class TextAlign : uint8_t {
+        kLeftTop = 0,
+        kLeftBottom,
+        kRightTop,
+        kRightBottom,
+        kLeftVerticalCentered,
+        kRightVerticalCentered,
+        kTopHorizontalCentered,
+        kBottomHorizontalCentered,
+        kVerticalAndHorizontalCentered,
+    };
+
     Label(const std::string& text, std::shared_ptr<FontResource> font, uint64_t x, uint64_t y);
 
     virtual void Draw(std::shared_ptr<Painter> painter) override;
 
+    virtual void SetSize(uint64_t width, uint64_t height) override;
+
     void SetText(const std::string& text);
 
     void SetFont(std::shared_ptr<FontResource> font);
+
+    void SetAutosize(bool value);
+
+    void SetTextAlign(TextAlign text_align);
 
     void SetBorderThickness(uint16_t thickness);
 
@@ -56,6 +74,8 @@ class Label : public Widget {
     const std::string& GetText() const;
 
     std::shared_ptr<FontResource> GetFont() const;
+
+    TextAlign GetTextAlign() const;
 
     uint16_t GetBorderThickness() const;
 
@@ -71,11 +91,18 @@ class Label : public Widget {
     std::string text_;
     std::shared_ptr<FontResource> font_;
 
+    bool autosize_;
+
+    TextAlign text_align_;
+
     uint16_t border_thickness_;
 
     Canvas::PixelColor border_color_;
     Canvas::PixelColor background_color_;
     Canvas::PixelColor foreground_color_;
+
+  private:
+    std::pair<uint64_t, uint64_t> text_size_;
 };
 
 }  // namespace zzgui

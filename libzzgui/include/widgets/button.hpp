@@ -28,6 +28,8 @@ namespace zzgui {
 
 class Button final : public Label {
   public:
+    using Label::TextAlign;
+
     Button(const std::string& text, std::shared_ptr<FontResource> font, uint64_t x, uint64_t y);
 
     virtual void Draw(std::shared_ptr<Painter> painter) override;

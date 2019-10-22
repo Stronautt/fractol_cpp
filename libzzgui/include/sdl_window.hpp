@@ -27,9 +27,6 @@
 #include <memory>
 #include <string>
 
-extern "C" typedef struct SDL_Surface SDL_Surface;
-extern "C" typedef struct SDL_Window SDL_Window;
-
 namespace cozz {
 
 namespace zzgui {
@@ -43,6 +40,14 @@ class SDLWindow final : public Window {
 
     virtual void Update() override;
 
+    virtual void SetIcon(std::shared_ptr<ImageResource> icon) override;
+
+    virtual void SetResizable(bool value) override;
+
+    virtual void SetFullscreen(bool value) override;
+
+    virtual void SetFullscreenDesktop(bool value) override;
+
     virtual Window::ID GetId() const override;
 
     virtual std::weak_ptr<Canvas> GetCanvas() override;
@@ -53,8 +58,8 @@ class SDLWindow final : public Window {
     virtual void Resized() override;
 
   private:
-    std::unique_ptr<SDL_Window, std::function<void(SDL_Window*)>> window_;
-    SDL_Surface* window_surface_;
+    std::unique_ptr<void, std::function<void(void*)>> window_;
+    void* window_surface_;
     std::shared_ptr<Canvas> canvas_;
 };
 

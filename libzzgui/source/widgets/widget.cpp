@@ -43,6 +43,12 @@ void Widget::SetSize(uint64_t width, uint64_t height) {
     height_ = height + padding_top_ + padding_bottom_;
 }
 
+void Widget::SetPadding(uint64_t padding) { SetPadding(padding, padding); }
+
+void Widget::SetPadding(uint64_t horizontal, uint64_t vertical) {
+    SetPadding(horizontal, horizontal, vertical, vertical);
+}
+
 void Widget::SetPadding(uint64_t left, uint64_t right, uint64_t top, uint64_t bottom) {
     auto raw_width = width_ - padding_left_ - padding_right_;
     auto raw_height = height_ - padding_top_ - padding_bottom_;

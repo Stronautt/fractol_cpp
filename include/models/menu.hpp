@@ -34,6 +34,7 @@ namespace zzgui {
 class Window;
 class Widget;
 class WidgetsManager;
+class Label;
 
 }  // namespace zzgui
 
@@ -54,6 +55,8 @@ class MenuModel final : public zzgui::Model<MenuController> {
     std::weak_ptr<zzgui::Window> window_;
 
     std::shared_ptr<zzgui::WidgetsManager> widgets_manager_;
+
+    std::shared_ptr<zzgui::Label> fps_counter_;
 };
 
 }  // namespace cozz

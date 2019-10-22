@@ -23,8 +23,10 @@
 #include <functional>
 #include <list>
 #include <stdexcept>
+#include <tuple>
 #include <typeinfo>
 #include <unordered_map>
+#include <utility>
 
 #include "event.hpp"
 #include "event/keyboard_event.hpp"
@@ -35,23 +37,29 @@
 #include "event/window_event.hpp"
 #include "event/window_moved_event.hpp"
 #include "event/window_resized_event.hpp"
+#include "window.hpp"
 
 namespace cozz {
 
 namespace zzgui {
 
-class Window;
-
 class EventHandler {
   public:
-    using HandlerID = std::unordered_multimap<Event::Type, std::function<void(const Event&)>>::iterator;
+    using HandlerID =
+        std::unordered_multimap<Event::Type, std::tuple<bool, Window::ID, std::function<void(const Event&)>>>::iterator;
 
     virtual ~EventHandler();
 
     virtual bool Poll() const = 0;
 
     template <class EventType>
+    void PushEvent(const EventType& event) const;
+
+    template <class EventType>
     HandlerID RegisterEventCallback(const std::function<void(const EventType&)>& callback);
+
+    template <class EventType>
+    HandlerID RegisterEventCallback(const std::function<void(const EventType&)>& callback, Window::ID id);
 
     virtual std::list<HandlerID> RegisterWindowEventCallbacks(Window& window) final;
 
@@ -60,14 +68,15 @@ class EventHandler {
     virtual void UnregisterEventCallbacks(const std::list<HandlerID>& ids) final;
 
   protected:
-    std::unordered_multimap<Event::Type, std::function<void(const Event&)>> callbacks_map_;
+    std::unordered_multimap<Event::Type, std::tuple<bool, Window::ID, std::function<void(const Event&)>>>
+        callbacks_map_;
 
     virtual void TriggerCallbacks(const Event& event) const final;
 
   private:
     template <class EventType>
-    std::pair<Event::Type, std::function<void(const Event&)>> MakePair(
-        const std::function<void(const EventType&)>& callback) const;
+    std::pair<Event::Type, std::tuple<bool, Window::ID, std::function<void(const Event&)>>> MakePair(
+        const std::function<void(const EventType&)>& callback, const std::pair<bool, Window::ID>& window_id) const;
 
     Event::Type ConvertEventType(const std::type_info& type) const;
 

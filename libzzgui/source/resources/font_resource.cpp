@@ -31,7 +31,7 @@ FontResource::FontResource(const std::string& name, const std::string& font_path
     if (!TTF_WasInit() && TTF_Init() == -1) {
         throw std::runtime_error("Unable to init TTF library: " + std::string(TTF_GetError()));
     }
-    font_ = std::shared_ptr<void>(TTF_OpenFont(font_path.c_str(), font_size), &TTF_CloseFont);
+    font_.reset(TTF_OpenFont(font_path.c_str(), font_size), &TTF_CloseFont);
     if (font_ == nullptr) {
         throw std::runtime_error("Unable to load font: " + std::string(TTF_GetError()));
     }
