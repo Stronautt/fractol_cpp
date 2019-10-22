@@ -20,6 +20,7 @@
 #include "models/menu.hpp"
 
 #include "controller.tpp"
+#include "view.tpp"
 #include "controllers/menu.hpp"
 #include "controllers_manager.hpp"
 #include "views/menu.hpp"
