@@ -22,23 +22,31 @@
 
 #include "event.hpp"
 
+#include <utility>
+
 namespace cozz {
 
 namespace zzgui {
 
 class MouseWheelEvent final : public Event {
   public:
-    MouseWheelEvent(uint32_t window_id, int32_t scrolled_x, int32_t scrolled_y, bool inversed);
+    MouseWheelEvent(uint32_t window_id, uint64_t x, uint64_t y, int64_t scrolled_x, int64_t scrolled_y, bool inversed);
 
-    int32_t GetScrolledByX() const;
+    std::pair<uint64_t, uint64_t> GetPosition() const;
 
-    int32_t GetScrolledByY() const;
+    int64_t GetScrolledByX() const;
+
+    int64_t GetScrolledByY() const;
 
     bool IsInversed() const;
 
   protected:
-    int32_t scrolled_x_;
-    int32_t scrolled_y_;
+    uint64_t x_;
+    uint64_t y_;
+
+    int64_t scrolled_x_;
+    int64_t scrolled_y_;
+
     bool inversed_;
 };
 

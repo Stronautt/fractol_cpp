@@ -35,9 +35,12 @@ set(EXE_NAME ${PROJECT_NAME} CACHE STRING "Name of the executable" FORCE)
 set(LIB_NAME ${EXE_NAME}_core CACHE STRING "Name of the core library" FORCE)
 
 add_library(${LIB_NAME} STATIC source/fractol.cpp
-							   source/models/menu.cpp
-							   source/views/menu.cpp
-							   source/controllers/menu.cpp)
+                               source/models/menu.cpp
+                               source/views/menu.cpp
+                               source/controllers/menu.cpp
+                               source/models/mandelfract.cpp
+                               source/views/mandelfract.cpp
+                               source/controllers/mandelfract.cpp)
 
 target_include_directories(${LIB_NAME} PUBLIC include
                                               include/interfaces
@@ -51,4 +54,4 @@ add_subdirectory(libzzgui)
 
 # Create link in build folder to resources
 ADD_CUSTOM_TARGET(link_resources ALL
-				  COMMAND ${CMAKE_COMMAND} -E create_symlink ${PROJECT_SOURCE_DIR}/resources resources)
+                  COMMAND ${CMAKE_COMMAND} -E create_symlink ${PROJECT_SOURCE_DIR}/resources resources)

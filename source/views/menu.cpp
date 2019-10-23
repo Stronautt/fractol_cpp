@@ -35,8 +35,6 @@ namespace cozz {
 
 MenuView::MenuView(std::weak_ptr<MenuModel> model) : View(model) {}
 
-MenuView::~MenuView() = default;
-
 void MenuView::Create() {
     auto model = GetModel().lock();
     Resized(model->GetWindow());

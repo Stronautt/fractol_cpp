@@ -17,44 +17,54 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_MODELS_MENU_HPP_
-#define FRACTOL_INCLUDE_MODELS_MENU_HPP_
+#ifndef FRACTOL_INCLUDE_VIEWS_MANDELFRACT_HPP_
+#define FRACTOL_INCLUDE_VIEWS_MANDELFRACT_HPP_
 
-#include "model.hpp"
+#include "view.hpp"
 
 #include <memory>
-#include <vector>
+
+#include "canvas.hpp"
 
 namespace cozz {
 
-class MenuController;
+class MandelfractModel;
+class MandelfractController;
 
 namespace zzgui {
 
 class Window;
-class WidgetsManager;
-class Label;
+class Canvas;
+class Painter;
 
 }  // namespace zzgui
 
-class MenuModel final : public zzgui::Model<MenuController> {
+class MandelfractView final : public zzgui::View<MandelfractModel, MandelfractController> {
   public:
+    MandelfractView(std::weak_ptr<MandelfractModel> model);
+
     virtual void Create() override;
 
-    virtual void Update(float delta) override;
+    virtual void Render(float delta) override;
 
-    std::weak_ptr<zzgui::Window> GetWindow() const;
+    virtual void Resized(std::weak_ptr<zzgui::Window> window) override;
 
-    std::weak_ptr<zzgui::WidgetsManager> GetWidgetsManager() const;
+    virtual void Show() override;
+
+    virtual void Pause() override;
+
+    virtual void Resume() override;
+
+    virtual void Hide() override;
 
   private:
-    std::weak_ptr<zzgui::Window> window_;
+    std::shared_ptr<zzgui::Painter> painter_;
 
-    std::shared_ptr<zzgui::WidgetsManager> widgets_manager_;
+    zzgui::Canvas::PixelColor GetSmoothColor(double t) const;
 
-    std::shared_ptr<zzgui::Label> fps_counter_;
+    void DrawFractal(std::shared_ptr<zzgui::Canvas> canvas) const;
 };
 
 }  // namespace cozz
 
-#endif  // FRACTOL_INCLUDE_MODELS_MENU_HPP_
+#endif  // FRACTOL_INCLUDE_VIEWS_MANDELFRACT_HPP_

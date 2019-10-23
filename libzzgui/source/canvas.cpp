@@ -27,7 +27,17 @@ namespace zzgui {
 
 Canvas::PixelColor::PixelColor() : PixelColor(0, 0, 0, 0) {}
 
-Canvas::PixelColor::PixelColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) : r(r), g(g), b(b), a(a) {}
+Canvas::PixelColor::PixelColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+    : std::tuple<uint8_t, uint8_t, uint8_t, uint8_t>(r, g, b, a),
+      r(std::get<0>(*this)),
+      g(std::get<1>(*this)),
+      b(std::get<2>(*this)),
+      a(std::get<3>(*this)) {}
+
+Canvas::PixelColor& Canvas::PixelColor::operator=(const PixelColor& color) {
+    std::tuple<uint8_t, uint8_t, uint8_t, uint8_t>::operator=(color);
+    return *this;
+}
 
 Canvas::PixelFormat::PixelFormat()
     : bits_per_pixel(kMinBitsPerPixel),

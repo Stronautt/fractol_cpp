@@ -24,6 +24,7 @@
 #include <cstdint>
 #include <functional>
 #include <memory>
+#include <tuple>
 
 namespace cozz {
 
@@ -36,14 +37,17 @@ class Canvas final {
         uint64_t y;
     };
 
-    struct PixelColor {
+    class PixelColor : public std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> {
+      public:
         PixelColor();
         PixelColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 0);
 
-        uint8_t r;
-        uint8_t g;
-        uint8_t b;
-        uint8_t a;
+        PixelColor& operator=(const PixelColor& color);
+
+        uint8_t& r;
+        uint8_t& g;
+        uint8_t& b;
+        uint8_t& a;
     };
 
     struct PixelFormat final {

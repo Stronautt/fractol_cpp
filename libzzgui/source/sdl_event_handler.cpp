@@ -308,7 +308,9 @@ bool SDLEventHandler::Poll() const {
                                                   e.button.y));
                 break;
             case SDL_MOUSEWHEEL:
-                TriggerCallbacks(MouseWheelEvent(e.wheel.windowID, e.wheel.x, e.wheel.y,
+                int x, y;
+                SDL_GetMouseState(&x, &y);
+                TriggerCallbacks(MouseWheelEvent(e.wheel.windowID, x, y, e.wheel.x, e.wheel.y,
                                                  e.wheel.direction == SDL_MOUSEWHEEL_FLIPPED));
                 break;
             case SDL_QUIT:

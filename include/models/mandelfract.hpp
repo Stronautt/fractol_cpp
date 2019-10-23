@@ -17,17 +17,19 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_MODELS_MENU_HPP_
-#define FRACTOL_INCLUDE_MODELS_MENU_HPP_
+#ifndef FRACTOL_INCLUDE_MODELS_MANDELFRACT_HPP_
+#define FRACTOL_INCLUDE_MODELS_MANDELFRACT_HPP_
 
 #include "model.hpp"
 
 #include <memory>
 #include <vector>
 
+#include "event_handler.hpp"
+
 namespace cozz {
 
-class MenuController;
+class MandelfractController;
 
 namespace zzgui {
 
@@ -37,15 +39,29 @@ class Label;
 
 }  // namespace zzgui
 
-class MenuModel final : public zzgui::Model<MenuController> {
+class MandelfractModel final : public zzgui::Model<MandelfractController> {
   public:
+    ~MandelfractModel();
+
     virtual void Create() override;
 
     virtual void Update(float delta) override;
 
+    void SetScaleCoeficient(double value);
+
+    void IncScaleCoeficient(double value);
+
+    void SetOffset(double offset_x, double offset_y);
+
+    void Shift(double offset_x, double offset_y);
+
     std::weak_ptr<zzgui::Window> GetWindow() const;
 
     std::weak_ptr<zzgui::WidgetsManager> GetWidgetsManager() const;
+
+    double GetScaleCoeficient() const;
+
+    std::pair<double, double> GetOffset() const;
 
   private:
     std::weak_ptr<zzgui::Window> window_;
@@ -53,8 +69,13 @@ class MenuModel final : public zzgui::Model<MenuController> {
     std::shared_ptr<zzgui::WidgetsManager> widgets_manager_;
 
     std::shared_ptr<zzgui::Label> fps_counter_;
+
+    std::list<zzgui::EventHandler::HandlerID> registered_callbacks_;
+
+    double scale_coefficient_;
+    std::pair<double, double> offset_;
 };
 
 }  // namespace cozz
 
-#endif  // FRACTOL_INCLUDE_MODELS_MENU_HPP_
+#endif  // FRACTOL_INCLUDE_MODELS_MANDELFRACT_HPP_

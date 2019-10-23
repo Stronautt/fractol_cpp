@@ -34,11 +34,9 @@
 #include "widgets_manager.hpp"
 #include "windows_manager.hpp"
 
+using std::placeholders::_1;
+
 namespace cozz {
-
-MenuModel::MenuModel() {}
-
-MenuModel::~MenuModel() = default;
 
 void MenuModel::Create() {
     const auto& ubuntu12_font = resources_manager_.lock()->LoadFont("Ubuntu12", "resources/fonts/ubuntu.ttf", 12);
@@ -48,8 +46,7 @@ void MenuModel::Create() {
 
     window_ = windows_manager_.lock()->CreateWindow<zzgui::SDLWindow>("Main Menu", logo_image->GetSize().first, 600);
     auto window_id = window_.lock()->GetId();
-    window_.lock()->IfClosed(
-        std::bind(&MenuController::OnWindowClose, GetController().lock().get(), std::placeholders::_1));
+    window_.lock()->IfClosed(std::bind(&MenuController::OnWindowClose, GetController().lock().get(), _1));
 
     window_.lock()->SetIcon(app_icon);
 
@@ -65,8 +62,8 @@ void MenuModel::Create() {
         widgets_manager_->Create<zzgui::Button>(window_id, "Mandelbrot Fractal", ubuntu14_font, 0, 0);
     mandelbrot_fractal_button->SetAutosize(false);
     mandelbrot_fractal_button->SetSize(150, 30);
-    mandelbrot_fractal_button->OnClick(std::bind(&MenuController::OnMandelbrotFractalButtonClick,
-                                                 GetController().lock().get(), std::placeholders::_1));
+    mandelbrot_fractal_button->OnClick(
+        std::bind(&MenuController::OnMandelbrotFractalButtonClick, GetController().lock().get(), _1));
     mandelbrot_fractal_button->SetPosition(
         window_.lock()->GetWidth() / 2 - mandelbrot_fractal_button->GetSize().first - 10,
         logo_image->GetSize().second + 30);
@@ -74,8 +71,7 @@ void MenuModel::Create() {
     auto exit_button = widgets_manager_->Create<zzgui::Button>(window_id, "Exit", ubuntu14_font, 0, 0);
     exit_button->SetAutosize(false);
     exit_button->SetSize(100, 30);
-    exit_button->OnClick(
-        std::bind(&MenuController::OnExitButtonClick, GetController().lock().get(), std::placeholders::_1));
+    exit_button->OnClick(std::bind(&MenuController::OnExitButtonClick, GetController().lock().get(), _1));
     exit_button->SetPosition(window_.lock()->GetWidth() / 2 - exit_button->GetSize().first / 2,
                              window_.lock()->GetHeight() - exit_button->GetSize().second - 20);
 }

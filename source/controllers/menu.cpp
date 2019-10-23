@@ -17,19 +17,21 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "models/menu.hpp"
+#include "controllers/menu.hpp"
 
 #include "controller.tpp"
-#include "view.tpp"
-#include "controllers/menu.hpp"
+#include "controllers/mandelfract.hpp"
 #include "controllers_manager.hpp"
+#include "model.tpp"
+#include "models/mandelfract.hpp"
+#include "models/menu.hpp"
+#include "view.tpp"
+#include "views/mandelfract.hpp"
 #include "views/menu.hpp"
 
 namespace cozz {
 
 MenuController::MenuController() : Controller(std::make_shared<MenuView>(std::make_shared<MenuModel>())) {}
-
-MenuController::~MenuController() = default;
 
 void MenuController::Create() {}
 
@@ -38,7 +40,7 @@ void MenuController::OnWindowClose(const zzgui::WindowCloseEvent&) {
 }
 
 void MenuController::OnMandelbrotFractalButtonClick(const zzgui::MouseButtonEvent&) const {
-    controllers_manager_.lock()->Push(std::make_shared<MenuController>());
+    controllers_manager_.lock()->Push(std::make_shared<MandelfractController>());
 }
 
 void MenuController::OnExitButtonClick(const zzgui::MouseButtonEvent&) const {

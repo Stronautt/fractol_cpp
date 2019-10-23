@@ -23,15 +23,20 @@ namespace cozz {
 
 namespace zzgui {
 
-MouseWheelEvent::MouseWheelEvent(uint32_t window_id, int32_t scrolled_x, int32_t scrolled_y, bool inversed)
+MouseWheelEvent::MouseWheelEvent(uint32_t window_id, uint64_t x, uint64_t y, int64_t scrolled_x, int64_t scrolled_y,
+                                 bool inversed)
     : Event(Event::Type::kMouseWheel, window_id),
+      x_(x),
+      y_(y),
       scrolled_x_(scrolled_x),
       scrolled_y_(scrolled_y),
       inversed_(inversed) {}
 
-int32_t MouseWheelEvent::GetScrolledByX() const { return scrolled_x_; }
+std::pair<uint64_t, uint64_t> MouseWheelEvent::GetPosition() const { return std::make_pair(x_, y_); }
 
-int32_t MouseWheelEvent::GetScrolledByY() const { return scrolled_y_; }
+int64_t MouseWheelEvent::GetScrolledByX() const { return scrolled_x_; }
+
+int64_t MouseWheelEvent::GetScrolledByY() const { return scrolled_y_; }
 
 bool MouseWheelEvent::IsInversed() const { return inversed_; }
 

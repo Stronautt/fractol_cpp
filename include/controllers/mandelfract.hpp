@@ -17,44 +17,39 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_MODELS_MENU_HPP_
-#define FRACTOL_INCLUDE_MODELS_MENU_HPP_
+#ifndef FRACTOL_INCLUDE_CONTROLLERS_MANDELFRACT_HPP_
+#define FRACTOL_INCLUDE_CONTROLLERS_MANDELFRACT_HPP_
 
-#include "model.hpp"
+#include "controller.hpp"
 
-#include <memory>
-#include <vector>
+#include "event/window_event.hpp"
 
 namespace cozz {
 
-class MenuController;
+class MandelfractModel;
+class MandelfractView;
 
 namespace zzgui {
 
-class Window;
-class WidgetsManager;
-class Label;
+class MouseWheelEvent;
+class KeyboardEvent;
 
 }  // namespace zzgui
 
-class MenuModel final : public zzgui::Model<MenuController> {
+class MandelfractController final : public zzgui::Controller<MandelfractModel, MandelfractView>,
+                                    public std::enable_shared_from_this<MandelfractController> {
   public:
+    MandelfractController();
+
     virtual void Create() override;
 
-    virtual void Update(float delta) override;
+    void OnWindowClose(const zzgui::WindowCloseEvent& event);
 
-    std::weak_ptr<zzgui::Window> GetWindow() const;
+    void OnKeyboard(const zzgui::KeyboardEvent& event);
 
-    std::weak_ptr<zzgui::WidgetsManager> GetWidgetsManager() const;
-
-  private:
-    std::weak_ptr<zzgui::Window> window_;
-
-    std::shared_ptr<zzgui::WidgetsManager> widgets_manager_;
-
-    std::shared_ptr<zzgui::Label> fps_counter_;
+    void OnMouseWheel(const zzgui::MouseWheelEvent& event);
 };
 
 }  // namespace cozz
 
-#endif  // FRACTOL_INCLUDE_MODELS_MENU_HPP_
+#endif  // FRACTOL_INCLUDE_CONTROLLERS_MANDELFRACT_HPP_
