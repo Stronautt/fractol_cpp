@@ -48,3 +48,7 @@ add_executable(${EXE_NAME} source/main.cpp)
 target_link_libraries(${EXE_NAME} PRIVATE ${LIB_NAME})
 
 add_subdirectory(libzzgui)
+
+# Create link in build folder to resources
+ADD_CUSTOM_TARGET(link_resources ALL
+				  COMMAND ${CMAKE_COMMAND} -E create_symlink ${PROJECT_SOURCE_DIR}/resources resources)

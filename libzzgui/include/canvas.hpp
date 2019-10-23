@@ -154,7 +154,7 @@ class Canvas final {
     uint64_t pitch_;
 
     // Pixels array
-    std::shared_ptr<uint8_t[]> pixels_;
+    std::shared_ptr<uint8_t> pixels_;
 };
 
 }  // namespace zzgui

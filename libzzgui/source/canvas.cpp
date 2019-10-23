@@ -184,7 +184,7 @@ Canvas::Canvas(uint64_t width, uint64_t height, uint8_t* pixels, const PixelForm
       height_(height),
       pixel_format_(pixel_format),
       pitch_(width_ * pixel_format_.bytes_per_pixel),
-      pixels_(std::shared_ptr<uint8_t[]>(pixels, deleter)) {}
+      pixels_(std::shared_ptr<uint8_t>(pixels, deleter)) {}
 
 uint64_t Canvas::GetWidth() const { return width_; }
 
@@ -198,10 +198,10 @@ Canvas::pixel_iterator Canvas::begin() { return pixel_iterator(pixels_.get(), pi
 
 Canvas::const_pixel_iterator Canvas::cbegin() const { return const_pixel_iterator(pixels_.get(), pixel_format_); }
 
-Canvas::pixel_iterator Canvas::end() { return pixel_iterator(&pixels_[height_ * pitch_], pixel_format_); }
+Canvas::pixel_iterator Canvas::end() { return pixel_iterator(&pixels_.get()[height_ * pitch_], pixel_format_); }
 
 Canvas::const_pixel_iterator Canvas::cend() const {
-    return const_pixel_iterator(&pixels_[height_ * pitch_], pixel_format_);
+    return const_pixel_iterator(&pixels_.get()[height_ * pitch_], pixel_format_);
 }
 
 Canvas::pixel_iterator Canvas::At(uint64_t x, uint64_t y) {

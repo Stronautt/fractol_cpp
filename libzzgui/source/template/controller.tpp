@@ -77,7 +77,7 @@ void Controller<ModelType, ViewType>::SetEventHandler(std::weak_ptr<EventHandler
     event_handler_ = event_handler;
     model_->SetEventHandler(event_handler);
     view_->SetEventHandler(event_handler);
-    registered_event_callbacks_.emplace_back(event_handler_.lock()->RegisterEventCallback<WindowResizedEvent>(
+    registered_event_callbacks_.emplace_back(event_handler_.lock()->template RegisterEventCallback<WindowResizedEvent>(
         std::bind(&Controller<ModelType, ViewType>::OnWindowResize, this, std::placeholders::_1)));
 }
 
