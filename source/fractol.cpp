@@ -19,11 +19,27 @@
 
 #include "fractol.hpp"
 
+#include <iostream>
+
+#include "clpp_core.hpp"
 #include "controllers/menu.hpp"
 #include "controllers_manager.hpp"
 
 namespace cozz {
 
-Fractol::Fractol(int, char**) { controller_manager_->Set(std::make_shared<MenuController>()); }
+Fractol::Fractol(int, char**) {
+    clpp::ClppCore open_cl;
+    char buffer[128];
+
+    for (const auto& device : open_cl.GetDevices()) {
+        for (const auto& id : device.second) {
+            if (!clGetDeviceInfo(id, CL_DEVICE_NAME, sizeof(buffer), buffer, nullptr)) {
+                std::cout << buffer << std::endl;
+            }
+        }
+    }
+
+    controller_manager_->Set(std::make_shared<MenuController>());
+}
 
 }  // namespace cozz

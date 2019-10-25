@@ -19,7 +19,9 @@
 
 cmake_minimum_required(VERSION 3.5.1 FATAL_ERROR)
 
-project(fractol VERSION 0.1.0 LANGUAGES CXX)
+project(cl++ VERSION 0.1.0 LANGUAGES CXX)
+
+find_package(OpenCL REQUIRED)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -31,28 +33,12 @@ set(CMAKE_CXX_FLAGS "-Wextra -Wall -pedantic -Wno-ignored-attributes")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Werror -fsanitize=leak")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -s")
 
-set(EXE_NAME ${PROJECT_NAME} CACHE STRING "Name of the executable" FORCE)
-set(LIB_NAME ${EXE_NAME}_core CACHE STRING "Name of the core library" FORCE)
+set(LIB_NAME ${PROJECT_NAME} CACHE STRING "Name of the core library" FORCE)
 
-add_library(${LIB_NAME} STATIC source/fractol.cpp
-                               source/models/menu.cpp
-                               source/views/menu.cpp
-                               source/controllers/menu.cpp
-                               source/models/mandelfract.cpp
-                               source/views/mandelfract.cpp
-                               source/controllers/mandelfract.cpp)
+add_library(${LIB_NAME} STATIC source/clpp_core.cpp)
 
 target_include_directories(${LIB_NAME} PUBLIC include
                                               include/interfaces
-                                       PRIVATE source/include)
-target_link_libraries(${LIB_NAME} PUBLIC zzgui cl++)
-
-add_executable(${EXE_NAME} source/main.cpp)
-target_link_libraries(${EXE_NAME} PRIVATE ${LIB_NAME})
-
-add_subdirectory(libzzgui)
-add_subdirectory(libcl++)
-
-# Create link in build folder to resources
-ADD_CUSTOM_TARGET(link_resources ALL
-                  COMMAND ${CMAKE_COMMAND} -E create_symlink ${PROJECT_SOURCE_DIR}/resources resources)
+                                       PRIVATE source/include
+                                               ${OpenCL_INCLUDE_DIRS})
+target_link_libraries(${LIB_NAME} PUBLIC ${OpenCL_LIBRARIES})
