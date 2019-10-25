@@ -105,12 +105,15 @@ fill_mandelfract(__global int *buff, double pivot_x,
 }
  */
 
-zzgui::Canvas::PixelColor MandelfractView::GetSmoothColor(double t) const {
+inline zzgui::Canvas::PixelColor MandelfractView::GetSmoothColor(std::shared_ptr<MandelfractModel> model,
+                                                                 double t) const {
+    const auto& color_coefficients = model->GetColorCoefficients();
+
     zzgui::Canvas::PixelColor ret;
 
-    ret.r = 9 * (1 - t) * t * t * t * 255;
-    ret.g = 15 * (1 - t) * (1 - t) * t * t * 255;
-    ret.b = 8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255;
+    ret.r = std::get<0>(color_coefficients) * (1 - t) * t * t * t * 255;
+    ret.g = std::get<1>(color_coefficients) * (1 - t) * (1 - t) * t * t * 255;
+    ret.b = std::get<2>(color_coefficients) * (1 - t) * (1 - t) * (1 - t) * t * 255;
     return ret;
 }
 
@@ -137,14 +140,14 @@ void MandelfractView::DrawFractal(std::shared_ptr<zzgui::Canvas> canvas) const {
             zy = 0;
             zz = 0;
 
-            cx = offset.first + x * model->GetScaleCoeficient();
-            cy = offset.second + y * model->GetScaleCoeficient();
+            cx = offset.first + (x - width / 2.0) * model->GetScaleCoeficient();
+            cy = offset.second + (y - height / 2.0) * model->GetScaleCoeficient();
             while ((zx * zx + zy * zy) <= 4.0 && (++it < 128)) {
                 zz = zx * zx - zy * zy + cx;
                 zy = 2.0 * zx * zy + cy;
                 zx = zz;
             }
-            canvas->At(x, y).SetColor(GetSmoothColor(it / 128.0));
+            canvas->At(x, y).SetColor(GetSmoothColor(model, it / 128.0));
         }
     }
 }

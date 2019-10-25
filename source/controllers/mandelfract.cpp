@@ -43,52 +43,51 @@ void MandelfractController::OnWindowClose(const zzgui::WindowCloseEvent&) {
 }
 
 void MandelfractController::OnKeyboard(const zzgui::KeyboardEvent& event) {
+    if (!event.IsPressed()) {
+        return;
+    }
+
     switch (event.GetKey()) {
         case zzgui::KeyMap::kUp:
-            model_->Shift(0, -0.00002 / model_->GetScaleCoeficient());
+            model_->Move(0, -1);
             break;
         case zzgui::KeyMap::kDown:
-            model_->Shift(0, 0.00002 / model_->GetScaleCoeficient());
+            model_->Move(0, 1);
             break;
         case zzgui::KeyMap::kLeft:
-            model_->Shift(-0.00002 / model_->GetScaleCoeficient(), 0);
+            model_->Move(-1, 0);
             break;
         case zzgui::KeyMap::kRight:
-            model_->Shift(0.00002 / model_->GetScaleCoeficient(), 0);
+            model_->Move(1, 0);
             break;
         case zzgui::KeyMap::kKeyPadPlus:
-            model_->IncScaleCoeficient(-model_->GetScaleCoeficient() / 32.0);
+            model_->Zoom(true);
             break;
         case zzgui::KeyMap::kMinus:
         case zzgui::KeyMap::kKeyPadMinus:
-            model_->IncScaleCoeficient(model_->GetScaleCoeficient() / 32.0);
+            model_->Zoom(false);
+            break;
+        case zzgui::KeyMap::kR:
+            model_->RandomizeColor();
+            break;
+        case zzgui::KeyMap::kP:
+            model_->ToogleChangeColor();
+            break;
+        case zzgui::KeyMap::kPageUp:
+            model_->IncColorChangeSpeed(-0.01);
+            break;
+        case zzgui::KeyMap::kPageDown:
+            model_->IncColorChangeSpeed(0.01);
             break;
         default:
             break;
     }
 }
 
-namespace {
-inline constexpr float lerp(float v0, float v1, float t) { return (1 - t) * v0 + t * v1; }
-}  // namespace
-
 void MandelfractController::OnMouseWheel(const zzgui::MouseWheelEvent& event) {
-    const auto& offset = model_->GetOffset();
     const auto& mouse_pos = event.GetPosition();
-    const auto& window = model_->GetWindow().lock();
 
-    if (event.GetScrolledByY() > 0) {
-        model_->SetOffset(
-            lerp(offset.first,
-                 offset.first + (mouse_pos.first - window->GetWidth() / 4.0) * model_->GetScaleCoeficient(), 0.07),
-            lerp(offset.second,
-                 offset.second + (mouse_pos.second - window->GetHeight() / 4.0) * model_->GetScaleCoeficient(), 0.07));
-    }
-    if (event.GetScrolledByY() > 0) {
-        model_->IncScaleCoeficient(-model_->GetScaleCoeficient() / 32.0);
-    } else {
-        model_->IncScaleCoeficient(model_->GetScaleCoeficient() / 32.0);
-    }
+    model_->Zoom(mouse_pos.first, mouse_pos.second, event.GetScrolledByY() > 0);
 }
 
 }  // namespace cozz

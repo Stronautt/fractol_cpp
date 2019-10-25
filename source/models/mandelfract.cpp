@@ -19,6 +19,8 @@
 
 #include "models/mandelfract.hpp"
 
+#include <random>
+
 #include "controller.tpp"
 #include "controllers/mandelfract.hpp"
 #include "controllers_manager.hpp"
@@ -37,6 +39,13 @@
 using std::placeholders::_1;
 
 namespace cozz {
+
+MandelfractModel::MandelfractModel()
+    : scale_coefficient_(0.004),
+      offset_(std::make_pair(-0.5, 0)),
+      color_coefficients_(std::make_tuple(9.0, 15, 8.5)),
+      change_color_automaticaly_(false),
+      color_change_speed_(0.1F) {}
 
 MandelfractModel::~MandelfractModel() { event_handler_.lock()->UnregisterEventCallbacks(registered_callbacks_); }
 
@@ -61,12 +70,21 @@ void MandelfractModel::Create() {
 
     fps_counter_ = widgets_manager_->Create<zzgui::Label>(window_id, "", ubuntu12_font, 0, 0);
     fps_counter_->SetPosition(0, window_.lock()->GetHeight() - fps_counter_->GetSize().second);
-
-    scale_coefficient_ = 0.0040;
-    offset_ = std::make_pair(-2.1, -1.2);
 }
 
-void MandelfractModel::Update(float delta) { fps_counter_->SetText(std::to_string((uint64_t)(1.0 / delta)) + "FPS"); }
+void MandelfractModel::Update(float delta) {
+    thread_local static float update;
+
+    fps_counter_->SetText(std::to_string((uint64_t)(1.0 / delta)) + "FPS");
+
+    if (change_color_automaticaly_) {
+        update += delta;
+        if (update >= color_change_speed_) {
+            RandomizeColor();
+            update = 0;
+        }
+    }
+}
 
 void MandelfractModel::SetScaleCoeficient(double value) { scale_coefficient_ = value; }
 
@@ -77,10 +95,44 @@ void MandelfractModel::SetOffset(double offset_x, double offset_y) {
     offset_.second = offset_y;
 }
 
-void MandelfractModel::Shift(double offset_x, double offset_y) {
-    offset_.first += offset_x;
-    offset_.second += offset_y;
+namespace {
+inline constexpr double lerp(double v0, double v1, double t) { return (1 - t) * v0 + t * v1; }
+}  // namespace
+
+void MandelfractModel::Move(int8_t mult_x, int8_t mult_y) {
+    offset_.first += mult_x * scale_coefficient_ * kAmplification;
+    offset_.second += mult_y * scale_coefficient_ * kAmplification;
 }
+
+void MandelfractModel::Zoom(bool in) { Zoom(window_.lock()->GetWidth() / 2.0, window_.lock()->GetHeight() / 2.0, in); }
+
+void MandelfractModel::Zoom(uint64_t x, uint64_t y, bool in) {
+    if (in) {
+        offset_.first =
+            lerp(offset_.first, offset_.first + (x - window_.lock()->GetWidth() / 2.0) * scale_coefficient_, 0.05);
+        offset_.second =
+            lerp(offset_.second, offset_.second + (y - window_.lock()->GetHeight() / 2.0) * scale_coefficient_, 0.05);
+        scale_coefficient_ -= scale_coefficient_ / kAmplification;
+    } else {
+        scale_coefficient_ += scale_coefficient_ / kAmplification;
+    }
+}
+
+void MandelfractModel::RandomizeColor() {
+    static thread_local std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution<double> r(1.0, 8.0);
+    std::uniform_real_distribution<double> g(1.0, 15.0);
+    std::uniform_real_distribution<double> b(1.0, 10.0);
+
+    std::get<0>(color_coefficients_) = r(mt);
+    std::get<1>(color_coefficients_) = g(mt);
+    std::get<2>(color_coefficients_) = b(mt);
+}
+
+void MandelfractModel::IncColorChangeSpeed(double value) { color_change_speed_ += value; }
+
+void MandelfractModel::ToogleChangeColor() { change_color_automaticaly_ ^= true; }
 
 std::weak_ptr<zzgui::Window> MandelfractModel::GetWindow() const { return window_; }
 
@@ -88,6 +140,8 @@ std::weak_ptr<zzgui::WidgetsManager> MandelfractModel::GetWidgetsManager() const
 
 double MandelfractModel::GetScaleCoeficient() const { return scale_coefficient_; }
 
-std::pair<double, double> MandelfractModel::GetOffset() const { return offset_; }
+const std::pair<double, double>& MandelfractModel::GetOffset() const { return offset_; }
+
+const std::tuple<double, double, double>& MandelfractModel::GetColorCoefficients() const { return color_coefficients_; }
 
 }  // namespace cozz

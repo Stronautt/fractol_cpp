@@ -41,6 +41,7 @@ class Label;
 
 class MandelfractModel final : public zzgui::Model<MandelfractController> {
   public:
+    MandelfractModel();
     ~MandelfractModel();
 
     virtual void Create() override;
@@ -53,7 +54,17 @@ class MandelfractModel final : public zzgui::Model<MandelfractController> {
 
     void SetOffset(double offset_x, double offset_y);
 
-    void Shift(double offset_x, double offset_y);
+    void Move(int8_t mult_x, int8_t mult_y);
+
+    void Zoom(bool in);
+
+    void Zoom(uint64_t x, uint64_t y, bool in);
+
+    void RandomizeColor();
+
+    void IncColorChangeSpeed(double value);
+
+    void ToogleChangeColor();
 
     std::weak_ptr<zzgui::Window> GetWindow() const;
 
@@ -61,9 +72,13 @@ class MandelfractModel final : public zzgui::Model<MandelfractController> {
 
     double GetScaleCoeficient() const;
 
-    std::pair<double, double> GetOffset() const;
+    const std::pair<double, double>& GetOffset() const;
+
+    const std::tuple<double, double, double>& GetColorCoefficients() const;
 
   private:
+    constexpr static double kAmplification = 32.0;
+
     std::weak_ptr<zzgui::Window> window_;
 
     std::shared_ptr<zzgui::WidgetsManager> widgets_manager_;
@@ -74,6 +89,10 @@ class MandelfractModel final : public zzgui::Model<MandelfractController> {
 
     double scale_coefficient_;
     std::pair<double, double> offset_;
+    std::tuple<double, double, double> color_coefficients_;
+
+    bool change_color_automaticaly_;
+    double color_change_speed_;
 };
 
 }  // namespace cozz
