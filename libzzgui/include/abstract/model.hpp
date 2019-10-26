@@ -68,4 +68,6 @@ class Model : public BaseModel {
 
 }  // namespace cozz
 
+#include "model.tpp"
+
 #endif  // LIBZZGUI_INCLUDE_INTERFACES_MODEL_HPP_

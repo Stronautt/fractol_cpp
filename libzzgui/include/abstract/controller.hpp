@@ -101,4 +101,6 @@ class Controller : public BaseController {
 
 }  // namespace cozz
 
+#include "controller.tpp"
+
 #endif  // LIBZZGUI_INCLUDE_INTERFACES_CONTROLLER_HPP_

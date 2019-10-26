@@ -19,15 +19,8 @@
 
 #include "controllers/menu.hpp"
 
-#include "controller.tpp"
 #include "controllers/mandelfract.hpp"
 #include "controllers_manager.hpp"
-#include "model.tpp"
-#include "models/mandelfract.hpp"
-#include "models/menu.hpp"
-#include "view.tpp"
-#include "views/mandelfract.hpp"
-#include "views/menu.hpp"
 
 namespace cozz {
 

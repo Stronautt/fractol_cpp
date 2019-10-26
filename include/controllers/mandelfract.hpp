@@ -23,11 +23,10 @@
 #include "controller.hpp"
 
 #include "event/window_event.hpp"
+#include "models/mandelfract.hpp"
+#include "views/mandelfract.hpp"
 
 namespace cozz {
-
-class MandelfractModel;
-class MandelfractView;
 
 namespace zzgui {
 

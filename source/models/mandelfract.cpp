@@ -21,12 +21,10 @@
 
 #include <random>
 
-#include "controller.tpp"
 #include "controllers/mandelfract.hpp"
 #include "controllers_manager.hpp"
 #include "event/quit_event.hpp"
 #include "event/window_event.hpp"
-#include "model.tpp"
 #include "resources_manager.hpp"
 #include "sdl_window.hpp"
 #include "widget.hpp"

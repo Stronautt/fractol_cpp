@@ -19,12 +19,10 @@
 
 #include "models/menu.hpp"
 
-#include "controller.tpp"
 #include "controllers/menu.hpp"
 #include "controllers_manager.hpp"
 #include "event/quit_event.hpp"
 #include "event/window_event.hpp"
-#include "model.tpp"
 #include "resources_manager.hpp"
 #include "sdl_window.hpp"
 #include "widget.hpp"

@@ -75,4 +75,6 @@ class View : public BaseView {
 
 }  // namespace cozz
 
+#include "view.tpp"
+
 #endif  // LIBZZGUI_INCLUDE_INTERFACES_VIEW_HPP_

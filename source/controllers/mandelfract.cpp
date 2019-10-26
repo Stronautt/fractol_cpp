@@ -19,17 +19,10 @@
 
 #include "controllers/mandelfract.hpp"
 
-#include "controller.tpp"
 #include "controllers/menu.hpp"
 #include "controllers_manager.hpp"
 #include "event/keyboard_event.hpp"
 #include "event/mouse_wheel_event.hpp"
-#include "model.tpp"
-#include "models/mandelfract.hpp"
-#include "models/menu.hpp"
-#include "view.tpp"
-#include "views/mandelfract.hpp"
-#include "views/menu.hpp"
 
 namespace cozz {
 

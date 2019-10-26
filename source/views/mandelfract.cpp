@@ -20,12 +20,10 @@
 #include "views/mandelfract.hpp"
 
 #include "controllers/mandelfract.hpp"
-#include "model.hpp"
 #include "models/mandelfract.hpp"
 #include "painter.hpp"
 #include "resources/font_resource.hpp"
 #include "resources_manager.hpp"
-#include "view.tpp"
 #include "widget.hpp"
 #include "widgets/label.hpp"
 #include "widgets_manager.hpp"

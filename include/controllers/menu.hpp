@@ -23,11 +23,10 @@
 #include "controller.hpp"
 
 #include "event/window_event.hpp"
+#include "models/menu.hpp"
+#include "views/menu.hpp"
 
 namespace cozz {
-
-class MenuModel;
-class MenuView;
 
 namespace zzgui {
 
