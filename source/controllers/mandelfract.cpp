@@ -26,8 +26,8 @@
 
 namespace cozz {
 
-MandelfractController::MandelfractController()
-    : Controller(std::make_shared<MandelfractView>(std::make_shared<MandelfractModel>())) {}
+MandelfractController::MandelfractController(std::shared_ptr<clpp::ClppCore> cl_core)
+    : Controller(std::make_shared<MandelfractView>(std::make_shared<MandelfractModel>(cl_core))), cl_core_(cl_core) {}
 
 void MandelfractController::Create() {}
 

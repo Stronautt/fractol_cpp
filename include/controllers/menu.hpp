@@ -22,6 +22,8 @@
 
 #include "controller.hpp"
 
+#include <memory>
+
 #include "event/window_event.hpp"
 #include "models/menu.hpp"
 #include "views/menu.hpp"
@@ -34,10 +36,16 @@ class MouseButtonEvent;
 
 }  // namespace zzgui
 
+namespace clpp {
+
+class ClppCore;
+
+}  // namespace clpp
+
 class MenuController final : public zzgui::Controller<MenuModel, MenuView>,
                              public std::enable_shared_from_this<MenuController> {
   public:
-    MenuController();
+    MenuController(std::shared_ptr<clpp::ClppCore> cl_core);
 
     virtual void Create() override;
 
@@ -46,6 +54,9 @@ class MenuController final : public zzgui::Controller<MenuModel, MenuView>,
     void OnMandelbrotFractalButtonClick(const zzgui::MouseButtonEvent& event) const;
 
     void OnExitButtonClick(const zzgui::MouseButtonEvent& event) const;
+
+  private:
+    std::shared_ptr<clpp::ClppCore> cl_core_;
 };
 
 }  // namespace cozz

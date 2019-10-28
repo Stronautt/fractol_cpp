@@ -21,6 +21,8 @@
 
 #include <random>
 
+#include "clpp_core.hpp"
+#include "clpp_shader.hpp"
 #include "controllers/mandelfract.hpp"
 #include "controllers_manager.hpp"
 #include "event/quit_event.hpp"
@@ -38,8 +40,9 @@ using std::placeholders::_1;
 
 namespace cozz {
 
-MandelfractModel::MandelfractModel()
-    : scale_coefficient_(0.004),
+MandelfractModel::MandelfractModel(std::shared_ptr<clpp::ClppCore> cl_core)
+    : cl_core_(cl_core),
+      scale_coefficient_(0.004),
       offset_(std::make_pair(-0.5, 0)),
       color_coefficients_(std::make_tuple(9.0, 15, 8.5)),
       change_color_automaticaly_(false),
@@ -50,6 +53,14 @@ MandelfractModel::~MandelfractModel() { event_handler_.lock()->UnregisterEventCa
 void MandelfractModel::Create() {
     const auto& ubuntu12_font = resources_manager_.lock()->LoadFont("Ubuntu12", "resources/fonts/ubuntu.ttf", 12);
     const auto& app_icon = resources_manager_.lock()->LoadImage("AppIcon", "resources/images/icon.png");
+
+    cl_shader_ = cl_core_->LoadShader({"resources/shaders/mandelfract.cl"});
+
+    try {
+        cl_shader_->BuildFor(CL_DEVICE_TYPE_GPU);
+    } catch (const clpp::cl_error&) {
+        cl_shader_->Build();
+    }
 
     window_ = windows_manager_.lock()->CreateWindow<zzgui::SDLWindow>("Mandelbrot Fractal", 800, 600);
     auto window_id = window_.lock()->GetId();
@@ -82,6 +93,14 @@ void MandelfractModel::Update(float delta) {
             update = 0;
         }
     }
+
+    auto canvas = window_.lock()->GetCanvas().lock();
+    const auto& canvas_width = canvas->GetWidth();
+    const auto& canvas_height = canvas->GetHeight();
+
+    cl_shader_->Calculate("fill_mandelfract", canvas->GetRawPixels(), canvas_height * canvas->GetPitch(),
+                          {canvas_width, canvas_height}, offset_.first, offset_.second, scale_coefficient_,
+                          canvas_width, canvas_height);
 }
 
 void MandelfractModel::SetScaleCoeficient(double value) { scale_coefficient_ = value; }

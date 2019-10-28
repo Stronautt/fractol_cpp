@@ -21,6 +21,8 @@
 #define LIBCLPP_INCLUDE_CLPP_CORE_HPP_
 
 #include <map>
+#include <memory>
+#include <string>
 #include <vector>
 
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
@@ -34,12 +36,22 @@ namespace cozz {
 
 namespace clpp {
 
+class ClppShader;
+
 class ClppCore final {
   public:
     ClppCore();
     ~ClppCore();
 
     const std::map<cl_device_type, std::vector<cl_device_id>>& GetDevices() const;
+
+    const std::vector<cl_device_id>& GetDevices(cl_device_type* device_type) const;
+
+    const cl_context& GetContext() const;
+
+    const cl_command_queue& GetQueue(cl_device_id device) const;
+
+    std::shared_ptr<ClppShader> LoadShader(const std::vector<std::string>& source_paths) const;
 
   private:
     std::map<cl_device_type, std::vector<cl_device_id>> devices_;

@@ -19,10 +19,12 @@
 
 #include "clpp_core.hpp"
 
+#include <algorithm>
 #include <memory>
 #include <vector>
 
 #include "clpp_exception.hpp"
+#include "clpp_shader.hpp"
 
 namespace cozz {
 
@@ -65,13 +67,38 @@ ClppCore::ClppCore() {
 }
 
 ClppCore::~ClppCore() {
-    for (const auto& queue : queues_) {
-        clReleaseCommandQueue(queue.second);
-    }
+    std::for_each(queues_.begin(), queues_.end(), [](const auto& queue) { clReleaseCommandQueue(queue.second); });
     clReleaseContext(context_);
 }
 
 const std::map<cl_device_type, std::vector<cl_device_id>>& ClppCore::GetDevices() const { return devices_; }
+
+const std::vector<cl_device_id>& ClppCore::GetDevices(cl_device_type* device_type) const {
+    try {
+        if (!devices_.empty() && *device_type == CL_DEVICE_TYPE_DEFAULT) {
+            *device_type = devices_.begin()->first;
+            return devices_.begin()->second;
+        } else {
+            return devices_.at(*device_type);
+        }
+    } catch (const std::out_of_range&) {
+        throw cl_error("No devices with specified type found");
+    }
+}
+
+const cl_context& ClppCore::GetContext() const { return context_; }
+
+const cl_command_queue& ClppCore::GetQueue(cl_device_id device) const {
+    try {
+        return queues_.at(device);
+    } catch (const std::out_of_range&) {
+        throw cl_error("No queues with specified device id found");
+    }
+}
+
+std::shared_ptr<ClppShader> ClppCore::LoadShader(const std::vector<std::string>& source_paths) const {
+    return std::make_shared<ClppShader>(*this, source_paths);
+}
 
 void ClppCore::QueryDevices(cl_platform_id platform_id, cl_device_type device_type) {
     uint32_t number_of_devices;

@@ -34,7 +34,6 @@ class MandelfractController;
 namespace zzgui {
 
 class Window;
-class Canvas;
 class Painter;
 
 }  // namespace zzgui
@@ -59,10 +58,6 @@ class MandelfractView final : public zzgui::View<MandelfractModel, MandelfractCo
 
   private:
     std::shared_ptr<zzgui::Painter> painter_;
-
-    zzgui::Canvas::PixelColor GetSmoothColor(std::shared_ptr<MandelfractModel> model, double t) const;
-
-    void DrawFractal(std::shared_ptr<zzgui::Canvas> canvas) const;
 };
 
 }  // namespace cozz
