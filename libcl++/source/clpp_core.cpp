@@ -110,7 +110,11 @@ void ClppCore::QueryDevices(cl_platform_id platform_id, cl_device_type device_ty
     if (clGetDeviceIDs(platform_id, device_type, device_ids.size(), device_ids.data(), NULL) || device_ids.empty()) {
         return;
     }
-    devices_[device_type] = std::move(device_ids);
+    try {
+        devices_.at(device_type).insert(devices_.at(device_type).end(), device_ids.begin(), device_ids.end());
+    } catch (const std::out_of_range&) {
+        devices_[device_type] = std::move(device_ids);
+    }
 }
 
 }  // namespace clpp
