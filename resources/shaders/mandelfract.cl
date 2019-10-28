@@ -29,8 +29,8 @@ static inline unsigned int	ft_smooth(double it, double max_it)
 }
 
 __kernel void
-fill_mandelfract(__global int *buff, double pivot_x,
-				double pivot_y, double dx, int width, int height)
+fill_mandelfract(__global unsigned int *buff, double pivot_x,
+				double pivot_y, double dx, unsigned long width, unsigned long height)
 {
 	int				it = 0;
 	int				x = get_global_id(0);
@@ -38,8 +38,8 @@ fill_mandelfract(__global int *buff, double pivot_x,
 	double3			z = (double3) 0;
 	double2			c;
 
-	c = (double2)(pivot_x + (x - width / 2) * dx,
-		pivot_y + (y - height / 2) * dx);
+	c = (double2)(pivot_x + (x - width / 2.0) * dx,
+		pivot_y + (y - height / 2.0) * dx);
 	while ((z.x * z.x + z.y * z.y) <= 4.0 && (++it < MAX_ITERATIONS))
 	{
 		z.z = z.x * z.x - z.y * z.y + c.x;
