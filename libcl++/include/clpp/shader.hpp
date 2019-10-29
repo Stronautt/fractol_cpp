@@ -35,12 +35,12 @@ namespace cozz {
 
 namespace clpp {
 
-class ClppCore;
+class Platform;
 
-class ClppShader final {
+class Shader final {
   public:
-    ClppShader(const ClppCore& cl_core, const std::vector<std::string>& source_paths);
-    ~ClppShader();
+    Shader(const Platform& cl_platform, const std::vector<std::string>& source_paths);
+    ~Shader();
 
     void Build(const std::string& build_options = "");
 
@@ -51,7 +51,7 @@ class ClppShader final {
                    const Args&... args);
 
   private:
-    const ClppCore& cl_core_;
+    const Platform& cl_platform_;
 
     cl_device_type device_build_for_;
 
@@ -76,6 +76,6 @@ class ClppShader final {
 
 }  // namespace cozz
 
-#include "clpp_shader.tpp"
+#include "clpp/shader.tpp"
 
 #endif  // LIBCLPP_INCLUDE_CLPP_SHADER_HPP_

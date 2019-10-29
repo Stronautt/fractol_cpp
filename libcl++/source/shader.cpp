@@ -17,22 +17,22 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "clpp_shader.hpp"
+#include "clpp/shader.hpp"
 
 #include <algorithm>
 #include <fstream>
 #include <memory>
 #include <sstream>
 
-#include "clpp_core.hpp"
-#include "clpp_exception.hpp"
+#include "clpp/exception.hpp"
+#include "clpp/platform.hpp"
 
 namespace cozz {
 
 namespace clpp {
 
-ClppShader::ClppShader(const ClppCore& cl_core, const std::vector<std::string>& source_paths)
-    : cl_core_(cl_core), device_build_for_(CL_DEVICE_TYPE_DEFAULT), device_memory_region_({nullptr, 0}) {
+Shader::Shader(const Platform& cl_platform, const std::vector<std::string>& source_paths)
+    : cl_platform_(cl_platform), device_build_for_(CL_DEVICE_TYPE_DEFAULT), device_memory_region_({nullptr, 0}) {
     if (source_paths.empty()) {
         throw cl_error("No source files were specified");
     }
@@ -70,14 +70,14 @@ ClppShader::ClppShader(const ClppCore& cl_core, const std::vector<std::string>& 
     }
 
     cl_int error;
-    cl_program_ = clCreateProgramWithSource(cl_core_.GetContext(), sources_count, const_cast<const char**>(arr.get()),
-                                            source_sizes.data(), &error);
+    cl_program_ = clCreateProgramWithSource(cl_platform_.GetContext(), sources_count,
+                                            const_cast<const char**>(arr.get()), source_sizes.data(), &error);
     if (error) {
         throw cl_error("Can't create shader from the sources");
     }
 }
 
-ClppShader::~ClppShader() {
+Shader::~Shader() {
     if (device_memory_region_.first != nullptr) {
         clReleaseMemObject(device_memory_region_.first);
     }
@@ -85,28 +85,27 @@ ClppShader::~ClppShader() {
     clReleaseProgram(cl_program_);
 }
 
-void ClppShader::Build(const std::string& build_options) { BuildFor(CL_DEVICE_TYPE_DEFAULT, build_options); }
+void Shader::Build(const std::string& build_options) { BuildFor(CL_DEVICE_TYPE_DEFAULT, build_options); }
 
-void ClppShader::BuildFor(cl_device_type device_type, const std::string& build_options) {
-    const auto& devices = cl_core_.GetDevices(&device_type);
+void Shader::BuildFor(cl_device_type device_type, const std::string& build_options) {
     device_build_for_ = device_type;
-    if (clBuildProgram(cl_program_, devices.size(), devices.data(), build_options.c_str(), nullptr, nullptr)) {
+    if (clBuildProgram(cl_program_, 0, nullptr, build_options.c_str(), nullptr, nullptr)) {
         throw cl_error("Can't build the shader");
     }
 }
 
-void ClppShader::ReallocateDeviceMemoryRegion(uint64_t size) {
+void Shader::ReallocateDeviceMemoryRegion(uint64_t size) {
     if (device_memory_region_.first != nullptr && clReleaseMemObject(device_memory_region_.first)) {
         throw cl_error("Can't release device memory region");
     }
     cl_int error;
-    device_memory_region_.first = clCreateBuffer(cl_core_.GetContext(), CL_MEM_READ_WRITE, size, nullptr, &error);
+    device_memory_region_.first = clCreateBuffer(cl_platform_.GetContext(), CL_MEM_READ_WRITE, size, nullptr, &error);
     if (error) {
         throw cl_error("Can't create device memory region");
     }
 }
 
-cl_kernel ClppShader::GetKernel(const std::string& name) {
+cl_kernel Shader::GetKernel(const std::string& name) {
     try {
         return cl_kernels_.at(name);
     } catch (const std::out_of_range&) {

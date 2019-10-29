@@ -35,8 +35,9 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -s")
 
 set(LIB_NAME ${PROJECT_NAME} CACHE STRING "Name of the core library" FORCE)
 
-add_library(${LIB_NAME} STATIC source/clpp_core.cpp
-							   source/clpp_shader.cpp)
+add_library(${LIB_NAME} STATIC source/core.cpp
+							   source/platform.cpp
+							   source/shader.cpp)
 
 target_include_directories(${LIB_NAME} PUBLIC include
                                               include/interfaces

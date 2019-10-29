@@ -39,14 +39,14 @@ class KeyboardEvent;
 
 namespace clpp {
 
-class ClppCore;
+class Core;
 
 }  // namespace clpp
 
 class MandelfractController final : public zzgui::Controller<MandelfractModel, MandelfractView>,
                                     public std::enable_shared_from_this<MandelfractController> {
   public:
-    MandelfractController(std::shared_ptr<clpp::ClppCore> cl_core);
+    MandelfractController(std::shared_ptr<clpp::Core> cl_core);
 
     virtual void Create() override;
 
@@ -57,7 +57,7 @@ class MandelfractController final : public zzgui::Controller<MandelfractModel, M
     void OnMouseWheel(const zzgui::MouseWheelEvent& event);
 
   private:
-    std::shared_ptr<clpp::ClppCore> cl_core_;
+    std::shared_ptr<clpp::Core> cl_core_;
 };
 
 }  // namespace cozz

@@ -19,15 +19,14 @@
 
 #include "fractol.hpp"
 
-#include "clpp_core.hpp"
-#include "clpp_shader.hpp"
+#include "clpp/core.hpp"
 #include "controllers/menu.hpp"
 #include "controllers_manager.hpp"
 
 namespace cozz {
 
 Fractol::Fractol(int, char**) {
-    auto open_cl = std::make_shared<clpp::ClppCore>();
+    auto open_cl = std::make_shared<clpp::Core>();
 
     controller_manager_->Set(std::make_shared<MenuController>(open_cl));
 }

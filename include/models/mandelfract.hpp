@@ -41,14 +41,14 @@ class Label;
 
 namespace clpp {
 
-class ClppCore;
-class ClppShader;
+class Core;
+class Shader;
 
 }  // namespace clpp
 
 class MandelfractModel final : public zzgui::Model<MandelfractController> {
   public:
-    MandelfractModel(std::shared_ptr<clpp::ClppCore> cl_core);
+    MandelfractModel(std::shared_ptr<clpp::Core> cl_core);
     ~MandelfractModel();
 
     virtual void Create() override;
@@ -86,9 +86,9 @@ class MandelfractModel final : public zzgui::Model<MandelfractController> {
   private:
     constexpr static double kAmplification = 32.0;
 
-    std::shared_ptr<clpp::ClppCore> cl_core_;
+    std::shared_ptr<clpp::Core> cl_core_;
 
-    std::shared_ptr<clpp::ClppShader> cl_shader_;
+    std::shared_ptr<clpp::Shader> cl_shader_;
 
     std::weak_ptr<zzgui::Window> window_;
 

@@ -21,8 +21,8 @@
 
 #include <random>
 
-#include "clpp_core.hpp"
-#include "clpp_shader.hpp"
+#include "clpp/core.hpp"
+#include "clpp/shader.hpp"
 #include "controllers/mandelfract.hpp"
 #include "controllers_manager.hpp"
 #include "event/quit_event.hpp"
@@ -40,7 +40,7 @@ using std::placeholders::_1;
 
 namespace cozz {
 
-MandelfractModel::MandelfractModel(std::shared_ptr<clpp::ClppCore> cl_core)
+MandelfractModel::MandelfractModel(std::shared_ptr<clpp::Core> cl_core)
     : cl_core_(cl_core),
       scale_coefficient_(0.004),
       offset_(std::make_pair(-0.5, 0)),
@@ -54,7 +54,11 @@ void MandelfractModel::Create() {
     const auto& ubuntu12_font = resources_manager_.lock()->LoadFont("Ubuntu12", "resources/fonts/ubuntu.ttf", 12);
     const auto& app_icon = resources_manager_.lock()->LoadImage("AppIcon", "resources/images/icon.png");
 
-    cl_shader_ = cl_core_->LoadShader({"resources/shaders/mandelfract.cl"});
+    try {
+        cl_shader_ = cl_core_->GetPlatform("nvidia")->LoadShader({"resources/shaders/mandelfract.cl"});
+    } catch (const clpp::cl_error&) {
+        cl_shader_ = cl_core_->GetPlatform()->LoadShader({"resources/shaders/mandelfract.cl"});
+    }
 
     try {
         cl_shader_->BuildFor(CL_DEVICE_TYPE_GPU);

@@ -23,7 +23,6 @@
 #include <map>
 #include <memory>
 #include <string>
-#include <vector>
 
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 #ifdef __APPLE__
@@ -36,31 +35,18 @@ namespace cozz {
 
 namespace clpp {
 
-class ClppShader;
+class Platform;
+class Shader;
 
-class ClppCore final {
+class Core final {
   public:
-    ClppCore();
-    ~ClppCore();
+    Core();
 
-    const std::map<cl_device_type, std::vector<cl_device_id>>& GetDevices() const;
-
-    const std::vector<cl_device_id>& GetDevices(cl_device_type* device_type) const;
-
-    const cl_context& GetContext() const;
-
-    const cl_command_queue& GetQueue(cl_device_id device) const;
-
-    std::shared_ptr<ClppShader> LoadShader(const std::vector<std::string>& source_paths) const;
+    std::shared_ptr<Platform> GetPlatform() const;
+    std::shared_ptr<Platform> GetPlatform(const std::string& name) const;
 
   private:
-    std::map<cl_device_type, std::vector<cl_device_id>> devices_;
-
-    cl_context context_;
-
-    std::map<cl_device_id, cl_command_queue> queues_;
-
-    void QueryDevices(cl_platform_id platform_id, cl_device_type device_type);
+    std::map<std::string, std::shared_ptr<Platform>> platforms_;
 };
 
 }  // namespace clpp
