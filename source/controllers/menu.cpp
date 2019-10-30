@@ -35,7 +35,11 @@ void MenuController::OnWindowClose(const zzgui::WindowCloseEvent&) {
 }
 
 void MenuController::OnMandelbrotFractalButtonClick(const zzgui::MouseButtonEvent&) const {
-    controllers_manager_.lock()->Push(std::make_shared<MandelfractController>(app_, cl_core_));
+    try {
+        controllers_manager_.lock()->Push(std::make_shared<MandelfractController>(app_, cl_core_));
+    } catch (const std::exception& e) {
+        app_.ShowErrorMessage(e.what());
+    }
 }
 
 void MenuController::OnExitButtonClick(const zzgui::MouseButtonEvent&) const {

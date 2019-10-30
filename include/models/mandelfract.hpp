@@ -48,6 +48,17 @@ class Shader;
 
 class MandelfractModel final : public zzgui::Model<MandelfractController> {
   public:
+    struct Parameters {
+        double scale_coefficient;
+        double pivot_x;
+        double pivot_y;
+        struct {
+            double r;
+            double g;
+            double b;
+        } color_coefficients;
+    };
+
     MandelfractModel(std::shared_ptr<clpp::Core> cl_core);
     ~MandelfractModel();
 
@@ -77,11 +88,7 @@ class MandelfractModel final : public zzgui::Model<MandelfractController> {
 
     std::weak_ptr<zzgui::WidgetsManager> GetWidgetsManager() const;
 
-    double GetScaleCoeficient() const;
-
-    const std::pair<double, double>& GetOffset() const;
-
-    const std::tuple<double, double, double>& GetColorCoefficients() const;
+    const Parameters& GetParameters() const;
 
   private:
     constexpr static double kAmplification = 32.0;
@@ -98,9 +105,7 @@ class MandelfractModel final : public zzgui::Model<MandelfractController> {
 
     std::list<zzgui::EventHandler::HandlerID> registered_callbacks_;
 
-    double scale_coefficient_;
-    std::pair<double, double> offset_;
-    std::tuple<double, double, double> color_coefficients_;
+    Parameters parameters_;
 
     bool change_color_automaticaly_;
     double color_change_speed_;

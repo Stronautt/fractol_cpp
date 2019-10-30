@@ -41,12 +41,7 @@ using std::placeholders::_1;
 namespace cozz {
 
 MandelfractModel::MandelfractModel(std::shared_ptr<clpp::Core> cl_core)
-    : cl_core_(cl_core),
-      scale_coefficient_(0.004),
-      offset_(std::make_pair(-0.5, 0)),
-      color_coefficients_(std::make_tuple(9.0, 15, 8.5)),
-      change_color_automaticaly_(false),
-      color_change_speed_(0.1F) {}
+    : cl_core_(cl_core), parameters_{0.004, -0.5, 0, {9, 15, 8.5}}, color_change_speed_(0.1F) {}
 
 MandelfractModel::~MandelfractModel() { event_handler_.lock()->UnregisterEventCallbacks(registered_callbacks_); }
 
@@ -103,17 +98,16 @@ void MandelfractModel::Update(float delta) {
     const auto& canvas_height = canvas->GetHeight();
 
     cl_shader_->Calculate("fill_mandelfract", canvas->GetRawPixels(), canvas_height * canvas->GetPitch(),
-                          {canvas_width, canvas_height}, offset_.first, offset_.second, scale_coefficient_,
-                          canvas_width, canvas_height);
+                          {canvas_width, canvas_height}, parameters_);
 }
 
-void MandelfractModel::SetScaleCoeficient(double value) { scale_coefficient_ = value; }
+void MandelfractModel::SetScaleCoeficient(double value) { parameters_.scale_coefficient = value; }
 
-void MandelfractModel::IncScaleCoeficient(double value) { scale_coefficient_ += value; }
+void MandelfractModel::IncScaleCoeficient(double value) { parameters_.scale_coefficient += value; }
 
 void MandelfractModel::SetOffset(double offset_x, double offset_y) {
-    offset_.first = offset_x;
-    offset_.second = offset_y;
+    parameters_.pivot_x = offset_x;
+    parameters_.pivot_y = offset_y;
 }
 
 namespace {
@@ -121,21 +115,23 @@ inline constexpr double lerp(double v0, double v1, double t) { return (1 - t) * 
 }  // namespace
 
 void MandelfractModel::Move(int8_t mult_x, int8_t mult_y) {
-    offset_.first += mult_x * scale_coefficient_ * kAmplification;
-    offset_.second += mult_y * scale_coefficient_ * kAmplification;
+    parameters_.pivot_x += mult_x * parameters_.scale_coefficient * kAmplification;
+    parameters_.pivot_y += mult_y * parameters_.scale_coefficient * kAmplification;
 }
 
 void MandelfractModel::Zoom(bool in) { Zoom(window_.lock()->GetWidth() / 2.0, window_.lock()->GetHeight() / 2.0, in); }
 
 void MandelfractModel::Zoom(uint64_t x, uint64_t y, bool in) {
     if (in) {
-        offset_.first =
-            lerp(offset_.first, offset_.first + (x - window_.lock()->GetWidth() / 2.0) * scale_coefficient_, 0.05);
-        offset_.second =
-            lerp(offset_.second, offset_.second + (y - window_.lock()->GetHeight() / 2.0) * scale_coefficient_, 0.05);
-        scale_coefficient_ -= scale_coefficient_ / kAmplification;
+        parameters_.pivot_x =
+            lerp(parameters_.pivot_x,
+                 parameters_.pivot_x + (x - window_.lock()->GetWidth() / 2.0) * parameters_.scale_coefficient, 0.05);
+        parameters_.pivot_y =
+            lerp(parameters_.pivot_y,
+                 parameters_.pivot_y + (y - window_.lock()->GetHeight() / 2.0) * parameters_.scale_coefficient, 0.05);
+        parameters_.scale_coefficient -= parameters_.scale_coefficient / kAmplification;
     } else {
-        scale_coefficient_ += scale_coefficient_ / kAmplification;
+        parameters_.scale_coefficient += parameters_.scale_coefficient / kAmplification;
     }
 }
 
@@ -146,9 +142,9 @@ void MandelfractModel::RandomizeColor() {
     std::uniform_real_distribution<double> g(1.0, 15.0);
     std::uniform_real_distribution<double> b(1.0, 10.0);
 
-    std::get<0>(color_coefficients_) = r(mt);
-    std::get<1>(color_coefficients_) = g(mt);
-    std::get<2>(color_coefficients_) = b(mt);
+    parameters_.color_coefficients.r = r(mt);
+    parameters_.color_coefficients.g = g(mt);
+    parameters_.color_coefficients.b = b(mt);
 }
 
 void MandelfractModel::IncColorChangeSpeed(double value) { color_change_speed_ += value; }
@@ -159,10 +155,6 @@ std::weak_ptr<zzgui::Window> MandelfractModel::GetWindow() const { return window
 
 std::weak_ptr<zzgui::WidgetsManager> MandelfractModel::GetWidgetsManager() const { return widgets_manager_; }
 
-double MandelfractModel::GetScaleCoeficient() const { return scale_coefficient_; }
-
-const std::pair<double, double>& MandelfractModel::GetOffset() const { return offset_; }
-
-const std::tuple<double, double, double>& MandelfractModel::GetColorCoefficients() const { return color_coefficients_; }
+const MandelfractModel::Parameters& MandelfractModel::GetParameters() const { return parameters_; }
 
 }  // namespace cozz
