@@ -19,17 +19,31 @@
 
 #include "controllers/mandelfract.hpp"
 
+#include "application.hpp"
 #include "controllers/menu.hpp"
 #include "controllers_manager.hpp"
 #include "event/keyboard_event.hpp"
 #include "event/mouse_wheel_event.hpp"
+#include "event/window_event.hpp"
+#include "windows_manager.hpp"
 
 namespace cozz {
 
-MandelfractController::MandelfractController(std::shared_ptr<clpp::Core> cl_core)
-    : Controller(std::make_shared<MandelfractView>(std::make_shared<MandelfractModel>(cl_core))), cl_core_(cl_core) {}
+MandelfractController::MandelfractController(const zzgui::Application& app, std::shared_ptr<clpp::Core> cl_core)
+    : Controller(std::make_shared<MandelfractView>(std::make_shared<MandelfractModel>(cl_core))),
+      app_(app),
+      cl_core_(cl_core) {}
 
 void MandelfractController::Create() {}
+
+void MandelfractController::Render(float delta) {
+    try {
+        Controller::Render(delta);
+    } catch (const std::exception& e) {
+        app_.ShowErrorMessage(e.what());
+        model_->GetWindow().lock()->Close(event_handler_.lock());
+    }
+}
 
 void MandelfractController::OnWindowClose(const zzgui::WindowCloseEvent&) {
     controllers_manager_.lock()->Erase(shared_from_this());

@@ -21,6 +21,8 @@
 
 #include <chrono>
 
+#include "event/quit_event.hpp"
+
 namespace cozz {
 
 namespace zzgui {
@@ -39,6 +41,8 @@ void Application::UpdateDeltaTime() {
                       .count();
     tp = std::chrono::high_resolution_clock::now();
 }
+
+void Application::Terminate() { Terminate(QuitEvent()); }
 
 }  // namespace zzgui
 

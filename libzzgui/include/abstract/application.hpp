@@ -21,6 +21,7 @@
 #define LIBZZGUI_INCLUDE_INTERFACES_APPLICATION_HPP_
 
 #include <cstdint>
+#include <string>
 
 namespace cozz {
 
@@ -30,11 +31,18 @@ class QuitEvent;
 
 class Application {
   public:
+    enum ExitCode : int { kSuccess = 0, kGeneralFailure, kFatalError };
+
     virtual ~Application();
 
     static float GetDeltaTime();
 
     virtual uint8_t Run() = 0;
+
+    virtual void ShowInfoMessage(const std::string& message) const = 0;
+    virtual void ShowErrorMessage(const std::string& message) const = 0;
+
+    void Terminate();
 
   protected:
     static void UpdateDeltaTime();

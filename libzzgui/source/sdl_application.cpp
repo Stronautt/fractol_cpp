@@ -23,7 +23,10 @@
 #include <memory>
 #include <thread>
 
+#include <SDL2/SDL.h>
+
 #include "controllers_manager.hpp"
+#include "event/quit_event.hpp"
 #include "event_handler.hpp"
 #include "resources_manager.hpp"
 #include "sdl_event_handler.hpp"
@@ -41,7 +44,8 @@ SdlApplication::SdlApplication()
       resources_manager_(std::make_shared<zzgui::ResourcesManager>()),
       controller_manager_(std::make_shared<ControllersManager>(event_handler_, windows_manager_, resources_manager_)) {
     event_handler_->RegisterEventCallback<QuitEvent>(
-        std::bind(&SdlApplication::Terminate, this, std::placeholders::_1));
+        std::bind(static_cast<void (SdlApplication::*)(const QuitEvent&)>(&SdlApplication::Terminate), this,
+                  std::placeholders::_1));
 }
 
 SdlApplication::~SdlApplication() = default;
@@ -49,23 +53,40 @@ SdlApplication::~SdlApplication() = default;
 void SdlApplication::Terminate(const QuitEvent&) { is_running_ = false; }
 
 uint8_t SdlApplication::Run() {
-    static thread_local auto tp = std::chrono::high_resolution_clock::now();
-    std::chrono::milliseconds delay;
+    try {
+        static thread_local auto tp = std::chrono::high_resolution_clock::now();
+        std::chrono::milliseconds delay;
 
-    while (is_running_) {
-        event_handler_->Poll();
-        if (is_running_) {
-            controller_manager_->Render();
-            windows_manager_->UpdateWindows();
-            UpdateDeltaTime();
+        while (is_running_) {
+            event_handler_->Poll();
+            if (is_running_) {
+                controller_manager_->Render();
+                windows_manager_->UpdateWindows();
+                UpdateDeltaTime();
 
-            const auto& now = std::chrono::high_resolution_clock::now();
-            delay = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::milliseconds(17) - (now - tp));
-            std::this_thread::sleep_for(delay);
-            tp = now;
+                const auto& now = std::chrono::high_resolution_clock::now();
+                delay =
+                    std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::milliseconds(17) - (now - tp));
+                std::this_thread::sleep_for(delay);
+                tp = now;
+            }
         }
+    } catch (const std::exception& e) {
+        ShowErrorMessage(e.what());
+        return Application::ExitCode::kGeneralFailure;
+    } catch (...) {
+        ShowErrorMessage("Unexpected fatal error occured");
+        return Application::ExitCode::kFatalError;
     }
-    return 0;
+    return Application::ExitCode::kSuccess;
+}
+
+void SdlApplication::ShowInfoMessage(const std::string& message) const {
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Info", message.c_str(), nullptr);
+}
+
+void SdlApplication::ShowErrorMessage(const std::string& message) const {
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", message.c_str(), nullptr);
 }
 
 }  // namespace zzgui

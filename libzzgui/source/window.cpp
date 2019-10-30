@@ -19,8 +19,10 @@
 
 #include "window.hpp"
 
+#include "event/window_event.hpp"
 #include "event/window_moved_event.hpp"
 #include "event/window_resized_event.hpp"
+#include "event_handler.hpp"
 
 namespace cozz {
 
@@ -38,6 +40,8 @@ std::pair<int64_t, int64_t> Window::GetPosition() const { return std::make_pair(
 uint64_t Window::GetWidth() const { return width_; }
 
 uint64_t Window::GetHeight() const { return height_; }
+
+void Window::Close(std::shared_ptr<EventHandler> event_handler) { event_handler->PushEvent(WindowCloseEvent(GetId())); }
 
 void Window::OnClose(const WindowCloseEvent& event) {
     if (event.GetWindowId() == GetId()) {

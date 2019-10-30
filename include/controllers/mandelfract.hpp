@@ -32,6 +32,7 @@ namespace cozz {
 
 namespace zzgui {
 
+class Application;
 class MouseWheelEvent;
 class KeyboardEvent;
 
@@ -46,9 +47,11 @@ class Core;
 class MandelfractController final : public zzgui::Controller<MandelfractModel, MandelfractView>,
                                     public std::enable_shared_from_this<MandelfractController> {
   public:
-    MandelfractController(std::shared_ptr<clpp::Core> cl_core);
+    MandelfractController(const zzgui::Application& app, std::shared_ptr<clpp::Core> cl_core);
 
     virtual void Create() override;
+
+    void Render(float delta) override;
 
     void OnWindowClose(const zzgui::WindowCloseEvent& event);
 
@@ -57,6 +60,8 @@ class MandelfractController final : public zzgui::Controller<MandelfractModel, M
     void OnMouseWheel(const zzgui::MouseWheelEvent& event);
 
   private:
+    const zzgui::Application& app_;
+
     std::shared_ptr<clpp::Core> cl_core_;
 };
 

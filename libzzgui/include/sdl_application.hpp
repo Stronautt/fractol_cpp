@@ -43,6 +43,11 @@ class SdlApplication : public Application {
 
     virtual uint8_t Run() override;
 
+    virtual void ShowInfoMessage(const std::string& message) const override;
+    virtual void ShowErrorMessage(const std::string& message) const override;
+
+    using Application::Terminate;
+
   protected:
     std::atomic<bool> is_running_;
 

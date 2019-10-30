@@ -32,6 +32,7 @@ namespace cozz {
 
 namespace zzgui {
 
+class Application;
 class MouseButtonEvent;
 
 }  // namespace zzgui
@@ -45,7 +46,7 @@ class Core;
 class MenuController final : public zzgui::Controller<MenuModel, MenuView>,
                              public std::enable_shared_from_this<MenuController> {
   public:
-    MenuController(std::shared_ptr<clpp::Core> cl_core);
+    MenuController(const zzgui::Application& app, std::shared_ptr<clpp::Core> cl_core);
 
     virtual void Create() override;
 
@@ -56,6 +57,8 @@ class MenuController final : public zzgui::Controller<MenuModel, MenuView>,
     void OnExitButtonClick(const zzgui::MouseButtonEvent& event) const;
 
   private:
+    const zzgui::Application& app_;
+
     std::shared_ptr<clpp::Core> cl_core_;
 };
 

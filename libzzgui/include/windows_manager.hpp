@@ -39,10 +39,10 @@ class WindowsManager final {
     WindowsManager(std::shared_ptr<EventHandler> event_handler);
 
     template <class WindowType>
-    std::weak_ptr<Window> CreateWindow(std::string title, uint64_t width, uint64_t height);
+    std::weak_ptr<WindowType> CreateWindow(std::string title, uint64_t width, uint64_t height);
 
     template <class WindowType>
-    std::weak_ptr<Window> CreateWindow(std::string title, uint64_t x, uint64_t y, uint64_t width, uint64_t height);
+    std::weak_ptr<WindowType> CreateWindow(std::string title, uint64_t x, uint64_t y, uint64_t width, uint64_t height);
 
     void UpdateWindows() const;
 

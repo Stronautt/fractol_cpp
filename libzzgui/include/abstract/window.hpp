@@ -34,6 +34,7 @@ namespace zzgui {
 
 class ImageResource;
 class Canvas;
+class EventHandler;
 class WindowMovedEvent;
 class WindowResizedEvent;
 
@@ -57,21 +58,23 @@ class Window {
 
     virtual std::weak_ptr<Canvas> GetCanvas() = 0;
 
-    virtual std::string GetTitle() const final;
+    std::string GetTitle() const;
 
-    virtual std::pair<int64_t, int64_t> GetPosition() const final;
+    std::pair<int64_t, int64_t> GetPosition() const;
 
-    virtual uint64_t GetWidth() const final;
+    uint64_t GetWidth() const;
 
-    virtual uint64_t GetHeight() const final;
+    uint64_t GetHeight() const;
 
-    virtual void OnClose(const WindowCloseEvent& event) final;
+    void Close(std::shared_ptr<EventHandler> event_handler);
 
-    virtual void IfClosed(std::function<void(const WindowCloseEvent&)> callback) final;
+    void OnClose(const WindowCloseEvent& event);
 
-    virtual void OnMove(const WindowMovedEvent& event) final;
+    void IfClosed(std::function<void(const WindowCloseEvent&)> callback);
 
-    virtual void OnResize(const WindowResizedEvent& event) final;
+    void OnMove(const WindowMovedEvent& event);
+
+    void OnResize(const WindowResizedEvent& event);
 
   protected:
     std::string title_;

@@ -26,9 +26,14 @@
 namespace cozz {
 
 Fractol::Fractol(int, char**) {
-    auto open_cl = std::make_shared<clpp::Core>();
+    try {
+        auto open_cl = std::make_shared<clpp::Core>();
 
-    controller_manager_->Set(std::make_shared<MenuController>(open_cl));
+        controller_manager_->Set(std::make_shared<MenuController>(*this, open_cl));
+    } catch (const std::exception& e) {
+        ShowErrorMessage(e.what());
+        Terminate();
+    }
 }
 
 }  // namespace cozz

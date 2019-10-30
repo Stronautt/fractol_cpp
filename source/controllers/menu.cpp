@@ -19,13 +19,14 @@
 
 #include "controllers/menu.hpp"
 
+#include "application.hpp"
 #include "controllers/mandelfract.hpp"
 #include "controllers_manager.hpp"
 
 namespace cozz {
 
-MenuController::MenuController(std::shared_ptr<clpp::Core> cl_core)
-    : Controller(std::make_shared<MenuView>(std::make_shared<MenuModel>())), cl_core_(cl_core) {}
+MenuController::MenuController(const zzgui::Application& app, std::shared_ptr<clpp::Core> cl_core)
+    : Controller(std::make_shared<MenuView>(std::make_shared<MenuModel>())), app_(app), cl_core_(cl_core) {}
 
 void MenuController::Create() {}
 
@@ -34,7 +35,7 @@ void MenuController::OnWindowClose(const zzgui::WindowCloseEvent&) {
 }
 
 void MenuController::OnMandelbrotFractalButtonClick(const zzgui::MouseButtonEvent&) const {
-    controllers_manager_.lock()->Push(std::make_shared<MandelfractController>(cl_core_));
+    controllers_manager_.lock()->Push(std::make_shared<MandelfractController>(app_, cl_core_));
 }
 
 void MenuController::OnExitButtonClick(const zzgui::MouseButtonEvent&) const {
