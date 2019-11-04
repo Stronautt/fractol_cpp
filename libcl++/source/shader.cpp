@@ -20,6 +20,8 @@
 #include "clpp/shader.hpp"
 
 #include <algorithm>
+#include <chrono>
+#include <ctime>
 #include <fstream>
 #include <memory>
 #include <sstream>
@@ -90,7 +92,26 @@ void Shader::Build(const std::string& build_options) { BuildFor(CL_DEVICE_TYPE_D
 void Shader::BuildFor(cl_device_type device_type, const std::string& build_options) {
     device_build_for_ = device_type;
     if (clBuildProgram(cl_program_, 0, nullptr, build_options.c_str(), nullptr, nullptr)) {
-        throw cl_error("Can't build the shader");
+        cl_device_id device_id;
+        if (clGetProgramInfo(cl_program_, CL_PROGRAM_DEVICES, sizeof(device_id), &device_id, nullptr)) {
+            throw cl_error("Can't get associated to shader device");
+        }
+
+        size_t build_log_len;
+        if (clGetProgramBuildInfo(cl_program_, device_id, CL_PROGRAM_BUILD_LOG, 0, nullptr, &build_log_len)) {
+            throw cl_error("Can't get shader build log length");
+        }
+        std::unique_ptr<char[]> build_log(new char[build_log_len]);
+        if (clGetProgramBuildInfo(cl_program_, device_id, CL_PROGRAM_BUILD_LOG, build_log_len, build_log.get(),
+                                  nullptr)) {
+            throw cl_error("Can't get shader build log");
+        }
+        std::ofstream build_log_file("error.log", std::fstream::out | std::fstream::app);
+        std::time_t time_point = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+
+        build_log_file << "BUILD ERROR: " << std::ctime(&time_point) << build_log.get() << std::endl;
+
+        throw cl_error("Can't build the shader. See 'error.log' for details.");
     }
 }
 

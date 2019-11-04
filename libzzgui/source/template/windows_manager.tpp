@@ -30,7 +30,7 @@ std::weak_ptr<WindowType> WindowsManager::CreateWindow(std::string title, uint64
 
 template <class WindowType>
 std::weak_ptr<WindowType> WindowsManager::CreateWindow(std::string title, uint64_t x, uint64_t y, uint64_t width,
-                                                   uint64_t height) {
+                                                       uint64_t height) {
     auto window = std::make_shared<WindowType>(title, x, y, width, height);
 
     windows_.emplace(window->GetId(), std::make_pair(window, event_handler_->RegisterWindowEventCallbacks(*window)));

@@ -17,10 +17,10 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "views/mandelfract.hpp"
+#include "views/algebraic_fractal.hpp"
 
-#include "controllers/mandelfract.hpp"
-#include "models/mandelfract.hpp"
+#include "controllers/algebraic_fractal.hpp"
+#include "models/algebraic_fractal.hpp"
 #include "painter.hpp"
 #include "resources/font_resource.hpp"
 #include "resources_manager.hpp"
@@ -31,14 +31,14 @@
 
 namespace cozz {
 
-MandelfractView::MandelfractView(std::weak_ptr<MandelfractModel> model) : View(model) {}
+AlgebraicFractalView::AlgebraicFractalView(std::weak_ptr<AlgebraicFractalModel> model) : View(model) {}
 
-void MandelfractView::Create() {
+void AlgebraicFractalView::Create() {
     auto model = GetModel().lock();
     Resized(model->GetWindow());
 }
 
-void MandelfractView::Render(float /*delta*/) {
+void AlgebraicFractalView::Render(float /*delta*/) {
     auto model = GetModel().lock();
     auto window = model->GetWindow().lock();
     auto canvas = window->GetCanvas().lock();
@@ -48,7 +48,7 @@ void MandelfractView::Render(float /*delta*/) {
     }
 }
 
-void MandelfractView::Resized(std::weak_ptr<zzgui::Window> window) {
+void AlgebraicFractalView::Resized(std::weak_ptr<zzgui::Window> window) {
     const auto window_ptr = window.lock();
 
     if (window_ptr) {
@@ -56,12 +56,12 @@ void MandelfractView::Resized(std::weak_ptr<zzgui::Window> window) {
     }
 }
 
-void MandelfractView::Show() {}
+void AlgebraicFractalView::Show() {}
 
-void MandelfractView::Pause() {}
+void AlgebraicFractalView::Pause() {}
 
-void MandelfractView::Resume() {}
+void AlgebraicFractalView::Resume() {}
 
-void MandelfractView::Hide() {}
+void AlgebraicFractalView::Hide() {}
 
 }  // namespace cozz

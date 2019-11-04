@@ -17,18 +17,16 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_MODELS_MANDELFRACT_HPP_
-#define FRACTOL_INCLUDE_MODELS_MANDELFRACT_HPP_
+#include "common.h"
 
-#include "models/algebraic_fractal.hpp"
+unsigned int ft_smooth(double t, t_color_coefficient color_coefficients)
+{
+    int     r;
+    int     g;
+    int     b;
 
-namespace cozz {
-
-class MandelfractModel final : public AlgebraicFractalModel {
-  public:
-    MandelfractModel(std::shared_ptr<clpp::Core> cl_core);
-};
-
-}  // namespace cozz
-
-#endif  // FRACTOL_INCLUDE_MODELS_MANDELFRACT_HPP_
+    r = color_coefficients.r * (1.0 - t) * t * t * t * 255.0;
+    g = color_coefficients.g * (1.0 - t) * (1.0 - t) * t * t * 255.0;
+    b = color_coefficients.b * (1.0 - t) * (1.0 - t) * (1.0 - t) * t * 255.0;
+    return (r * 0x10000 + g * 0x100 + b);
+}

@@ -36,11 +36,13 @@ set(LIB_NAME ${EXE_NAME}_core CACHE STRING "Name of the core library" FORCE)
 
 add_library(${LIB_NAME} STATIC source/fractol.cpp
                                source/models/menu.cpp
-                               source/views/menu.cpp
-                               source/controllers/menu.cpp
+                               source/models/algebraic_fractal.cpp
                                source/models/mandelfract.cpp
-                               source/views/mandelfract.cpp
-                               source/controllers/mandelfract.cpp)
+                               source/models/juliafract.cpp
+                               source/views/menu.cpp
+                               source/views/algebraic_fractal.cpp
+                               source/controllers/menu.cpp
+                               source/controllers/algebraic_fractal.cpp)
 
 target_include_directories(${LIB_NAME} PUBLIC include
                                               include/interfaces

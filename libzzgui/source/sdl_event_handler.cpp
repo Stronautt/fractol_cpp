@@ -298,8 +298,8 @@ bool SDLEventHandler::Poll() const {
                                                AlignKeys(e.key.keysym.scancode)));
                 break;
             case SDL_MOUSEMOTION:
-                TriggerCallbacks(
-                    MouseMotionEvent(e.motion.windowID, AlignMouseButtonState(e.motion.state), e.motion.x, e.motion.y));
+                TriggerCallbacks(MouseMotionEvent(e.motion.windowID, AlignMouseButtonState(e.motion.state), e.motion.x,
+                                                  e.motion.y, e.motion.xrel, e.motion.yrel));
                 break;
             case SDL_MOUSEBUTTONDOWN:
             case SDL_MOUSEBUTTONUP:

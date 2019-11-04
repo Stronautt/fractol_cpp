@@ -23,10 +23,13 @@ namespace cozz {
 
 namespace zzgui {
 
-MouseMotionEvent::MouseMotionEvent(uint32_t window_id, ButtonState state, uint64_t x, uint64_t y)
-    : Event(Event::Type::kMouseMotion, window_id), state_(state), x_(x), y_(y) {}
+MouseMotionEvent::MouseMotionEvent(uint32_t window_id, ButtonState state, uint64_t x, uint64_t y, int64_t x_dir,
+                                   int64_t y_dir)
+    : Event(Event::Type::kMouseMotion, window_id), state_(state), x_(x), y_(y), x_dir_(x_dir), y_dir_(y_dir) {}
 
 std::pair<uint64_t, uint64_t> MouseMotionEvent::GetPosition() const { return std::make_pair(x_, y_); }
+
+std::pair<int64_t, int64_t> MouseMotionEvent::GetDirection() const { return std::make_pair(x_dir_, y_dir_); }
 
 bool MouseMotionEvent::IsLeftButtonPressed() const { return state_ & ButtonState::kLeftPressed; }
 

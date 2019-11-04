@@ -20,8 +20,11 @@
 #include "controllers/menu.hpp"
 
 #include "application.hpp"
-#include "controllers/mandelfract.hpp"
+#include "controllers/algebraic_fractal.hpp"
 #include "controllers_manager.hpp"
+#include "models/juliafract.hpp"
+#include "models/mandelfract.hpp"
+#include "views/algebraic_fractal.hpp"
 
 namespace cozz {
 
@@ -36,7 +39,17 @@ void MenuController::OnWindowClose(const zzgui::WindowCloseEvent&) {
 
 void MenuController::OnMandelbrotFractalButtonClick(const zzgui::MouseButtonEvent&) const {
     try {
-        controllers_manager_.lock()->Push(std::make_shared<MandelfractController>(app_, cl_core_));
+        controllers_manager_.lock()->Push(
+            std::make_shared<AlgebraicFractalController>(app_, cl_core_, std::make_shared<MandelfractModel>(cl_core_)));
+    } catch (const std::exception& e) {
+        app_.ShowErrorMessage(e.what());
+    }
+}
+
+void MenuController::OnJuliaFractalButtonClick(const zzgui::MouseButtonEvent&) const {
+    try {
+        controllers_manager_.lock()->Push(
+            std::make_shared<AlgebraicFractalController>(app_, cl_core_, std::make_shared<JuliafractModel>(cl_core_)));
     } catch (const std::exception& e) {
         app_.ShowErrorMessage(e.what());
     }

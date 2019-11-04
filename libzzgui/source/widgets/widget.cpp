@@ -58,7 +58,7 @@ void Widget::SetPadding(uint64_t left, uint64_t right, uint64_t top, uint64_t bo
     padding_top_ = top;
     padding_bottom_ = bottom;
 
-    SetSize(raw_width, raw_height);
+    Widget::SetSize(raw_width, raw_height);
 }
 
 std::pair<uint64_t, uint64_t> Widget::GetPosition() const { return std::make_pair(x_, y_); }

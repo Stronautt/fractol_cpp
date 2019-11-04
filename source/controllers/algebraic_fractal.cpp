@@ -17,26 +17,28 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "controllers/mandelfract.hpp"
+#include "controllers/algebraic_fractal.hpp"
 
 #include "application.hpp"
 #include "controllers/menu.hpp"
 #include "controllers_manager.hpp"
 #include "event/keyboard_event.hpp"
+#include "event/mouse_button_event.hpp"
+#include "event/mouse_motion_event.hpp"
 #include "event/mouse_wheel_event.hpp"
 #include "event/window_event.hpp"
 #include "windows_manager.hpp"
 
 namespace cozz {
 
-MandelfractController::MandelfractController(const zzgui::Application& app, std::shared_ptr<clpp::Core> cl_core)
-    : Controller(std::make_shared<MandelfractView>(std::make_shared<MandelfractModel>(cl_core))),
-      app_(app),
-      cl_core_(cl_core) {}
+AlgebraicFractalController::AlgebraicFractalController(const zzgui::Application& app,
+                                                       std::shared_ptr<clpp::Core> cl_core,
+                                                       std::shared_ptr<AlgebraicFractalModel> model)
+    : Controller(std::make_shared<AlgebraicFractalView>(model)), app_(app), cl_core_(cl_core), drag_(false) {}
 
-void MandelfractController::Create() {}
+void AlgebraicFractalController::Create() {}
 
-void MandelfractController::Render(float delta) {
+void AlgebraicFractalController::Render(float delta) {
     try {
         Controller::Render(delta);
     } catch (const std::exception& e) {
@@ -45,11 +47,11 @@ void MandelfractController::Render(float delta) {
     }
 }
 
-void MandelfractController::OnWindowClose(const zzgui::WindowCloseEvent&) {
+void AlgebraicFractalController::OnWindowClose(const zzgui::WindowCloseEvent&) {
     controllers_manager_.lock()->Erase(shared_from_this());
 }
 
-void MandelfractController::OnKeyboard(const zzgui::KeyboardEvent& event) {
+void AlgebraicFractalController::OnKeyboard(const zzgui::KeyboardEvent& event) {
     if (!event.IsPressed()) {
         return;
     }
@@ -78,20 +80,36 @@ void MandelfractController::OnKeyboard(const zzgui::KeyboardEvent& event) {
             model_->RandomizeColor();
             break;
         case zzgui::KeyMap::kP:
-            model_->ToogleChangeColor();
+            model_->ToogleMouseFollowing();
             break;
         case zzgui::KeyMap::kPageUp:
-            model_->IncColorChangeSpeed(-0.01);
+            model_->IncDepth(1);
             break;
         case zzgui::KeyMap::kPageDown:
-            model_->IncColorChangeSpeed(0.01);
+            model_->IncDepth(-1);
             break;
         default:
             break;
     }
 }
 
-void MandelfractController::OnMouseWheel(const zzgui::MouseWheelEvent& event) {
+void AlgebraicFractalController::OnMouseButton(const zzgui::MouseButtonEvent& event) {
+    if (event.GetButton() == zzgui::KeyMap::kLeftMouseButton) {
+        drag_ = event.IsPressed();
+    }
+}
+
+void AlgebraicFractalController::OnMouseMotion(const zzgui::MouseMotionEvent& event) {
+    const auto& mouse_pos = event.GetPosition();
+
+    model_->FollowMouse(mouse_pos.first, mouse_pos.second);
+    if (drag_) {
+        const auto& direction = event.GetDirection();
+        model_->Drag(-direction.first, -direction.second);
+    }
+}
+
+void AlgebraicFractalController::OnMouseWheel(const zzgui::MouseWheelEvent& event) {
     const auto& mouse_pos = event.GetPosition();
 
     model_->Zoom(mouse_pos.first, mouse_pos.second, event.GetScrolledByY() > 0);

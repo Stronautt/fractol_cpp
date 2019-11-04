@@ -17,18 +17,15 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_MODELS_MANDELFRACT_HPP_
-#define FRACTOL_INCLUDE_MODELS_MANDELFRACT_HPP_
+#include "models/juliafract.hpp"
 
-#include "models/algebraic_fractal.hpp"
+#include "controllers/algebraic_fractal.hpp"
+#include "views/algebraic_fractal.hpp"
 
 namespace cozz {
 
-class MandelfractModel final : public AlgebraicFractalModel {
-  public:
-    MandelfractModel(std::shared_ptr<clpp::Core> cl_core);
-};
+JuliafractModel::JuliafractModel(std::shared_ptr<clpp::Core> cl_core)
+    : AlgebraicFractalModel("Julia Fractal", cl_core, {512, 0.004, {0, 0}, {-0.7, 0.27015}, {9, 15, 8.5}},
+                            {"resources/shaders/julia.cl"}) {}
 
 }  // namespace cozz
-
-#endif  // FRACTOL_INCLUDE_MODELS_MANDELFRACT_HPP_

@@ -19,8 +19,8 @@
 
 #include "clpp/shader.hpp"
 
-#include "clpp/platform.hpp"
 #include "clpp/exception.hpp"
+#include "clpp/platform.hpp"
 
 namespace cozz {
 
@@ -28,8 +28,34 @@ namespace clpp {
 
 template <class ParameterType>
 void Shader::SetKernelArgument(cl_kernel kernel, uint32_t n, const ParameterType& parameter) {
-    if (clSetKernelArg(kernel, n, sizeof(ParameterType), static_cast<const void*>(&parameter))) {
-        throw cl_error("Can't set the kernel argument #" + std::to_string(n));
+    cl_int error;
+    if ((error = clSetKernelArg(kernel, n, sizeof(ParameterType), static_cast<const void*>(&parameter)))) {
+        std::string error_msg = "Can't set the kernel argument #" + std::to_string(n) + "(" +
+                                std::to_string(sizeof(ParameterType)) + " bytes): ";
+        switch (error) {
+            case CL_INVALID_KERNEL:
+                error_msg += "Invalid kernel";
+                break;
+            case CL_INVALID_ARG_INDEX:
+                error_msg += "Invalid argument index";
+                break;
+            case CL_INVALID_ARG_VALUE:
+                error_msg += "Invalid argument value";
+                break;
+            case CL_INVALID_MEM_OBJECT:
+                error_msg += "Invalid memory object";
+                break;
+            case CL_INVALID_SAMPLER:
+                error_msg += "Invalid sampler";
+                break;
+            case CL_INVALID_ARG_SIZE:
+                error_msg += "Invalid argument size";
+                break;
+            default:
+                error_msg += "UNKNOWN_ERROR";
+                break;
+        }
+        throw cl_error(error_msg);
     }
 }
 
@@ -40,8 +66,8 @@ void Shader::SetKernelArgument(cl_kernel kernel, uint32_t n, const ParameterType
 }
 
 template <class... Args>
-void Shader::Calculate(const std::string& function, void* buffer, uint64_t buffer_size,
-                           std::vector<size_t> work_size, const Args&... args) {
+void Shader::Calculate(const std::string& function, void* buffer, uint64_t buffer_size, std::vector<size_t> work_size,
+                       const Args&... args) {
     uint64_t work_dimensions = work_size.size();
     if (work_dimensions > 3) {
         throw cl_error("Maximum work size dimension equal to 3, current: " + std::to_string(work_dimensions));
@@ -51,8 +77,7 @@ void Shader::Calculate(const std::string& function, void* buffer, uint64_t buffe
         ReallocateDeviceMemoryRegion(buffer_size);
     }
     const auto& kernel = GetKernel(function);
-    SetKernelArgument(kernel, 0, device_memory_region_.first);
-    SetKernelArgument(kernel, 1, args...);
+    SetKernelArgument(kernel, 0, device_memory_region_.first, args...);
     const auto& queues = cl_platform_.GetQueues(device_build_for_);
     const auto& queues_count = queues.size();
 
@@ -60,16 +85,16 @@ void Shader::Calculate(const std::string& function, void* buffer, uint64_t buffe
     for (const auto& queue : queues) {
         std::vector<size_t> work_offset = {work_size[0] / queues_count * offset, work_size[1] / queues_count * offset,
                                            work_size[2] / queues_count * offset};
-        if (clEnqueueNDRangeKernel(queue.second, kernel, work_dimensions, work_offset.data(),
-                                   work_size.data(), nullptr, 0, nullptr, nullptr)) {
+        if (clEnqueueNDRangeKernel(queue.second, kernel, work_dimensions, work_offset.data(), work_size.data(), nullptr,
+                                   0, nullptr, nullptr)) {
             throw cl_error("Can't enqueue a command to execute a kernel on a device");
         }
         ++offset;
     }
     offset = 0;
     for (const auto& queue : queues) {
-        if (clEnqueueReadBuffer(queue.second, device_memory_region_.first, CL_TRUE, offset,
-                                buffer_size - offset, buffer, 0, nullptr, nullptr)) {
+        if (clEnqueueReadBuffer(queue.second, device_memory_region_.first, CL_TRUE, offset, buffer_size - offset,
+                                buffer, 0, nullptr, nullptr)) {
             throw cl_error("Can't enqueue commands to read from a buffer object to host memory.");
         }
         offset += buffer_size / queues_count;

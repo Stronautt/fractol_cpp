@@ -39,9 +39,11 @@ class MouseMotionEvent final : public Event {
         kExtra2Pressed = 0x10, /* 0001 0000 */
     };
 
-    MouseMotionEvent(uint32_t window_id, ButtonState state, uint64_t x, uint64_t y);
+    MouseMotionEvent(uint32_t window_id, ButtonState state, uint64_t x, uint64_t y, int64_t x_dir, int64_t y_dir);
 
     std::pair<uint64_t, uint64_t> GetPosition() const;
+
+    std::pair<int64_t, int64_t> GetDirection() const;
 
     bool IsLeftButtonPressed() const;
 
@@ -57,6 +59,8 @@ class MouseMotionEvent final : public Event {
     ButtonState state_;
     uint64_t x_;
     uint64_t y_;
+    int64_t x_dir_;
+    int64_t y_dir_;
 };
 
 MouseMotionEvent::ButtonState operator|(MouseMotionEvent::ButtonState a, MouseMotionEvent::ButtonState b);

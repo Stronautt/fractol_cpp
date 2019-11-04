@@ -17,18 +17,30 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_MODELS_MANDELFRACT_HPP_
-#define FRACTOL_INCLUDE_MODELS_MANDELFRACT_HPP_
+#ifndef COMMON_H
+#define COMMON_H
 
-#include "models/algebraic_fractal.hpp"
+#pragma OPENCL EXTENSION cl_khr_fp64 : enable
 
-namespace cozz {
+#define MAX_ITERATIONS 256
 
-class MandelfractModel final : public AlgebraicFractalModel {
-  public:
-    MandelfractModel(std::shared_ptr<clpp::Core> cl_core);
-};
+typedef struct s_2d_point {
+    double x;
+    double y;
+} t_2d_point;
 
-}  // namespace cozz
+typedef struct s_color_coefficient {
+    float r;
+    float g;
+    float b;
+} t_color_coefficient;
 
-#endif  // FRACTOL_INCLUDE_MODELS_MANDELFRACT_HPP_
+typedef struct s_parameters {
+    unsigned short depth;
+    double scale_coefficient;
+    t_2d_point pivot;
+    t_2d_point c;
+    t_color_coefficient color_coefficients;
+} t_parameters;
+
+#endif

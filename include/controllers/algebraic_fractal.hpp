@@ -17,24 +17,26 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_CONTROLLERS_MANDELFRACT_HPP_
-#define FRACTOL_INCLUDE_CONTROLLERS_MANDELFRACT_HPP_
+#ifndef FRACTOL_INCLUDE_CONTROLLERS_ALGEBRAIC_FRACTAL_HPP_
+#define FRACTOL_INCLUDE_CONTROLLERS_ALGEBRAIC_FRACTAL_HPP_
 
 #include "controller.hpp"
 
 #include <memory>
 
 #include "event/window_event.hpp"
-#include "models/mandelfract.hpp"
-#include "views/mandelfract.hpp"
+#include "models/algebraic_fractal.hpp"
+#include "views/algebraic_fractal.hpp"
 
 namespace cozz {
 
 namespace zzgui {
 
 class Application;
-class MouseWheelEvent;
 class KeyboardEvent;
+class MouseButtonEvent;
+class MouseMotionEvent;
+class MouseWheelEvent;
 
 }  // namespace zzgui
 
@@ -44,10 +46,11 @@ class Core;
 
 }  // namespace clpp
 
-class MandelfractController final : public zzgui::Controller<MandelfractModel, MandelfractView>,
-                                    public std::enable_shared_from_this<MandelfractController> {
+class AlgebraicFractalController final : public zzgui::Controller<AlgebraicFractalModel, AlgebraicFractalView>,
+                                         public std::enable_shared_from_this<AlgebraicFractalController> {
   public:
-    MandelfractController(const zzgui::Application& app, std::shared_ptr<clpp::Core> cl_core);
+    AlgebraicFractalController(const zzgui::Application& app, std::shared_ptr<clpp::Core> cl_core,
+                               std::shared_ptr<AlgebraicFractalModel> model);
 
     virtual void Create() override;
 
@@ -57,14 +60,20 @@ class MandelfractController final : public zzgui::Controller<MandelfractModel, M
 
     void OnKeyboard(const zzgui::KeyboardEvent& event);
 
+    void OnMouseButton(const zzgui::MouseButtonEvent& event);
+
+    void OnMouseMotion(const zzgui::MouseMotionEvent& event);
+
     void OnMouseWheel(const zzgui::MouseWheelEvent& event);
 
   private:
     const zzgui::Application& app_;
 
     std::shared_ptr<clpp::Core> cl_core_;
+
+    bool drag_;
 };
 
 }  // namespace cozz
 
-#endif  // FRACTOL_INCLUDE_CONTROLLERS_MANDELFRACT_HPP_
+#endif  // FRACTOL_INCLUDE_CONTROLLERS_ALGEBRAIC_FRACTAL_HPP_

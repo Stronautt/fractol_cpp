@@ -66,6 +66,14 @@ void MenuModel::Create() {
         window_.lock()->GetWidth() / 2 - mandelbrot_fractal_button->GetSize().first - 10,
         logo_image->GetSize().second + 30);
 
+    auto julia_fractal_button =
+        widgets_manager_->Create<zzgui::Button>(window_id, "Julia Fractal", ubuntu14_font, 0, 0);
+    julia_fractal_button->SetAutosize(false);
+    julia_fractal_button->SetSize(150, 30);
+    julia_fractal_button->OnClick(
+        std::bind(&MenuController::OnJuliaFractalButtonClick, GetController().lock().get(), _1));
+    julia_fractal_button->SetPosition(window_.lock()->GetWidth() / 2 + 10, logo_image->GetSize().second + 30);
+
     auto exit_button = widgets_manager_->Create<zzgui::Button>(window_id, "Exit", ubuntu14_font, 0, 0);
     exit_button->SetAutosize(false);
     exit_button->SetSize(100, 30);

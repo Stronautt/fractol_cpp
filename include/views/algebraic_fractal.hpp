@@ -17,8 +17,8 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_VIEWS_MANDELFRACT_HPP_
-#define FRACTOL_INCLUDE_VIEWS_MANDELFRACT_HPP_
+#ifndef FRACTOL_INCLUDE_VIEWS_ALGEBRAIC_FRACTAL_HPP_
+#define FRACTOL_INCLUDE_VIEWS_ALGEBRAIC_FRACTAL_HPP_
 
 #include "view.hpp"
 
@@ -28,8 +28,8 @@
 
 namespace cozz {
 
-class MandelfractModel;
-class MandelfractController;
+class AlgebraicFractalModel;
+class AlgebraicFractalController;
 
 namespace zzgui {
 
@@ -38,9 +38,9 @@ class Painter;
 
 }  // namespace zzgui
 
-class MandelfractView final : public zzgui::View<MandelfractModel, MandelfractController> {
+class AlgebraicFractalView final : public zzgui::View<AlgebraicFractalModel, AlgebraicFractalController> {
   public:
-    MandelfractView(std::weak_ptr<MandelfractModel> model);
+    AlgebraicFractalView(std::weak_ptr<AlgebraicFractalModel> model);
 
     virtual void Create() override;
 
@@ -62,4 +62,4 @@ class MandelfractView final : public zzgui::View<MandelfractModel, MandelfractCo
 
 }  // namespace cozz
 
-#endif  // FRACTOL_INCLUDE_VIEWS_MANDELFRACT_HPP_
+#endif  // FRACTOL_INCLUDE_VIEWS_ALGEBRAIC_FRACTAL_HPP_
