@@ -72,7 +72,7 @@ std::tuple<uint64_t, uint64_t, uint64_t, uint64_t> Widget::GetPadding() const {
 void Widget::OnMouseMotion(const MouseMotionEvent& event) {
     auto mouse_position = event.GetPosition();
 
-    if (InBounds(mouse_position.first, mouse_position.second)) {
+    if (InBounds(mouse_position.first, mouse_position.second, event)) {
         hover_ = true;
     } else {
         hover_ = false;
@@ -89,23 +89,18 @@ void Widget::OnMouseButton(const MouseButtonEvent& event) {
             }
         }
     } else {
-        auto mouse_position = event.GetPosition();
+        const auto& mouse_position = event.GetPosition();
 
-        if (InBounds(mouse_position.first, mouse_position.second)) {
+        const auto& button = event.GetButton();
+        if (InBounds(mouse_position.first, mouse_position.second, event) &&
+            std::find(button_queue_.begin(), button_queue_.end(), button) == button_queue_.end()) {
             DoOnMouseButton(event);
-            button_queue_.emplace_back(event.GetButton());
+            button_queue_.emplace_back(button);
         }
     }
 }
 
 void Widget::OnClick(std::function<void(const MouseButtonEvent&)> func) { click_callback_ = func; }
-
-bool Widget::InBounds(uint64_t x, uint64_t y) {
-    if (x >= x_ && x <= x_ + width_ && y >= y_ && y <= y_ + height_) {
-        return true;
-    }
-    return false;
-}
 
 }  // namespace zzgui
 

@@ -17,42 +17,33 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef LIBCLPP_INCLUDE_CLPP_CORE_HPP_
-#define LIBCLPP_INCLUDE_CLPP_CORE_HPP_
+#include "clpp/device.hpp"
 
-#include <map>
-#include <memory>
-#include <string>
-
-#define CL_USE_DEPRECATED_OPENCL_1_2_APIS
-#ifdef __APPLE__
-#include <OpenCL/opencl.h>
-#else
-#include <CL/cl.h>
-#endif
+#include "clpp/exception.hpp"
 
 namespace cozz {
 
 namespace clpp {
 
-class Platform;
-class Shader;
+Device::Device(cl_context context, cl_device_id id) : id_(id) {
+    if (clGetDeviceInfo(id_, CL_DEVICE_TYPE, sizeof(type_), &type_, nullptr)) {
+        throw cl_error("Can't get device type");
+    }
+    cl_int error = 0;
+    command_queue_ = clCreateCommandQueue(context, id, 0, &error);
+    if (error) {
+        throw cl_error("Can't create commnad queue");
+    }
+}
 
-class Core final {
-  public:
-    Core();
+Device::~Device() { clReleaseCommandQueue(command_queue_); }
 
-    const std::map<std::string, std::shared_ptr<Platform>>& GetPlatforms() const;
+cl_device_id Device::GetId() const { return id_; }
 
-    std::shared_ptr<Platform> GetPlatform() const;
-    std::shared_ptr<Platform> GetPlatform(const std::string& name) const;
+cl_device_type Device::GetType() const { return type_; }
 
-  private:
-    std::map<std::string, std::shared_ptr<Platform>> platforms_;
-};
+cl_command_queue Device::GetCommandQueue() const { return command_queue_; }
 
 }  // namespace clpp
 
 }  // namespace cozz
-
-#endif  // LIBCLPP_INCLUDE_CLPP_CORE_HPP_

@@ -29,7 +29,7 @@
 namespace cozz {
 
 MenuController::MenuController(const zzgui::Application& app, std::shared_ptr<clpp::Core> cl_core)
-    : Controller(std::make_shared<MenuView>(std::make_shared<MenuModel>())), app_(app), cl_core_(cl_core) {}
+    : Controller(std::make_shared<MenuView>(std::make_shared<MenuModel>(cl_core))), app_(app), cl_core_(cl_core) {}
 
 void MenuController::Create() {}
 
@@ -58,5 +58,11 @@ void MenuController::OnJuliaFractalButtonClick(const zzgui::MouseButtonEvent&) c
 void MenuController::OnExitButtonClick(const zzgui::MouseButtonEvent&) const {
     event_handler_.lock()->PushEvent(zzgui::QuitEvent());
 }
+
+void MenuController::OnMenuButtonClick(const zzgui::MouseButtonEvent&) const { model_->CreateMenuWidgets(); }
+
+void MenuController::OnSettingsButtonClick(const zzgui::MouseButtonEvent&) const { model_->CreateSettingsWidgets(); }
+
+void MenuController::OnPlatformSelectChange(std::shared_ptr<clpp::Platform> /*platform*/) const {}
 
 }  // namespace cozz

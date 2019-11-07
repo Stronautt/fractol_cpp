@@ -43,7 +43,8 @@ void AlgebraicFractalView::Render(float /*delta*/) {
     auto window = model->GetWindow().lock();
     auto canvas = window->GetCanvas().lock();
 
-    for (const auto& widget : model->GetWidgetsManager().lock()->GetWidgets()) {
+    const auto widgets_manager = model->GetWidgetsManager().lock();
+    for (const auto& widget : widgets_manager->GetWidgets()) {
         widget->Draw(painter_);
     }
 }

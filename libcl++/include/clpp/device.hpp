@@ -19,13 +19,8 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef LIBCLPP_INCLUDE_CLPP_PLATFORM_HPP_
-#define LIBCLPP_INCLUDE_CLPP_PLATFORM_HPP_
-
-#include <map>
-#include <memory>
-#include <string>
-#include <vector>
+#ifndef LIBCLPP_INCLUDE_CLPP_DEVICE_HPP_
+#define LIBCLPP_INCLUDE_CLPP_DEVICE_HPP_
 
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 #ifdef __APPLE__
@@ -38,33 +33,27 @@ namespace cozz {
 
 namespace clpp {
 
-class Shader;
-class Device;
-
-class Platform final {
+class Device final {
   public:
-    Platform(cl_platform_id id);
-    ~Platform();
+    Device(cl_context context, cl_device_id id);
+    ~Device();
 
-    const std::string& GetName() const;
+    cl_device_id GetId() const;
 
-    const cl_context& GetContext() const;
+    cl_device_type GetType() const;
 
-    std::vector<std::shared_ptr<Device>> GetDevices(cl_device_type queried_device_type) const;
-
-    std::shared_ptr<Shader> LoadShader(const std::vector<std::string>& source_paths) const;
+    cl_command_queue GetCommandQueue() const;
 
   private:
-    cl_platform_id id_;
-    std::string name_;
+    cl_device_id id_;
 
-    cl_context context_;
+    cl_device_type type_;
 
-    std::map<cl_device_type, std::shared_ptr<Device>> devices_;
+    cl_command_queue command_queue_;
 };
 
 }  // namespace clpp
 
 }  // namespace cozz
 
-#endif  // LIBCLPP_INCLUDE_CLPP_PLATFORM_HPP_
+#endif  // LIBCLPP_INCLUDE_CLPP_DEVICE_HPP_

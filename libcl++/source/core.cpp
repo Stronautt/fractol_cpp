@@ -51,6 +51,8 @@ Core::Core() {
     }
 }
 
+const std::map<std::string, std::shared_ptr<Platform>>& Core::GetPlatforms() const { return platforms_; }
+
 std::shared_ptr<Platform> Core::GetPlatform() const {
     if (platforms_.empty()) {
         throw cl_error("No platforms were found");

@@ -40,10 +40,10 @@ class WidgetsManager final {
     ~WidgetsManager();
 
     template <class WidgetType, class... Args>
-    std::shared_ptr<WidgetType> Create(Window::ID id, const Args&... args);
+    std::weak_ptr<WidgetType> Create(Window::ID id, const Args&... args);
 
     template <class WidgetType, class... Args>
-    std::shared_ptr<WidgetType> Create(const Args&... args);
+    std::weak_ptr<WidgetType> Create(const Args&... args);
 
     const std::list<std::shared_ptr<Widget>>& GetWidgets() const;
 

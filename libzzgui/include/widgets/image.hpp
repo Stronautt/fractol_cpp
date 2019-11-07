@@ -45,6 +45,8 @@ class Image : public Widget {
 
   protected:
     std::shared_ptr<ImageResource> img_;
+
+    virtual bool InBounds(uint64_t x, uint64_t y, const Event& event) override;
 };
 
 }  // namespace zzgui

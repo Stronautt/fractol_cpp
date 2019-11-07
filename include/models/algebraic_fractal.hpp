@@ -117,13 +117,13 @@ class AlgebraicFractalModel : public zzgui::Model<AlgebraicFractalController> {
     std::shared_ptr<zzgui::WidgetsManager> widgets_manager_;
 
     struct {
-        std::shared_ptr<zzgui::Label> depth;
-        std::shared_ptr<zzgui::Label> scale_coefficient;
-        std::shared_ptr<zzgui::Label> pivot;
-        std::shared_ptr<zzgui::Label> dynamic_coefficients;
+        std::weak_ptr<zzgui::Label> depth;
+        std::weak_ptr<zzgui::Label> scale_coefficient;
+        std::weak_ptr<zzgui::Label> pivot;
+        std::weak_ptr<zzgui::Label> dynamic_coefficients;
     } fractal_info_;
 
-    std::shared_ptr<zzgui::Label> fps_counter_;
+    std::weak_ptr<zzgui::Label> fps_counter_;
 
     std::list<zzgui::EventHandler::HandlerID> registered_callbacks_;
 

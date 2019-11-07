@@ -40,6 +40,7 @@ class MouseButtonEvent;
 namespace clpp {
 
 class Core;
+class Platform;
 
 }  // namespace clpp
 
@@ -57,6 +58,12 @@ class MenuController final : public zzgui::Controller<MenuModel, MenuView>,
     void OnJuliaFractalButtonClick(const zzgui::MouseButtonEvent& event) const;
 
     void OnExitButtonClick(const zzgui::MouseButtonEvent& event) const;
+
+    void OnMenuButtonClick(const zzgui::MouseButtonEvent& event) const;
+
+    void OnSettingsButtonClick(const zzgui::MouseButtonEvent& event) const;
+
+    void OnPlatformSelectChange(std::shared_ptr<clpp::Platform> platform) const;
 
   private:
     const zzgui::Application& app_;

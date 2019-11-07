@@ -44,7 +44,8 @@ void MenuView::Render(float /*delta*/) {
     auto canvas = window->GetCanvas().lock();
 
     canvas->Clear({0xFF, 0xFF, 0xFF});
-    for (const auto& widget : model->GetWidgetsManager().lock()->GetWidgets()) {
+    const auto widgets_manager = model->GetWidgetsManager().lock();
+    for (const auto& widget : widgets_manager->GetWidgets()) {
         widget->Draw(painter_);
     }
 }

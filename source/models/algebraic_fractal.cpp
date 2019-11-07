@@ -51,6 +51,8 @@ AlgebraicFractalModel::~AlgebraicFractalModel() {
 
 void AlgebraicFractalModel::Create() {
     const auto& ubuntu10_font = resources_manager_.lock()->LoadFont("Ubuntu10", "resources/fonts/ubuntu.ttf", 10);
+    const auto& ubuntu14_font =
+        resources_manager_.lock()->LoadFont("Ubuntu14", "resources/fonts/fonts_awesome.ttf", 14);
     const auto& app_icon = resources_manager_.lock()->LoadImage("AppIcon", "resources/images/icon.png");
 
     try {
@@ -89,22 +91,23 @@ void AlgebraicFractalModel::Create() {
     widgets_manager_ = std::make_shared<zzgui::WidgetsManager>(event_handler_);
 
     fps_counter_ = widgets_manager_->Create<zzgui::Label>(window_id, "", ubuntu10_font, 0, 0);
-    fps_counter_->SetPosition(0, window_.lock()->GetHeight() - fps_counter_->GetSize().second);
+    fps_counter_.lock()->SetPosition(0, window_.lock()->GetHeight() - fps_counter_.lock()->GetSize().second);
 
     fractal_info_.depth = widgets_manager_->Create<zzgui::Label>(window_id, "", ubuntu10_font, 0, 0);
-    fractal_info_.depth->SetPadding(4, 0);
+    fractal_info_.depth.lock()->SetPadding(4, 0);
     fractal_info_.scale_coefficient = widgets_manager_->Create<zzgui::Label>(
         window_id, "", ubuntu10_font, 0,
-        fractal_info_.depth->GetPosition().second + fractal_info_.depth->GetSize().second);
-    fractal_info_.scale_coefficient->SetPadding(4, 0);
-    fractal_info_.pivot = widgets_manager_->Create<zzgui::Label>(
-        window_id, "", ubuntu10_font, 0,
-        fractal_info_.scale_coefficient->GetPosition().second + fractal_info_.scale_coefficient->GetSize().second);
-    fractal_info_.pivot->SetPadding(4, 0);
+        fractal_info_.depth.lock()->GetPosition().second + fractal_info_.depth.lock()->GetSize().second);
+    fractal_info_.scale_coefficient.lock()->SetPadding(4, 0);
+    fractal_info_.pivot =
+        widgets_manager_->Create<zzgui::Label>(window_id, "", ubuntu10_font, 0,
+                                               fractal_info_.scale_coefficient.lock()->GetPosition().second +
+                                                   fractal_info_.scale_coefficient.lock()->GetSize().second);
+    fractal_info_.pivot.lock()->SetPadding(4, 0);
     fractal_info_.dynamic_coefficients = widgets_manager_->Create<zzgui::Label>(
         window_id, "", ubuntu10_font, 0,
-        fractal_info_.pivot->GetPosition().second + fractal_info_.pivot->GetSize().second);
-    fractal_info_.dynamic_coefficients->SetPadding(4, 0);
+        fractal_info_.pivot.lock()->GetPosition().second + fractal_info_.pivot.lock()->GetSize().second);
+    fractal_info_.dynamic_coefficients.lock()->SetPadding(4, 0);
 }
 
 namespace {
@@ -119,13 +122,13 @@ std::string ToString(T arg) {
 }  // namespace
 
 void AlgebraicFractalModel::Update(float delta) {
-    fps_counter_->SetText(std::to_string((uint64_t)(1.0 / delta)) + "FPS");
-    fractal_info_.depth->SetText("Depth: " + ToString(parameters_.depth));
-    fractal_info_.scale_coefficient->SetText("Scale coefficient: " + ToString(parameters_.scale_coefficient));
-    fractal_info_.pivot->SetText("Pivot: (" + std::to_string(parameters_.pivot.x) + ";" +
-                                 ToString(parameters_.pivot.y) + ")");
-    fractal_info_.dynamic_coefficients->SetText("Dynamic coefficients: (" + std::to_string(parameters_.c.x) + ";" +
-                                                ToString(parameters_.c.y) + ")");
+    fps_counter_.lock()->SetText(std::to_string((uint64_t)(1.0 / delta)) + "FPS");
+    fractal_info_.depth.lock()->SetText("Depth: " + ToString(parameters_.depth));
+    fractal_info_.scale_coefficient.lock()->SetText("Scale coefficient: " + ToString(parameters_.scale_coefficient));
+    fractal_info_.pivot.lock()->SetText("Pivot: (" + std::to_string(parameters_.pivot.x) + ";" +
+                                        ToString(parameters_.pivot.y) + ")");
+    fractal_info_.dynamic_coefficients.lock()->SetText("Dynamic coefficients: (" + std::to_string(parameters_.c.x) +
+                                                       ";" + ToString(parameters_.c.y) + ")");
 
     auto canvas = window_.lock()->GetCanvas().lock();
     const auto& canvas_width = canvas->GetWidth();

@@ -37,8 +37,16 @@ class Label;
 
 }  // namespace zzgui
 
+namespace clpp {
+
+class Core;
+
+}  // namespace clpp
+
 class MenuModel final : public zzgui::Model<MenuController> {
   public:
+    MenuModel(std::shared_ptr<clpp::Core> cl_core);
+
     virtual void Create() override;
 
     virtual void Update(float delta) override;
@@ -47,12 +55,18 @@ class MenuModel final : public zzgui::Model<MenuController> {
 
     std::weak_ptr<zzgui::WidgetsManager> GetWidgetsManager() const;
 
+    void CreateMenuWidgets();
+
+    void CreateSettingsWidgets();
+
   private:
+    std::shared_ptr<clpp::Core> cl_core_;
+
     std::weak_ptr<zzgui::Window> window_;
 
     std::shared_ptr<zzgui::WidgetsManager> widgets_manager_;
 
-    std::shared_ptr<zzgui::Label> fps_counter_;
+    std::weak_ptr<zzgui::Label> fps_counter_;
 };
 
 }  // namespace cozz

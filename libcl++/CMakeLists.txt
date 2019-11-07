@@ -31,12 +31,13 @@ endif()
 
 set(CMAKE_CXX_FLAGS "-Wextra -Wall -pedantic -Wno-ignored-attributes")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Werror -fsanitize=leak")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -s")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -s")
 
 set(LIB_NAME ${PROJECT_NAME} CACHE STRING "Name of the core library" FORCE)
 
 add_library(${LIB_NAME} STATIC source/core.cpp
 							   source/platform.cpp
+							   source/device.cpp
 							   source/shader.cpp)
 
 target_include_directories(${LIB_NAME} PUBLIC include

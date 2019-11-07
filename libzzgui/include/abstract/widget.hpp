@@ -36,6 +36,7 @@ namespace cozz {
 namespace zzgui {
 
 class Painter;
+class Event;
 class MouseMotionEvent;
 class MouseButtonEvent;
 
@@ -86,7 +87,7 @@ class Widget {
 
     Widget(uint64_t x, uint64_t y, uint64_t width, uint64_t height);
 
-    bool InBounds(uint64_t x, uint64_t y);
+    virtual bool InBounds(uint64_t x, uint64_t y, const Event& event) = 0;
 
     virtual void DoOnMouseButton(const MouseButtonEvent& event) = 0;
 };

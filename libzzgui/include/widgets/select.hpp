@@ -17,13 +17,14 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef LIBZZGUI_INCLUDE_WIDGETS_LABEL_HPP_
-#define LIBZZGUI_INCLUDE_WIDGETS_LABEL_HPP_
+#ifndef LIBZZGUI_INCLUDE_WIDGETS_SELECT_HPP_
+#define LIBZZGUI_INCLUDE_WIDGETS_SELECT_HPP_
 
 #include <cstdint>
 #include <memory>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "canvas.hpp"
 #include "widget.hpp"
@@ -35,33 +36,21 @@ namespace zzgui {
 class FontResource;
 class Painter;
 
-class Label : public Widget {
+template <class Data>
+class Select : public Widget {
   public:
-    enum class TextAlign : uint8_t {
-        kLeftTop = 0,
-        kLeftBottom,
-        kRightTop,
-        kRightBottom,
-        kLeftVerticalCentered,
-        kRightVerticalCentered,
-        kTopHorizontalCentered,
-        kBottomHorizontalCentered,
-        kVerticalAndHorizontalCentered,
-    };
-
-    Label(const std::string& text, std::shared_ptr<FontResource> font, uint64_t x, uint64_t y);
+    Select(const std::vector<std::pair<std::string, Data>>& options, std::shared_ptr<FontResource> font, uint64_t x,
+           uint64_t y);
 
     virtual void Draw(std::shared_ptr<Painter> painter) override;
 
     virtual void SetSize(uint64_t width, uint64_t height) override;
 
-    void SetText(const std::string& text);
+    void SetOptions(const std::vector<std::pair<std::string, Data>>& options);
 
     void SetFont(std::shared_ptr<FontResource> font);
 
     void SetAutosize(bool value);
-
-    void SetTextAlign(TextAlign text_align);
 
     void SetBorderThickness(uint16_t thickness);
 
@@ -71,11 +60,9 @@ class Label : public Widget {
 
     void SetForegroundColor(const Canvas::PixelColor& foreground_color);
 
-    const std::string& GetText() const;
+    const std::vector<std::pair<std::string, Data>>& GetOptions() const;
 
     std::shared_ptr<FontResource> GetFont() const;
-
-    TextAlign GetTextAlign() const;
 
     uint16_t GetBorderThickness() const;
 
@@ -85,15 +72,16 @@ class Label : public Widget {
 
     const Canvas::PixelColor& GetForegroundColor() const;
 
+    void OnChange(std::function<void(const Data&)> func);
+
     virtual void DoOnMouseButton(const MouseButtonEvent& event) override;
 
   protected:
-    std::string text_;
+    std::vector<std::pair<std::string, Data>> options_;
     std::shared_ptr<FontResource> font_;
 
     bool autosize_;
-
-    TextAlign text_align_;
+    bool focus_;
 
     uint16_t border_thickness_;
 
@@ -101,14 +89,18 @@ class Label : public Widget {
     Canvas::PixelColor background_color_;
     Canvas::PixelColor foreground_color_;
 
+    std::function<void(const Data&)> change_callback_;
+
     virtual bool InBounds(uint64_t x, uint64_t y, const Event& event) override;
 
   private:
-    std::pair<uint64_t, uint64_t> text_size_;
+    std::vector<std::pair<uint64_t, uint64_t>> options_text_size_;
 };
 
 }  // namespace zzgui
 
 }  // namespace cozz
 
-#endif  // LIBZZGUI_INCLUDE_WIDGETS_LABEL_HPP_
+#include "widgets/select.tpp"
+
+#endif  // LIBZZGUI_INCLUDE_WIDGETS_SELECT_HPP_

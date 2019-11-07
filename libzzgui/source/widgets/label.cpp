@@ -91,8 +91,8 @@ void Label::SetSize(uint64_t width, uint64_t height) {
 
 void Label::SetText(const std::string& text) {
     text_ = text;
+    text_size_ = font_->CalcTextSize(text_);
     if (autosize_) {
-        text_size_ = font_->CalcTextSize(text_);
         Widget::SetSize(text_size_.first, text_size_.second);
     }
 }
@@ -126,6 +126,13 @@ const Canvas::PixelColor& Label::GetBackgroundColor() const { return background_
 const Canvas::PixelColor& Label::GetForegroundColor() const { return foreground_color_; }
 
 void Label::DoOnMouseButton(const MouseButtonEvent&) {}
+
+bool Label::InBounds(uint64_t x, uint64_t y, const Event&) {
+    if (x >= x_ && x <= x_ + width_ && y >= y_ && y <= y_ + height_) {
+        return true;
+    }
+    return false;
+}
 
 }  // namespace zzgui
 
