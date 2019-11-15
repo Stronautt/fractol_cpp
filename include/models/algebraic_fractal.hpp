@@ -44,6 +44,7 @@ namespace clpp {
 
 class Core;
 class Shader;
+class Platform;
 
 }  // namespace clpp
 
@@ -96,7 +97,8 @@ class AlgebraicFractalModel : public zzgui::Model<AlgebraicFractalController> {
     std::weak_ptr<zzgui::WidgetsManager> GetWidgetsManager() const;
 
   protected:
-    AlgebraicFractalModel(const std::string& name, std::shared_ptr<clpp::Core> cl_core, Parameters parameters,
+    AlgebraicFractalModel(const std::string& name, std::shared_ptr<clpp::Core> cl_core,
+                          std::shared_ptr<clpp::Platform> cl_platform, Parameters parameters,
                           const std::vector<std::string>& source_paths);
 
   private:
@@ -105,6 +107,8 @@ class AlgebraicFractalModel : public zzgui::Model<AlgebraicFractalController> {
     std::string name_;
 
     std::shared_ptr<clpp::Core> cl_core_;
+
+    std::shared_ptr<clpp::Platform> cl_platform_;
 
     Parameters parameters_;
 

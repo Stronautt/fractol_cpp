@@ -19,9 +19,9 @@
 
 #include "clpp/shader.hpp"
 
+#include "clpp/device.hpp"
 #include "clpp/exception.hpp"
 #include "clpp/platform.hpp"
-#include "clpp/device.hpp"
 
 namespace cozz {
 
@@ -79,23 +79,22 @@ void Shader::Calculate(const std::string& function, void* buffer, uint64_t buffe
     }
     const auto& kernel = GetKernel(function);
     SetKernelArgument(kernel, 0, device_memory_region_.first, args...);
-    const auto& devices = cl_platform_.GetDevices(device_build_for_);
-    const auto& devices_count = devices.size();
+    const auto& devices_count = associated_devices_.size();
 
     size_t offset = 0;
-    for (const auto& device : devices) {
+    for (const auto& device : associated_devices_) {
         std::vector<size_t> work_offset = {work_size[0] / devices_count * offset, work_size[1] / devices_count * offset,
                                            work_size[2] / devices_count * offset};
-        if (clEnqueueNDRangeKernel(device->GetCommandQueue(), kernel, work_dimensions, work_offset.data(), work_size.data(), nullptr,
-                                   0, nullptr, nullptr)) {
+        if (clEnqueueNDRangeKernel(device->GetCommandQueue(), kernel, work_dimensions, work_offset.data(),
+                                   work_size.data(), nullptr, 0, nullptr, nullptr)) {
             throw cl_error("Can't enqueue a command to execute a kernel on a device");
         }
         ++offset;
     }
     offset = 0;
-    for (const auto& device : devices) {
-        if (clEnqueueReadBuffer(device->GetCommandQueue(), device_memory_region_.first, CL_TRUE, offset, buffer_size - offset,
-                                buffer, 0, nullptr, nullptr)) {
+    for (const auto& device : associated_devices_) {
+        if (clEnqueueReadBuffer(device->GetCommandQueue(), device_memory_region_.first, CL_TRUE, offset,
+                                buffer_size - offset, buffer, 0, nullptr, nullptr)) {
             throw cl_error("Can't enqueue commands to read from a buffer object to host memory.");
         }
         offset += buffer_size / devices_count;

@@ -50,9 +50,13 @@ class Platform final {
 
     const cl_context& GetContext() const;
 
-    std::vector<std::shared_ptr<Device>> GetDevices(cl_device_type queried_device_type) const;
+    const std::map<cl_device_type, std::shared_ptr<Device>>& GetDevices() const;
+
+    std::shared_ptr<Device> GetDevice(cl_device_id search_device_id) const;
 
     std::shared_ptr<Shader> LoadShader(const std::vector<std::string>& source_paths) const;
+
+    void BuildShader(std::shared_ptr<Shader> shader, const std::string& build_options) const;
 
   private:
     cl_platform_id id_;
@@ -61,6 +65,8 @@ class Platform final {
     cl_context context_;
 
     std::map<cl_device_type, std::shared_ptr<Device>> devices_;
+
+    void ExtractInfo();
 };
 
 }  // namespace clpp

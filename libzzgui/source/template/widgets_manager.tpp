@@ -24,7 +24,7 @@ namespace cozz {
 namespace zzgui {
 
 template <class WidgetType, class... Args>
-std::weak_ptr<WidgetType> WidgetsManager::Create(Window::ID id, const Args&... args) {
+std::weak_ptr<WidgetType> WidgetsManager::Create(Window::ID id, uint64_t z_index, const Args&... args) {
     auto widget = std::make_shared<WidgetType>(args...);
 
     registered_callbacks_.emplace_back(event_handler_.lock()->RegisterEventCallback<MouseButtonEvent>(
@@ -32,20 +32,7 @@ std::weak_ptr<WidgetType> WidgetsManager::Create(Window::ID id, const Args&... a
     registered_callbacks_.emplace_back(event_handler_.lock()->RegisterEventCallback<MouseMotionEvent>(
         std::bind(&Widget::OnMouseMotion, widget.get(), std::placeholders::_1), id));
 
-    widgets_.emplace_back(widget);
-    return widget;
-}
-
-template <class WidgetType, class... Args>
-std::weak_ptr<WidgetType> WidgetsManager::Create(const Args&... args) {
-    auto widget = std::make_shared<WidgetType>(args...);
-
-    registered_callbacks_.emplace_back(event_handler_.lock()->RegisterEventCallback<MouseButtonEvent>(
-        std::bind(&Widget::OnMouseButton, widget.get(), std::placeholders::_1)));
-    registered_callbacks_.emplace_back(event_handler_.lock()->RegisterEventCallback<MouseMotionEvent>(
-        std::bind(&Widget::OnMouseMotion, widget.get(), std::placeholders::_1)));
-
-    widgets_.emplace_back(widget);
+    widgets_.emplace(std::make_pair(z_index, widget));
     return widget;
 }
 

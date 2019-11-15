@@ -21,16 +21,17 @@
 
 #include <stdexcept>
 
+#include "event/mouse_button_event.hpp"
 #include "painter.hpp"
 #include "resources/font_resource.hpp"
-#include "event/mouse_button_event.hpp"
 
 namespace cozz {
 
 namespace zzgui {
 
 template <class Data>
-Select<Data>::Select(const std::vector<std::pair<std::string, Data>>& options, std::shared_ptr<FontResource> font, uint64_t x, uint64_t y)
+Select<Data>::Select(const std::vector<std::pair<std::string, Data>>& options, std::shared_ptr<FontResource> font,
+                     uint64_t x, uint64_t y)
     : Widget(x, y, 0, 0),
       font_(font),
       autosize_(true),
@@ -38,7 +39,7 @@ Select<Data>::Select(const std::vector<std::pair<std::string, Data>>& options, s
       border_thickness_(1),
       border_color_({0xC0, 0xC0, 0xC0}),
       background_color_({0, 0, 0, 0}),
-      foreground_color_({0xFF, 0xFF, 0xFF}) {
+      foreground_color_({0, 0, 0}) {
     if (!font_) {
         throw std::runtime_error("Bad font resource");
     }
@@ -56,7 +57,9 @@ void Select<Data>::Draw(std::shared_ptr<Painter> painter) {
 
     uint64_t it = 0;
     for (const auto& option : options_) {
-        painter->DrawText({x_ + padding_left_, y_ + height_ * (it + 1) - options_text_size_[it].second - padding_bottom_}, option.first, font_, foreground_color_);
+        painter->DrawText(
+            {x_ + padding_left_, y_ + height_ * (it + 1) - options_text_size_[it].second - padding_bottom_},
+            option.first, font_, foreground_color_);
         if (!focus_) {
             break;
         }
@@ -94,43 +97,69 @@ void Select<Data>::SetOptions(const std::vector<std::pair<std::string, Data>>& o
 }
 
 template <class Data>
-void Select<Data>::SetFont(std::shared_ptr<FontResource> font) { font_ = font; }
+void Select<Data>::SetFont(std::shared_ptr<FontResource> font) {
+    font_ = font;
+}
 
 template <class Data>
-void Select<Data>::SetAutosize(bool value) { autosize_ = value; }
+void Select<Data>::SetAutosize(bool value) {
+    autosize_ = value;
+}
 
 template <class Data>
-void Select<Data>::SetBorderThickness(uint16_t thickness) { border_thickness_ = thickness; }
+void Select<Data>::SetBorderThickness(uint16_t thickness) {
+    border_thickness_ = thickness;
+}
 
 template <class Data>
-void Select<Data>::SetBorderColor(const Canvas::PixelColor& border_color) { border_color_ = border_color; }
+void Select<Data>::SetBorderColor(const Canvas::PixelColor& border_color) {
+    border_color_ = border_color;
+}
 
 template <class Data>
-void Select<Data>::SetBackgroundColor(const Canvas::PixelColor& background_color) { background_color_ = background_color; }
+void Select<Data>::SetBackgroundColor(const Canvas::PixelColor& background_color) {
+    background_color_ = background_color;
+}
 
 template <class Data>
-void Select<Data>::SetForegroundColor(const Canvas::PixelColor& foreground_color) { foreground_color_ = foreground_color; }
+void Select<Data>::SetForegroundColor(const Canvas::PixelColor& foreground_color) {
+    foreground_color_ = foreground_color;
+}
 
 template <class Data>
-const std::vector<std::pair<std::string, Data>>& Select<Data>::GetOptions() const { return options_; }
+const std::vector<std::pair<std::string, Data>>& Select<Data>::GetOptions() const {
+    return options_;
+}
 
 template <class Data>
-std::shared_ptr<FontResource> Select<Data>::GetFont() const { return font_; }
+std::shared_ptr<FontResource> Select<Data>::GetFont() const {
+    return font_;
+}
 
 template <class Data>
-uint16_t Select<Data>::GetBorderThickness() const { return border_thickness_; }
+uint16_t Select<Data>::GetBorderThickness() const {
+    return border_thickness_;
+}
 
 template <class Data>
-const Canvas::PixelColor& Select<Data>::GetBorderColor() const { return border_color_; }
+const Canvas::PixelColor& Select<Data>::GetBorderColor() const {
+    return border_color_;
+}
 
 template <class Data>
-const Canvas::PixelColor& Select<Data>::GetBackgroundColor() const { return background_color_; }
+const Canvas::PixelColor& Select<Data>::GetBackgroundColor() const {
+    return background_color_;
+}
 
 template <class Data>
-const Canvas::PixelColor& Select<Data>::GetForegroundColor() const { return foreground_color_; }
+const Canvas::PixelColor& Select<Data>::GetForegroundColor() const {
+    return foreground_color_;
+}
 
 template <class Data>
-void Select<Data>::OnChange(std::function<void(const Data&)> func) { change_callback_ = func; }
+void Select<Data>::OnChange(std::function<void(const Data&)> func) {
+    change_callback_ = func;
+}
 
 template <class Data>
 void Select<Data>::DoOnMouseButton(const MouseButtonEvent& event) {

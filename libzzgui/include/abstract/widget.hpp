@@ -68,6 +68,14 @@ class Widget {
 
     void OnClick(std::function<void(const MouseButtonEvent&)> func);
 
+    void PlaceRight(std::weak_ptr<Widget> widget, uint64_t offset_x = 0, uint64_t offset_y = 0);
+
+    void PlaceLeft(std::weak_ptr<Widget> widget, uint64_t offset_x = 0, uint64_t offset_y = 0);
+
+    void PlaceBottom(std::weak_ptr<Widget> widget, uint64_t offset_y = 0, uint64_t offset_x = 0);
+
+    void PlaceUp(std::weak_ptr<Widget> widget, uint64_t offset_y = 0, uint64_t offset_x = 0);
+
   protected:
     uint64_t x_;
     uint64_t y_;

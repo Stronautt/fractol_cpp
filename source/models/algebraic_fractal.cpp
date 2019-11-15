@@ -23,6 +23,7 @@
 #include <sstream>
 
 #include "clpp/core.hpp"
+#include "clpp/exception.hpp"
 #include "clpp/shader.hpp"
 #include "controllers/algebraic_fractal.hpp"
 #include "controllers_manager.hpp"
@@ -42,8 +43,18 @@ using std::placeholders::_1;
 namespace cozz {
 
 AlgebraicFractalModel::AlgebraicFractalModel(const std::string& name, std::shared_ptr<clpp::Core> cl_core,
-                                             Parameters parameters, const std::vector<std::string>& source_paths)
-    : name_(name), cl_core_(cl_core), parameters_(parameters), source_paths_(source_paths), follow_mouse_(false) {}
+                                             std::shared_ptr<clpp::Platform> cl_platform, Parameters parameters,
+                                             const std::vector<std::string>& source_paths)
+    : name_(name),
+      cl_core_(cl_core),
+      cl_platform_(cl_platform),
+      parameters_(parameters),
+      source_paths_(source_paths),
+      follow_mouse_(false) {
+    if (!cl_core_ || !cl_platform_) {
+        throw clpp::cl_error("OpenCL is not availiable");
+    }
+}
 
 AlgebraicFractalModel::~AlgebraicFractalModel() {
     event_handler_.lock()->UnregisterEventCallbacks(registered_callbacks_);
@@ -54,19 +65,10 @@ void AlgebraicFractalModel::Create() {
     const auto& ubuntu14_font =
         resources_manager_.lock()->LoadFont("Ubuntu14", "resources/fonts/fonts_awesome.ttf", 14);
     const auto& app_icon = resources_manager_.lock()->LoadImage("AppIcon", "resources/images/icon.png");
-
-    try {
-        cl_shader_ = cl_core_->GetPlatform("nvidia")->LoadShader(source_paths_);
-    } catch (const clpp::cl_error&) {
-        cl_shader_ = cl_core_->GetPlatform()->LoadShader(source_paths_);
-    }
-
     const std::string build_options = "-I resources/shaders -cl-std=CL1.2";
-    try {
-        cl_shader_->BuildFor(CL_DEVICE_TYPE_GPU, build_options);
-    } catch (const clpp::cl_error&) {
-        cl_shader_->Build(build_options);
-    }
+
+    cl_shader_ = cl_platform_->LoadShader(source_paths_);
+    cl_platform_->BuildShader(cl_shader_, build_options);
 
     window_ = windows_manager_.lock()->CreateWindow<zzgui::SDLWindow>(name_.c_str(), 800, 600);
     auto window_id = window_.lock()->GetId();
@@ -90,23 +92,35 @@ void AlgebraicFractalModel::Create() {
 
     widgets_manager_ = std::make_shared<zzgui::WidgetsManager>(event_handler_);
 
-    fps_counter_ = widgets_manager_->Create<zzgui::Label>(window_id, "", ubuntu10_font, 0, 0);
+    fps_counter_ = widgets_manager_->Create<zzgui::Label>(window_id, 0, "", ubuntu10_font, 0, 0);
+    fps_counter_.lock()->SetForegroundColor({0xFF, 0xFF, 0xFF});
     fps_counter_.lock()->SetPosition(0, window_.lock()->GetHeight() - fps_counter_.lock()->GetSize().second);
 
-    fractal_info_.depth = widgets_manager_->Create<zzgui::Label>(window_id, "", ubuntu10_font, 0, 0);
+    fractal_info_.depth = widgets_manager_->Create<zzgui::Label>(window_id, 0, "", ubuntu10_font, 0, 0);
+    fractal_info_.depth.lock()->SetForegroundColor({0xFF, 0xFF, 0xFF});
+    fractal_info_.depth.lock()->SetBorderColor({0, 0, 0, 0});
     fractal_info_.depth.lock()->SetPadding(4, 0);
+
     fractal_info_.scale_coefficient = widgets_manager_->Create<zzgui::Label>(
-        window_id, "", ubuntu10_font, 0,
+        window_id, 0, "", ubuntu10_font, 0,
         fractal_info_.depth.lock()->GetPosition().second + fractal_info_.depth.lock()->GetSize().second);
+    fractal_info_.scale_coefficient.lock()->SetForegroundColor({0xFF, 0xFF, 0xFF});
+    fractal_info_.scale_coefficient.lock()->SetBorderColor({0, 0, 0, 0});
     fractal_info_.scale_coefficient.lock()->SetPadding(4, 0);
+
     fractal_info_.pivot =
-        widgets_manager_->Create<zzgui::Label>(window_id, "", ubuntu10_font, 0,
+        widgets_manager_->Create<zzgui::Label>(window_id, 0, "", ubuntu10_font, 0,
                                                fractal_info_.scale_coefficient.lock()->GetPosition().second +
                                                    fractal_info_.scale_coefficient.lock()->GetSize().second);
+    fractal_info_.pivot.lock()->SetForegroundColor({0xFF, 0xFF, 0xFF});
+    fractal_info_.pivot.lock()->SetBorderColor({0, 0, 0, 0});
     fractal_info_.pivot.lock()->SetPadding(4, 0);
+
     fractal_info_.dynamic_coefficients = widgets_manager_->Create<zzgui::Label>(
-        window_id, "", ubuntu10_font, 0,
+        window_id, 0, "", ubuntu10_font, 0,
         fractal_info_.pivot.lock()->GetPosition().second + fractal_info_.pivot.lock()->GetSize().second);
+    fractal_info_.dynamic_coefficients.lock()->SetForegroundColor({0xFF, 0xFF, 0xFF});
+    fractal_info_.dynamic_coefficients.lock()->SetBorderColor({0, 0, 0, 0});
     fractal_info_.dynamic_coefficients.lock()->SetPadding(4, 0);
 }
 

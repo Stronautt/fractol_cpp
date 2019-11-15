@@ -102,6 +102,34 @@ void Widget::OnMouseButton(const MouseButtonEvent& event) {
 
 void Widget::OnClick(std::function<void(const MouseButtonEvent&)> func) { click_callback_ = func; }
 
+void Widget::PlaceRight(std::weak_ptr<Widget> widget, uint64_t offset_x, uint64_t offset_y) {
+    if (!widget.expired()) {
+        x_ = widget.lock()->x_ + widget.lock()->width_ + offset_x;
+        y_ = widget.lock()->y_ + offset_y;
+    }
+}
+
+void Widget::PlaceLeft(std::weak_ptr<Widget> widget, uint64_t offset_x, uint64_t offset_y) {
+    if (!widget.expired()) {
+        x_ = widget.lock()->x_ - width_ - offset_x;
+        y_ = widget.lock()->y_ + offset_y;
+    }
+}
+
+void Widget::PlaceBottom(std::weak_ptr<Widget> widget, uint64_t offset_y, uint64_t offset_x) {
+    if (!widget.expired()) {
+        x_ = widget.lock()->x_ + offset_x;
+        y_ = widget.lock()->y_ + widget.lock()->height_ + offset_y;
+    }
+}
+
+void Widget::PlaceUp(std::weak_ptr<Widget> widget, uint64_t offset_y, uint64_t offset_x) {
+    if (!widget.expired()) {
+        x_ = widget.lock()->x_ + offset_x;
+        y_ = widget.lock()->y_ - height_ - offset_y;
+    }
+}
+
 }  // namespace zzgui
 
 }  // namespace cozz

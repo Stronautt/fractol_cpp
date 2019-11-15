@@ -20,6 +20,7 @@
 #include "fractol.hpp"
 
 #include "clpp/core.hpp"
+#include "clpp/exception.hpp"
 #include "controllers/menu.hpp"
 #include "controllers_manager.hpp"
 
@@ -30,6 +31,8 @@ Fractol::Fractol(int, char**) {
         auto open_cl = std::make_shared<clpp::Core>();
 
         controller_manager_->Set(std::make_shared<MenuController>(*this, open_cl));
+    } catch (const clpp::cl_error&) {
+        controller_manager_->Set(std::make_shared<MenuController>(*this, nullptr));
     } catch (const std::exception& e) {
         ShowErrorMessage(e.what());
         Terminate();

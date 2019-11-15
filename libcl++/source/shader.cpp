@@ -20,8 +20,6 @@
 #include "clpp/shader.hpp"
 
 #include <algorithm>
-#include <chrono>
-#include <ctime>
 #include <fstream>
 #include <memory>
 #include <sstream>
@@ -34,7 +32,7 @@ namespace cozz {
 namespace clpp {
 
 Shader::Shader(const Platform& cl_platform, const std::vector<std::string>& source_paths)
-    : cl_platform_(cl_platform), device_build_for_(CL_DEVICE_TYPE_DEFAULT), device_memory_region_({nullptr, 0}) {
+    : cl_platform_(cl_platform), device_memory_region_({nullptr, 0}) {
     if (source_paths.empty()) {
         throw cl_error("No source files were specified");
     }
@@ -87,33 +85,26 @@ Shader::~Shader() {
     clReleaseProgram(cl_program_);
 }
 
-void Shader::Build(const std::string& build_options) { BuildFor(CL_DEVICE_TYPE_DEFAULT, build_options); }
+void Shader::UpdateAssociatedDevices() {
+    associated_devices_.clear();
 
-void Shader::BuildFor(cl_device_type device_type, const std::string& build_options) {
-    device_build_for_ = device_type;
-    if (clBuildProgram(cl_program_, 0, nullptr, build_options.c_str(), nullptr, nullptr)) {
-        cl_device_id device_id;
-        if (clGetProgramInfo(cl_program_, CL_PROGRAM_DEVICES, sizeof(device_id), &device_id, nullptr)) {
-            throw cl_error("Can't get associated to shader device");
-        }
+    cl_uint number_of_devices = 0;
+    if (clGetProgramInfo(cl_program_, CL_PROGRAM_NUM_DEVICES, sizeof(number_of_devices), &number_of_devices, nullptr) ||
+        !number_of_devices) {
+        throw cl_error("Can't get number of associated to shader devices");
+    }
 
-        size_t build_log_len;
-        if (clGetProgramBuildInfo(cl_program_, device_id, CL_PROGRAM_BUILD_LOG, 0, nullptr, &build_log_len)) {
-            throw cl_error("Can't get shader build log length");
-        }
-        std::unique_ptr<char[]> build_log(new char[build_log_len]);
-        if (clGetProgramBuildInfo(cl_program_, device_id, CL_PROGRAM_BUILD_LOG, build_log_len, build_log.get(),
-                                  nullptr)) {
-            throw cl_error("Can't get shader build log");
-        }
-        std::ofstream build_log_file("error.log", std::fstream::out | std::fstream::app);
-        std::time_t time_point = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-
-        build_log_file << "BUILD ERROR: " << std::ctime(&time_point) << build_log.get() << std::endl;
-
-        throw cl_error("Can't build the shader. See 'error.log' for details.");
+    std::vector<cl_device_id> device_ids(number_of_devices);
+    if (clGetProgramInfo(cl_program_, CL_PROGRAM_DEVICES, device_ids.size() * sizeof(cl_device_id), device_ids.data(),
+                         nullptr)) {
+        throw cl_error("Can't get associated to shader devices");
+    }
+    for (const auto& device_id : device_ids) {
+        associated_devices_.push_back(cl_platform_.GetDevice(device_id));
     }
 }
+
+cl_program Shader::GetProgram() const { return cl_program_; }
 
 void Shader::ReallocateDeviceMemoryRegion(uint64_t size) {
     if (device_memory_region_.first != nullptr && clReleaseMemObject(device_memory_region_.first)) {

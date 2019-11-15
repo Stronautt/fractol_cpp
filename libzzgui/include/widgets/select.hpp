@@ -39,8 +39,8 @@ class Painter;
 template <class Data>
 class Select : public Widget {
   public:
-    Select(const std::vector<std::pair<std::string, Data>>& options, std::shared_ptr<FontResource> font, uint64_t x,
-           uint64_t y);
+    Select(const std::vector<std::pair<std::string, Data>>& options, std::shared_ptr<FontResource> font, uint64_t x = 0,
+           uint64_t y = 0);
 
     virtual void Draw(std::shared_ptr<Painter> painter) override;
 

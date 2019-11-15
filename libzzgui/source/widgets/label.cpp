@@ -36,7 +36,7 @@ Label::Label(const std::string& text, std::shared_ptr<FontResource> font, uint64
       border_thickness_(1),
       border_color_({0, 0, 0, 0}),
       background_color_({0, 0, 0, 0}),
-      foreground_color_({0xFF, 0xFF, 0xFF}) {
+      foreground_color_({0, 0, 0}) {
     if (!font_) {
         throw std::runtime_error("Bad font resource");
     }

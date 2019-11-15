@@ -20,6 +20,9 @@
 #include "clpp/platform.hpp"
 
 #include <algorithm>
+#include <chrono>
+#include <ctime>
+#include <fstream>
 #include <memory>
 #include <vector>
 
@@ -71,22 +74,54 @@ const std::string& Platform::GetName() const { return name_; }
 
 const cl_context& Platform::GetContext() const { return context_; }
 
-std::vector<std::shared_ptr<Device>> Platform::GetDevices(cl_device_type queried_device_type) const {
-    std::vector<std::shared_ptr<Device>> ret;
+const std::map<cl_device_type, std::shared_ptr<Device>>& Platform::GetDevices() const { return devices_; }
 
-    for (auto device : devices_) {
-        const auto& device_type = device.first;
+std::shared_ptr<Device> Platform::GetDevice(cl_device_id search_device_id) const {
+    for (const auto& device : devices_) {
         const auto& device_ptr = device.second;
+        const auto& device_id = device_ptr->GetId();
 
-        if (device_type & queried_device_type) {
-            ret.push_back(device_ptr);
+        if (device_id == search_device_id) {
+            return device_ptr;
         }
     }
-    return std::move(ret);
+    throw cl_error("No devices found with specified id");
 }
 
 std::shared_ptr<Shader> Platform::LoadShader(const std::vector<std::string>& source_paths) const {
     return std::make_shared<Shader>(*this, source_paths);
+}
+
+void Platform::BuildShader(std::shared_ptr<Shader> shader, const std::string& build_options) const {
+    if (!shader) {
+        throw cl_error("Can't build bad shader");
+    }
+
+    const auto& program = shader->GetProgram();
+
+    if (clBuildProgram(program, 0, nullptr, build_options.c_str(), nullptr, nullptr)) {
+        cl_device_id device_id;
+        if (clGetProgramInfo(program, CL_PROGRAM_DEVICES, sizeof(device_id), &device_id, nullptr)) {
+            throw cl_error("Can't get associated to shader device");
+        }
+
+        size_t build_log_len;
+        if (clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, 0, nullptr, &build_log_len)) {
+            throw cl_error("Can't get shader build log length");
+        }
+        std::unique_ptr<char[]> build_log(new char[build_log_len]);
+        if (clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, build_log_len, build_log.get(), nullptr)) {
+            throw cl_error("Can't get shader build log");
+        }
+        std::ofstream build_log_file("error.log", std::fstream::out | std::fstream::app);
+        std::time_t time_point = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+
+        build_log_file << "BUILD ERROR: " << std::ctime(&time_point) << build_log.get() << std::endl;
+
+        throw cl_error("Can't build the shader. See 'error.log' for details.");
+    }
+
+    shader->UpdateAssociatedDevices();
 }
 
 }  // namespace clpp

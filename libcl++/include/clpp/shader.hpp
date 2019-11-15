@@ -21,6 +21,7 @@
 #define LIBCLPP_INCLUDE_CLPP_SHADER_HPP_
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -36,15 +37,16 @@ namespace cozz {
 namespace clpp {
 
 class Platform;
+class Device;
 
 class Shader final {
   public:
     Shader(const Platform& cl_platform, const std::vector<std::string>& source_paths);
     ~Shader();
 
-    void Build(const std::string& build_options = "");
+    cl_program GetProgram() const;
 
-    void BuildFor(cl_device_type device_type, const std::string& build_options = "");
+    void UpdateAssociatedDevices();
 
     template <class... Args>
     void Calculate(const std::string& function, void* buffer, uint64_t buffer_size, std::vector<size_t> work_size,
@@ -53,9 +55,9 @@ class Shader final {
   private:
     const Platform& cl_platform_;
 
-    cl_device_type device_build_for_;
-
     cl_program cl_program_;
+
+    std::vector<std::shared_ptr<Device>> associated_devices_;
 
     std::map<const std::string, cl_kernel> cl_kernels_;
 

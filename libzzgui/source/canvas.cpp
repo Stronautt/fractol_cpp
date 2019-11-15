@@ -20,6 +20,7 @@
 #include "canvas.hpp"
 
 #include <algorithm>
+#include <cassert>
 
 namespace cozz {
 
@@ -81,9 +82,7 @@ bool Canvas::pixel_iterator::operator==(const Canvas::pixel_iterator& other) con
 bool Canvas::pixel_iterator::operator!=(const Canvas::pixel_iterator& other) const { return pos_ != other.pos_; }
 
 Canvas::pixel_iterator& Canvas::pixel_iterator::operator=(uint32_t value) {
-    if (pos_) {
-        std::copy_n(reinterpret_cast<uint8_t*>(&value), sizeof(value), pos_);
-    }
+    SetColor({TransformR32to8(value), TransformG32to8(value), TransformB32to8(value), TransformA32to8(value)});
     return *this;
 }
 
@@ -149,7 +148,11 @@ Canvas::PixelColor Canvas::pixel_iterator::GetColor() const {
 }
 
 void Canvas::pixel_iterator::SetColor(const PixelColor& color) {
-    *this = TransformR8to32(color.r) | TransformG8to32(color.g) | TransformB8to32(color.b) | TransformA8to32(color.a);
+    if (pos_ && color.a) {
+        uint32_t value =
+            TransformR8to32(color.r) | TransformG8to32(color.g) | TransformB8to32(color.b) | TransformA8to32(color.a);
+        std::copy_n(reinterpret_cast<uint8_t*>(&value), pixel_format_.bytes_per_pixel, pos_);
+    }
 }
 
 inline uint32_t Canvas::pixel_iterator::TransformR8to32(uint8_t channel) const {

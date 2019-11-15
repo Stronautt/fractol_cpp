@@ -31,6 +31,7 @@ namespace zzgui {
 Button::Button(const std::string& text, std::shared_ptr<FontResource> font, uint64_t x, uint64_t y)
     : Label(text, font, x, y) {
     SetBackgroundColor({0xFF, 0xFF, 0xFF});
+    SetBorderColor({0, 0, 0});
     SetForegroundColor({0, 0, 0});
 }
 

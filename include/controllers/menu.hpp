@@ -65,6 +65,8 @@ class MenuController final : public zzgui::Controller<MenuModel, MenuView>,
 
     void OnPlatformSelectChange(std::shared_ptr<clpp::Platform> platform) const;
 
+    void OnDeviceSelectChange(std::shared_ptr<clpp::Device> device) const;
+
   private:
     const zzgui::Application& app_;
 

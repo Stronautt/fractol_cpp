@@ -30,7 +30,7 @@ class Button final : public Label {
   public:
     using Label::TextAlign;
 
-    Button(const std::string& text, std::shared_ptr<FontResource> font, uint64_t x, uint64_t y);
+    Button(const std::string& text, std::shared_ptr<FontResource> font, uint64_t x = 0, uint64_t y = 0);
 
     virtual void Draw(std::shared_ptr<Painter> painter) override;
 

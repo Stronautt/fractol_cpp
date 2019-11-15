@@ -24,8 +24,8 @@
 
 namespace cozz {
 
-MandelfractModel::MandelfractModel(std::shared_ptr<clpp::Core> cl_core)
-    : AlgebraicFractalModel("Mandelbrot Fractal", cl_core, {512, 0.004, {-0.5, 0}, {0, 0}, {9, 15, 8.5}},
+MandelfractModel::MandelfractModel(std::shared_ptr<clpp::Core> cl_core, std::shared_ptr<clpp::Platform> cl_platform)
+    : AlgebraicFractalModel("Mandelbrot Fractal", cl_core, cl_platform, {512, 0.004, {-0.5, 0}, {0, 0}, {9, 15, 8.5}},
                             {"resources/shaders/mandelbrot.cl"}) {}
 
 }  // namespace cozz

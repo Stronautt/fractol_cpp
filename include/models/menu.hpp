@@ -35,11 +35,16 @@ class Window;
 class WidgetsManager;
 class Label;
 
+template <class Data>
+class Select;
+
 }  // namespace zzgui
 
 namespace clpp {
 
 class Core;
+class Platform;
+class Device;
 
 }  // namespace clpp
 
@@ -51,9 +56,17 @@ class MenuModel final : public zzgui::Model<MenuController> {
 
     virtual void Update(float delta) override;
 
+    void SetClPlatform(std::shared_ptr<clpp::Platform> platform);
+
+    void SetClDevice(std::shared_ptr<clpp::Device> device);
+
     std::weak_ptr<zzgui::Window> GetWindow() const;
 
     std::weak_ptr<zzgui::WidgetsManager> GetWidgetsManager() const;
+
+    std::shared_ptr<clpp::Platform> GetClPlatform() const;
+
+    std::shared_ptr<const clpp::Device> GetClDevice() const;
 
     void CreateMenuWidgets();
 
@@ -67,6 +80,27 @@ class MenuModel final : public zzgui::Model<MenuController> {
     std::shared_ptr<zzgui::WidgetsManager> widgets_manager_;
 
     std::weak_ptr<zzgui::Label> fps_counter_;
+
+    std::shared_ptr<clpp::Platform> cl_platform_;
+    std::shared_ptr<const clpp::Device> cl_device_;
+
+    struct {
+        std::weak_ptr<zzgui::Label> device_types_avaliable;
+        std::weak_ptr<zzgui::Select<std::shared_ptr<clpp::Device>>> device_select;
+    } platform_info_;
+
+    struct {
+        std::weak_ptr<zzgui::Label> type;
+        std::weak_ptr<zzgui::Label> availability;
+        std::weak_ptr<zzgui::Label> max_clock_frequency;
+        std::weak_ptr<zzgui::Label> max_compute_units;
+        std::weak_ptr<zzgui::Label> max_samplers;
+        std::weak_ptr<zzgui::Label> max_memory_alloc_size;
+        std::weak_ptr<zzgui::Label> max_parameter_size;
+        std::weak_ptr<zzgui::Label> vendor;
+        std::weak_ptr<zzgui::Label> device_version;
+        std::weak_ptr<zzgui::Label> driver_version;
+    } device_info_;
 };
 
 }  // namespace cozz

@@ -33,7 +33,7 @@ class Painter;
 
 class Image : public Widget {
   public:
-    Image(std::shared_ptr<ImageResource> img, uint64_t x, uint64_t y);
+    Image(std::shared_ptr<ImageResource> img, uint64_t x = 0, uint64_t y = 0);
 
     virtual void Draw(std::shared_ptr<Painter> painter) override;
 

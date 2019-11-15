@@ -43,14 +43,20 @@ void EventHandler::UnregisterEventCallbacks(const std::list<HandlerID>& ids) {
 }
 
 void EventHandler::TriggerCallbacks(const Event& e) const {
-    for (auto it = callbacks_map_.find(e.GetType()); it != callbacks_map_.end() && it->first == e.GetType(); it++) {
+    const auto callbacks_map = callbacks_map_;
+    for (auto it = callbacks_map.find(e.GetType()); it != callbacks_map.end(); it++) {
+        if (it->first != e.GetType()) {
+            break;
+        }
         const auto& window_linked = std::get<0>(it->second);
         const auto& linked_id = std::get<1>(it->second);
         if (window_linked && e.GetWindowId() != linked_id) {
             continue;
         }
         const auto& event_callback = std::get<2>(it->second);
-        event_callback(e);
+        if (event_callback) {
+            event_callback(e);
+        }
     }
 }
 

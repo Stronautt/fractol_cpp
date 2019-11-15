@@ -40,7 +40,7 @@ class Canvas final {
     class PixelColor : public std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> {
       public:
         PixelColor();
-        PixelColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 0);
+        PixelColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 0xFF);
 
         PixelColor& operator=(const PixelColor& color);
 

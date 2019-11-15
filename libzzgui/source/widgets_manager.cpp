@@ -31,7 +31,7 @@ WidgetsManager::WidgetsManager(std::weak_ptr<EventHandler> event_handler) : even
 
 WidgetsManager::~WidgetsManager() { event_handler_.lock()->UnregisterEventCallbacks(registered_callbacks_); }
 
-const std::list<std::shared_ptr<Widget>>& WidgetsManager::GetWidgets() const { return widgets_; }
+const std::multimap<uint64_t, std::shared_ptr<Widget>>& WidgetsManager::GetWidgets() const { return widgets_; }
 
 }  // namespace zzgui
 

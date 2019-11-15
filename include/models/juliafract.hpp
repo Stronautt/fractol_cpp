@@ -26,7 +26,7 @@ namespace cozz {
 
 class JuliafractModel final : public AlgebraicFractalModel {
   public:
-    JuliafractModel(std::shared_ptr<clpp::Core> cl_core);
+    JuliafractModel(std::shared_ptr<clpp::Core> cl_core, std::shared_ptr<clpp::Platform> cl_platform);
 };
 
 }  // namespace cozz

@@ -28,5 +28,5 @@ unsigned int ft_smooth(double t, t_color_coefficient color_coefficients)
     r = color_coefficients.r * (1.0 - t) * t * t * t * 255.0;
     g = color_coefficients.g * (1.0 - t) * (1.0 - t) * t * t * 255.0;
     b = color_coefficients.b * (1.0 - t) * (1.0 - t) * (1.0 - t) * t * 255.0;
-    return (r * 0x10000 + g * 0x100 + b);
+    return (0xFF000000 + r * 0x10000 + g * 0x100 + b);
 }

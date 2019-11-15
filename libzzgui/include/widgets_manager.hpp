@@ -21,6 +21,7 @@
 #define LIBZZGUI_INCLUDE_WIDGETS_MANAGER_HPP_
 
 #include <list>
+#include <map>
 #include <memory>
 
 #include "event_handler.hpp"
@@ -40,17 +41,14 @@ class WidgetsManager final {
     ~WidgetsManager();
 
     template <class WidgetType, class... Args>
-    std::weak_ptr<WidgetType> Create(Window::ID id, const Args&... args);
+    std::weak_ptr<WidgetType> Create(Window::ID id, uint64_t z_index, const Args&... args);
 
-    template <class WidgetType, class... Args>
-    std::weak_ptr<WidgetType> Create(const Args&... args);
-
-    const std::list<std::shared_ptr<Widget>>& GetWidgets() const;
+    const std::multimap<uint64_t, std::shared_ptr<Widget>>& GetWidgets() const;
 
   private:
     std::weak_ptr<EventHandler> event_handler_;
 
-    std::list<std::shared_ptr<Widget>> widgets_;
+    std::multimap<uint64_t, std::shared_ptr<Widget>> widgets_;
 
     std::list<EventHandler::HandlerID> registered_callbacks_;
 };
