@@ -66,6 +66,10 @@ class Window {
 
     uint64_t GetHeight() const;
 
+    virtual bool GetFullscreen() const = 0;
+
+    virtual bool GetFullscreenDesktop() const = 0;
+
     void Close(std::shared_ptr<EventHandler> event_handler);
 
     void OnClose(const WindowCloseEvent& event);
@@ -76,6 +80,7 @@ class Window {
 
     void OnResize(const WindowResizedEvent& event);
 
+    void IfResized(std::function<void(const WindowResizedEvent&)> callback);
   protected:
     std::string title_;
 
@@ -86,6 +91,7 @@ class Window {
     uint64_t height_;
 
     std::function<void(const WindowCloseEvent&)> on_close_callback_;
+    std::function<void(const WindowResizedEvent&)> on_resize_callback_;
 
     Window(std::string title, uint64_t x, uint64_t y, uint64_t width, uint64_t height);
 

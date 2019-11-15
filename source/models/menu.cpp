@@ -62,6 +62,7 @@ void MenuModel::Create() {
     } catch (...) {
     }
 
+    CreateSettingsWidgets();
     CreateMenuWidgets();
 }
 
@@ -269,6 +270,9 @@ void MenuModel::SetClPlatform(std::shared_ptr<clpp::Platform> platform) {
 
         std::string device_types_avaliable;
         for (const auto& device_type : device_types) {
+            if (!device_types_avaliable.empty()) {
+                device_types_avaliable += ", ";
+            }
             device_types_avaliable += std::to_string(device_type.second.second) + "x" + device_type.second.first;
         }
 
@@ -305,7 +309,7 @@ std::weak_ptr<zzgui::Window> MenuModel::GetWindow() const { return window_; }
 
 std::weak_ptr<zzgui::WidgetsManager> MenuModel::GetWidgetsManager() const { return widgets_manager_; }
 
-std::shared_ptr<clpp::Platform> MenuModel::GetClPlatform() const { return cl_platform_; }
+std::shared_ptr<const clpp::Platform> MenuModel::GetClPlatform() const { return cl_platform_; }
 
 std::shared_ptr<const clpp::Device> MenuModel::GetClDevice() const { return cl_device_; }
 

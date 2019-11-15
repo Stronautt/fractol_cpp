@@ -45,6 +45,7 @@ namespace clpp {
 class Core;
 class Shader;
 class Platform;
+class Device;
 
 }  // namespace clpp
 
@@ -98,7 +99,8 @@ class AlgebraicFractalModel : public zzgui::Model<AlgebraicFractalController> {
 
   protected:
     AlgebraicFractalModel(const std::string& name, std::shared_ptr<clpp::Core> cl_core,
-                          std::shared_ptr<clpp::Platform> cl_platform, Parameters parameters,
+                          std::shared_ptr<const clpp::Platform> cl_platform,
+                          std::shared_ptr<const clpp::Device> cl_device, Parameters parameters,
                           const std::vector<std::string>& source_paths);
 
   private:
@@ -108,7 +110,9 @@ class AlgebraicFractalModel : public zzgui::Model<AlgebraicFractalController> {
 
     std::shared_ptr<clpp::Core> cl_core_;
 
-    std::shared_ptr<clpp::Platform> cl_platform_;
+    std::shared_ptr<const clpp::Platform> cl_platform_;
+
+    std::shared_ptr<const clpp::Device> cl_device_;
 
     Parameters parameters_;
 
@@ -125,6 +129,7 @@ class AlgebraicFractalModel : public zzgui::Model<AlgebraicFractalController> {
         std::weak_ptr<zzgui::Label> scale_coefficient;
         std::weak_ptr<zzgui::Label> pivot;
         std::weak_ptr<zzgui::Label> dynamic_coefficients;
+        std::weak_ptr<zzgui::Label> compute_device;
     } fractal_info_;
 
     std::weak_ptr<zzgui::Label> fps_counter_;

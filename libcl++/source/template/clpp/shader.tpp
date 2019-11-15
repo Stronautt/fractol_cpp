@@ -74,30 +74,19 @@ void Shader::Calculate(const std::string& function, void* buffer, uint64_t buffe
         throw cl_error("Maximum work size dimension equal to 3, current: " + std::to_string(work_dimensions));
     }
     work_size.resize(3);
-    if (!device_memory_region_.first || device_memory_region_.second != buffer_size) {
-        ReallocateDeviceMemoryRegion(buffer_size);
+    if (!std::get<0>(device_memory_region_)
+        || std::get<1>(device_memory_region_) != buffer
+        || std::get<2>(device_memory_region_) != buffer_size) {
+        ReallocateDeviceMemoryRegion(buffer, buffer_size);
     }
     const auto& kernel = GetKernel(function);
-    SetKernelArgument(kernel, 0, device_memory_region_.first, args...);
-    const auto& devices_count = associated_devices_.size();
-
-    size_t offset = 0;
-    for (const auto& device : associated_devices_) {
-        std::vector<size_t> work_offset = {work_size[0] / devices_count * offset, work_size[1] / devices_count * offset,
-                                           work_size[2] / devices_count * offset};
-        if (clEnqueueNDRangeKernel(device->GetCommandQueue(), kernel, work_dimensions, work_offset.data(),
-                                   work_size.data(), nullptr, 0, nullptr, nullptr)) {
-            throw cl_error("Can't enqueue a command to execute a kernel on a device");
-        }
-        ++offset;
-    }
-    offset = 0;
-    for (const auto& device : associated_devices_) {
-        if (clEnqueueReadBuffer(device->GetCommandQueue(), device_memory_region_.first, CL_TRUE, offset,
-                                buffer_size - offset, buffer, 0, nullptr, nullptr)) {
-            throw cl_error("Can't enqueue commands to read from a buffer object to host memory.");
-        }
-        offset += buffer_size / devices_count;
+    SetKernelArgument(kernel, 0, std::get<0>(device_memory_region_), args...);
+    if (clEnqueueNDRangeKernel(cl_device_->GetCommandQueue(), kernel, work_dimensions, nullptr,
+                               work_size.data(), nullptr, 0, nullptr, nullptr)) {
+        throw cl_error("Can't enqueue a command to execute a kernel on a device");
+    } else if (clEnqueueReadBuffer(cl_device_->GetCommandQueue(), std::get<0>(device_memory_region_), CL_TRUE, 0,
+                            buffer_size, buffer, 0, nullptr, nullptr)) {
+        throw cl_error("Can't enqueue commands to read from a buffer object to host memory.");
     }
 }
 

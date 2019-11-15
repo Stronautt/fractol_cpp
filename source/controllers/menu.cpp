@@ -40,7 +40,8 @@ void MenuController::OnWindowClose(const zzgui::WindowCloseEvent&) {
 void MenuController::OnMandelbrotFractalButtonClick(const zzgui::MouseButtonEvent&) const {
     try {
         controllers_manager_.lock()->Push(std::make_shared<AlgebraicFractalController>(
-            app_, cl_core_, std::make_shared<MandelfractModel>(cl_core_, model_->GetClPlatform())));
+            app_, cl_core_, std::make_shared<MandelfractModel>(cl_core_, model_->GetClPlatform(),
+                                                               model_->GetClDevice())));
     } catch (const std::exception& e) {
         app_.ShowErrorMessage(e.what());
     }
@@ -49,7 +50,8 @@ void MenuController::OnMandelbrotFractalButtonClick(const zzgui::MouseButtonEven
 void MenuController::OnJuliaFractalButtonClick(const zzgui::MouseButtonEvent&) const {
     try {
         controllers_manager_.lock()->Push(std::make_shared<AlgebraicFractalController>(
-            app_, cl_core_, std::make_shared<JuliafractModel>(cl_core_, model_->GetClPlatform())));
+            app_, cl_core_, std::make_shared<JuliafractModel>(cl_core_, model_->GetClPlatform(),
+                                                              model_->GetClDevice())));
     } catch (const std::exception& e) {
         app_.ShowErrorMessage(e.what());
     }

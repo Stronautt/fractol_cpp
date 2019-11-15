@@ -55,9 +55,6 @@ class Platform final {
     std::shared_ptr<Device> GetDevice(cl_device_id search_device_id) const;
 
     std::shared_ptr<Shader> LoadShader(const std::vector<std::string>& source_paths) const;
-
-    void BuildShader(std::shared_ptr<Shader> shader, const std::string& build_options) const;
-
   private:
     cl_platform_id id_;
     std::string name_;

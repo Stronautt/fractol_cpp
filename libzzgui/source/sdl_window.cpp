@@ -65,6 +65,14 @@ Window::ID SDLWindow::GetId() const { return SDL_GetWindowID(static_cast<SDL_Win
 
 std::weak_ptr<Canvas> SDLWindow::GetCanvas() { return canvas_; }
 
+bool SDLWindow::GetFullscreen() const {
+    return SDL_GetWindowFlags(static_cast<SDL_Window*>(window_.get())) & SDL_WINDOW_FULLSCREEN;
+}
+
+bool SDLWindow::GetFullscreenDesktop() const {
+    return SDL_GetWindowFlags(static_cast<SDL_Window*>(window_.get())) & SDL_WINDOW_FULLSCREEN_DESKTOP;
+}
+
 void SDLWindow::Moved() {}
 
 void SDLWindow::Resized() {

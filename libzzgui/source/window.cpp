@@ -68,8 +68,13 @@ void Window::OnResize(const WindowResizedEvent& event) {
         width_ = new_size.first;
         height_ = new_size.second;
         Resized();
+        if (on_resize_callback_) {
+            on_resize_callback_(event);
+        }
     }
 }
+
+void Window::IfResized(std::function<void(const WindowResizedEvent&)> callback) { on_resize_callback_ = callback; }
 
 }  // namespace zzgui
 

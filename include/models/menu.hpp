@@ -64,7 +64,7 @@ class MenuModel final : public zzgui::Model<MenuController> {
 
     std::weak_ptr<zzgui::WidgetsManager> GetWidgetsManager() const;
 
-    std::shared_ptr<clpp::Platform> GetClPlatform() const;
+    std::shared_ptr<const clpp::Platform> GetClPlatform() const;
 
     std::shared_ptr<const clpp::Device> GetClDevice() const;
 

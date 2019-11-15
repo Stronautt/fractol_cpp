@@ -52,6 +52,9 @@ class SDLWindow final : public Window {
 
     virtual std::weak_ptr<Canvas> GetCanvas() override;
 
+    virtual bool GetFullscreen() const override;
+
+    virtual bool GetFullscreenDesktop() const override;
   protected:
     virtual void Moved() override;
 

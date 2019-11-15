@@ -56,6 +56,7 @@ void AlgebraicFractalController::OnKeyboard(const zzgui::KeyboardEvent& event) {
         return;
     }
 
+    auto window = model_->GetWindow().lock();
     switch (event.GetKey()) {
         case zzgui::KeyMap::kUp:
             model_->Move(0, -1);
@@ -87,6 +88,9 @@ void AlgebraicFractalController::OnKeyboard(const zzgui::KeyboardEvent& event) {
             break;
         case zzgui::KeyMap::kPageDown:
             model_->IncDepth(-1);
+            break;
+        case zzgui::KeyMap::kTab:
+            window->SetFullscreenDesktop(window->GetFullscreenDesktop() ^ true);
             break;
         default:
             break;

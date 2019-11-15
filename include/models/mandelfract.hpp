@@ -26,7 +26,8 @@ namespace cozz {
 
 class MandelfractModel final : public AlgebraicFractalModel {
   public:
-    MandelfractModel(std::shared_ptr<clpp::Core> cl_core, std::shared_ptr<clpp::Platform> cl_platform);
+    MandelfractModel(std::shared_ptr<clpp::Core> cl_core, std::shared_ptr<const clpp::Platform> cl_platform,
+                     std::shared_ptr<const clpp::Device> cl_device);
 };
 
 }  // namespace cozz

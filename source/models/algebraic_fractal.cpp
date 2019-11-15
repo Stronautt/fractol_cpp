@@ -29,6 +29,7 @@
 #include "controllers_manager.hpp"
 #include "event/quit_event.hpp"
 #include "event/window_event.hpp"
+#include "event/window_resized_event.hpp"
 #include "resources_manager.hpp"
 #include "sdl_window.hpp"
 #include "widget.hpp"
@@ -43,11 +44,13 @@ using std::placeholders::_1;
 namespace cozz {
 
 AlgebraicFractalModel::AlgebraicFractalModel(const std::string& name, std::shared_ptr<clpp::Core> cl_core,
-                                             std::shared_ptr<clpp::Platform> cl_platform, Parameters parameters,
+                                             std::shared_ptr<const clpp::Platform> cl_platform,
+                                             std::shared_ptr<const clpp::Device> cl_device, Parameters parameters,
                                              const std::vector<std::string>& source_paths)
     : name_(name),
       cl_core_(cl_core),
       cl_platform_(cl_platform),
+      cl_device_(cl_device),
       parameters_(parameters),
       source_paths_(source_paths),
       follow_mouse_(false) {
@@ -62,13 +65,11 @@ AlgebraicFractalModel::~AlgebraicFractalModel() {
 
 void AlgebraicFractalModel::Create() {
     const auto& ubuntu10_font = resources_manager_.lock()->LoadFont("Ubuntu10", "resources/fonts/ubuntu.ttf", 10);
-    const auto& ubuntu14_font =
-        resources_manager_.lock()->LoadFont("Ubuntu14", "resources/fonts/fonts_awesome.ttf", 14);
     const auto& app_icon = resources_manager_.lock()->LoadImage("AppIcon", "resources/images/icon.png");
     const std::string build_options = "-I resources/shaders -cl-std=CL1.2";
 
     cl_shader_ = cl_platform_->LoadShader(source_paths_);
-    cl_platform_->BuildShader(cl_shader_, build_options);
+    cl_shader_->Build(cl_device_, build_options);
 
     window_ = windows_manager_.lock()->CreateWindow<zzgui::SDLWindow>(name_.c_str(), 800, 600);
     auto window_id = window_.lock()->GetId();
@@ -96,32 +97,37 @@ void AlgebraicFractalModel::Create() {
     fps_counter_.lock()->SetForegroundColor({0xFF, 0xFF, 0xFF});
     fps_counter_.lock()->SetPosition(0, window_.lock()->GetHeight() - fps_counter_.lock()->GetSize().second);
 
+    window_.lock()->IfResized([this](auto&) { fps_counter_.lock()->SetPosition(0, window_.lock()->GetHeight() - fps_counter_.lock()->GetSize().second); });
+
     fractal_info_.depth = widgets_manager_->Create<zzgui::Label>(window_id, 0, "", ubuntu10_font, 0, 0);
     fractal_info_.depth.lock()->SetForegroundColor({0xFF, 0xFF, 0xFF});
     fractal_info_.depth.lock()->SetBorderColor({0, 0, 0, 0});
     fractal_info_.depth.lock()->SetPadding(4, 0);
 
-    fractal_info_.scale_coefficient = widgets_manager_->Create<zzgui::Label>(
-        window_id, 0, "", ubuntu10_font, 0,
-        fractal_info_.depth.lock()->GetPosition().second + fractal_info_.depth.lock()->GetSize().second);
+    fractal_info_.scale_coefficient = widgets_manager_->Create<zzgui::Label>(window_id, 0, "", ubuntu10_font);
+    fractal_info_.scale_coefficient.lock()->PlaceBottom(fractal_info_.depth);
     fractal_info_.scale_coefficient.lock()->SetForegroundColor({0xFF, 0xFF, 0xFF});
     fractal_info_.scale_coefficient.lock()->SetBorderColor({0, 0, 0, 0});
     fractal_info_.scale_coefficient.lock()->SetPadding(4, 0);
 
-    fractal_info_.pivot =
-        widgets_manager_->Create<zzgui::Label>(window_id, 0, "", ubuntu10_font, 0,
-                                               fractal_info_.scale_coefficient.lock()->GetPosition().second +
-                                                   fractal_info_.scale_coefficient.lock()->GetSize().second);
+    fractal_info_.pivot = widgets_manager_->Create<zzgui::Label>(window_id, 0, "", ubuntu10_font);
+    fractal_info_.pivot.lock()->PlaceBottom(fractal_info_.scale_coefficient);
     fractal_info_.pivot.lock()->SetForegroundColor({0xFF, 0xFF, 0xFF});
     fractal_info_.pivot.lock()->SetBorderColor({0, 0, 0, 0});
     fractal_info_.pivot.lock()->SetPadding(4, 0);
 
-    fractal_info_.dynamic_coefficients = widgets_manager_->Create<zzgui::Label>(
-        window_id, 0, "", ubuntu10_font, 0,
-        fractal_info_.pivot.lock()->GetPosition().second + fractal_info_.pivot.lock()->GetSize().second);
+    fractal_info_.dynamic_coefficients = widgets_manager_->Create<zzgui::Label>(window_id, 0, "", ubuntu10_font);
+    fractal_info_.dynamic_coefficients.lock()->PlaceBottom(fractal_info_.pivot);
     fractal_info_.dynamic_coefficients.lock()->SetForegroundColor({0xFF, 0xFF, 0xFF});
     fractal_info_.dynamic_coefficients.lock()->SetBorderColor({0, 0, 0, 0});
     fractal_info_.dynamic_coefficients.lock()->SetPadding(4, 0);
+
+    fractal_info_.compute_device =
+        widgets_manager_->Create<zzgui::Label>(window_id, 0, "Device: " + cl_device_->GetName(), ubuntu10_font);
+    fractal_info_.compute_device.lock()->PlaceBottom(fractal_info_.dynamic_coefficients);
+    fractal_info_.compute_device.lock()->SetForegroundColor({0xFF, 0xFF, 0xFF});
+    fractal_info_.compute_device.lock()->SetBorderColor({0, 0, 0, 0});
+    fractal_info_.compute_device.lock()->SetPadding(4, 0);
 }
 
 namespace {

@@ -21,6 +21,7 @@
 #define LIBCLPP_INCLUDE_CLPP_SHADER_HPP_
 
 #include <map>
+#include <tuple>
 #include <memory>
 #include <string>
 #include <vector>
@@ -46,24 +47,23 @@ class Shader final {
 
     cl_program GetProgram() const;
 
-    void UpdateAssociatedDevices();
+    void Build(std::shared_ptr<const Device> device, const std::string& build_options);
 
     template <class... Args>
     void Calculate(const std::string& function, void* buffer, uint64_t buffer_size, std::vector<size_t> work_size,
                    const Args&... args);
-
   private:
     const Platform& cl_platform_;
 
     cl_program cl_program_;
 
-    std::vector<std::shared_ptr<Device>> associated_devices_;
+    std::shared_ptr<const Device> cl_device_;
 
     std::map<const std::string, cl_kernel> cl_kernels_;
 
-    std::pair<cl_mem, uint64_t> device_memory_region_;
+    std::tuple<cl_mem, void*, size_t> device_memory_region_;
 
-    void ReallocateDeviceMemoryRegion(uint64_t size);
+    void ReallocateDeviceMemoryRegion(void* buffer, uint64_t size);
 
     cl_kernel GetKernel(const std::string& name);
 
