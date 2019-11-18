@@ -156,7 +156,7 @@ void MenuModel::CreateSettingsWidgets() {
     platform_select_label.lock()->PlaceBottom(logo_image, 30, 30);
 
     auto platform_select = widgets_manager_->Create<zzgui::Select<std::shared_ptr<clpp::Platform>>>(
-        window_id, 1, platform_select_list, ubuntu12_font);
+        window_id, 2, platform_select_list, ubuntu12_font);
     platform_select.lock()->PlaceRight(platform_select_label, 10);
     platform_select.lock()->SetBackgroundColor({0xFF, 0xFF, 0xFF});
     platform_select.lock()->OnChange(
