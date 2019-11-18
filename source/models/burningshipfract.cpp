@@ -17,17 +17,17 @@
  * Author: Pavlo Hrytsenko
 */
 
-#include "models/mandelfract.hpp"
+#include "models/burningshipfract.hpp"
 
 #include "controllers/algebraic_fractal.hpp"
 #include "views/algebraic_fractal.hpp"
 
 namespace cozz {
 
-MandelfractModel::MandelfractModel(std::shared_ptr<clpp::Core> cl_core,
-                                   std::shared_ptr<const clpp::Platform> cl_platform,
-                                   std::shared_ptr<const clpp::Device> cl_device)
-    : AlgebraicFractalModel("Mandelbrot Fractal", cl_core, cl_platform, cl_device,
-                            {512, 0.004, {-0.5, 0}, {0, 0}, {9, 15, 8.5}}, {"resources/shaders/mandelbrot.cl"}) {}
+BurningshipfractModel::BurningshipfractModel(std::shared_ptr<clpp::Core> cl_core,
+                                             std::shared_ptr<const clpp::Platform> cl_platform,
+                                             std::shared_ptr<const clpp::Device> cl_device)
+    : AlgebraicFractalModel("Burning Ship Fractal", cl_core, cl_platform, cl_device,
+                            {512, 0.004, {-0.5, -0.5}, {0, 0}, {9, 4, 3.5}}, {"resources/shaders/burningship.cl"}) {}
 
 }  // namespace cozz

@@ -17,7 +17,6 @@
  * Author: Pavlo Hrytsenko
 */
 
-
 #include "common.h"
 
 #include "utils.cl"
@@ -25,11 +24,11 @@
 __kernel void
 compute_fractal(__global unsigned int *buff, t_parameters parameters)
 {
-    int it = 0;
-    size_t x = get_global_id(0);
-    size_t y = get_global_id(1);
-    size_t width = get_global_size(0);
-    size_t height = get_global_size(1);
+    int     it = 0;
+    size_t  x = get_global_id(0);
+    size_t  y = get_global_id(1);
+    size_t  width = get_global_size(0);
+    size_t  height = get_global_size(1);
     double3 z;
 
     z = (double3)(parameters.pivot.x + (x - width / 2.0) * parameters.scale_coefficient,

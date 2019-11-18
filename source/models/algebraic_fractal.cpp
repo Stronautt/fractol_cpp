@@ -97,7 +97,9 @@ void AlgebraicFractalModel::Create() {
     fps_counter_.lock()->SetForegroundColor({0xFF, 0xFF, 0xFF});
     fps_counter_.lock()->SetPosition(0, window_.lock()->GetHeight() - fps_counter_.lock()->GetSize().second);
 
-    window_.lock()->IfResized([this](auto&) { fps_counter_.lock()->SetPosition(0, window_.lock()->GetHeight() - fps_counter_.lock()->GetSize().second); });
+    window_.lock()->IfResized([this](auto&) {
+        fps_counter_.lock()->SetPosition(0, window_.lock()->GetHeight() - fps_counter_.lock()->GetSize().second);
+    });
 
     fractal_info_.depth = widgets_manager_->Create<zzgui::Label>(window_id, 0, "", ubuntu10_font, 0, 0);
     fractal_info_.depth.lock()->SetForegroundColor({0xFF, 0xFF, 0xFF});

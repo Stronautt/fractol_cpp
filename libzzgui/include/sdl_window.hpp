@@ -55,6 +55,7 @@ class SDLWindow final : public Window {
     virtual bool GetFullscreen() const override;
 
     virtual bool GetFullscreenDesktop() const override;
+
   protected:
     virtual void Moved() override;
 

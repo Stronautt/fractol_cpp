@@ -99,7 +99,8 @@ void Shader::Build(std::shared_ptr<const Device> device, const std::string& buil
             throw cl_error("Can't get shader build log length");
         }
         std::unique_ptr<char[]> build_log(new char[build_log_len]);
-        if (clGetProgramBuildInfo(cl_program_, device_id, CL_PROGRAM_BUILD_LOG, build_log_len, build_log.get(), nullptr)) {
+        if (clGetProgramBuildInfo(cl_program_, device_id, CL_PROGRAM_BUILD_LOG, build_log_len, build_log.get(),
+                                  nullptr)) {
             throw cl_error("Can't get shader build log");
         }
         std::ofstream build_log_file("cl_build_error.log", std::fstream::out | std::fstream::app);
@@ -119,7 +120,8 @@ void Shader::ReallocateDeviceMemoryRegion(void* buffer, uint64_t size) {
         throw cl_error("Can't release device memory region");
     }
     cl_int error;
-    std::get<0>(device_memory_region_) = clCreateBuffer(cl_platform_.GetContext(), CL_MEM_USE_HOST_PTR, size, buffer, &error);
+    std::get<0>(device_memory_region_) =
+        clCreateBuffer(cl_platform_.GetContext(), CL_MEM_USE_HOST_PTR, size, buffer, &error);
     std::get<1>(device_memory_region_) = buffer;
     std::get<2>(device_memory_region_) = size;
     if (error) {

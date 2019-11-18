@@ -57,6 +57,8 @@ class MenuController final : public zzgui::Controller<MenuModel, MenuView>,
 
     void OnJuliaFractalButtonClick(const zzgui::MouseButtonEvent& event) const;
 
+    void OnBurningShipFractalButtonClick(const zzgui::MouseButtonEvent& event) const;
+
     void OnExitButtonClick(const zzgui::MouseButtonEvent& event) const;
 
     void OnMenuButtonClick(const zzgui::MouseButtonEvent& event) const;

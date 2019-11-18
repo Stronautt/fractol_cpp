@@ -96,6 +96,14 @@ void MenuModel::CreateMenuWidgets() {
         std::bind(&MenuController::OnJuliaFractalButtonClick, GetController().lock().get(), _1));
     julia_fractal_button.lock()->PlaceRight(mandelbrot_fractal_button, 10);
 
+    auto burning_ship_fractal_button =
+        widgets_manager_->Create<zzgui::Button>(window_id, 0, "Burning Ship Fractal", ubuntu14_font);
+    burning_ship_fractal_button.lock()->SetAutosize(false);
+    burning_ship_fractal_button.lock()->SetSize(200, 30);
+    burning_ship_fractal_button.lock()->OnClick(
+        std::bind(&MenuController::OnBurningShipFractalButtonClick, GetController().lock().get(), _1));
+    burning_ship_fractal_button.lock()->PlaceBottom(mandelbrot_fractal_button, 10);
+
     auto exit_button = widgets_manager_->Create<zzgui::Button>(window_id, 0, "Exit", ubuntu14_font);
     exit_button.lock()->SetAutosize(false);
     exit_button.lock()->SetSize(100, 30);

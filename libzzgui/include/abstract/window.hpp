@@ -81,6 +81,7 @@ class Window {
     void OnResize(const WindowResizedEvent& event);
 
     void IfResized(std::function<void(const WindowResizedEvent&)> callback);
+
   protected:
     std::string title_;
 

@@ -21,9 +21,9 @@
 #define LIBCLPP_INCLUDE_CLPP_SHADER_HPP_
 
 #include <map>
-#include <tuple>
 #include <memory>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
@@ -52,6 +52,7 @@ class Shader final {
     template <class... Args>
     void Calculate(const std::string& function, void* buffer, uint64_t buffer_size, std::vector<size_t> work_size,
                    const Args&... args);
+
   private:
     const Platform& cl_platform_;
 

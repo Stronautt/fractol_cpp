@@ -74,18 +74,17 @@ void Shader::Calculate(const std::string& function, void* buffer, uint64_t buffe
         throw cl_error("Maximum work size dimension equal to 3, current: " + std::to_string(work_dimensions));
     }
     work_size.resize(3);
-    if (!std::get<0>(device_memory_region_)
-        || std::get<1>(device_memory_region_) != buffer
-        || std::get<2>(device_memory_region_) != buffer_size) {
+    if (!std::get<0>(device_memory_region_) || std::get<1>(device_memory_region_) != buffer ||
+        std::get<2>(device_memory_region_) != buffer_size) {
         ReallocateDeviceMemoryRegion(buffer, buffer_size);
     }
     const auto& kernel = GetKernel(function);
     SetKernelArgument(kernel, 0, std::get<0>(device_memory_region_), args...);
-    if (clEnqueueNDRangeKernel(cl_device_->GetCommandQueue(), kernel, work_dimensions, nullptr,
-                               work_size.data(), nullptr, 0, nullptr, nullptr)) {
+    if (clEnqueueNDRangeKernel(cl_device_->GetCommandQueue(), kernel, work_dimensions, nullptr, work_size.data(),
+                               nullptr, 0, nullptr, nullptr)) {
         throw cl_error("Can't enqueue a command to execute a kernel on a device");
     } else if (clEnqueueReadBuffer(cl_device_->GetCommandQueue(), std::get<0>(device_memory_region_), CL_TRUE, 0,
-                            buffer_size, buffer, 0, nullptr, nullptr)) {
+                                   buffer_size, buffer, 0, nullptr, nullptr)) {
         throw cl_error("Can't enqueue commands to read from a buffer object to host memory.");
     }
 }

@@ -37,7 +37,7 @@ compute_fractal(__global unsigned int *buff, t_parameters parameters)
     while ((z.x * z.x + z.y * z.y) <= 4.0 && (++it < parameters.depth))
     {
         z.z = z.x * z.x - z.y * z.y + c.x;
-        z.y = 2.0 * z.x * z.y + c.y;
+        z.y = 2.0 * fabs(z.x * z.y) + c.y;
         z.x = z.z;
     }
     buff[y * width + x] = ft_smooth(it / (double)parameters.depth, parameters.color_coefficients);

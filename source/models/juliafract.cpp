@@ -26,7 +26,7 @@ namespace cozz {
 
 JuliafractModel::JuliafractModel(std::shared_ptr<clpp::Core> cl_core, std::shared_ptr<const clpp::Platform> cl_platform,
                                  std::shared_ptr<const clpp::Device> cl_device)
-    : AlgebraicFractalModel("Julia Fractal", cl_core, cl_platform, cl_device, {512, 0.004, {0, 0}, {-0.7, 0.27015},
-    						{9, 15, 8.5}}, {"resources/shaders/julia.cl"}) {}
+    : AlgebraicFractalModel("Julia Fractal", cl_core, cl_platform, cl_device,
+                            {512, 0.004, {0, 0}, {-0.7, 0.27015}, {9, 15, 8.5}}, {"resources/shaders/julia.cl"}) {}
 
 }  // namespace cozz

@@ -29,7 +29,7 @@ endif()
 
 set(CMAKE_CXX_FLAGS "-Wextra -Wall -pedantic -Wno-ignored-attributes")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Werror -fsanitize=leak")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -s")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -g")
 
 set(EXE_NAME ${PROJECT_NAME} CACHE STRING "Name of the executable" FORCE)
 set(LIB_NAME ${EXE_NAME}_core CACHE STRING "Name of the core library" FORCE)
@@ -39,6 +39,7 @@ add_library(${LIB_NAME} STATIC source/fractol.cpp
                                source/models/algebraic_fractal.cpp
                                source/models/mandelfract.cpp
                                source/models/juliafract.cpp
+                               source/models/burningshipfract.cpp
                                source/views/menu.cpp
                                source/views/algebraic_fractal.cpp
                                source/controllers/menu.cpp
