@@ -38,7 +38,7 @@ Image::Image(std::shared_ptr<ImageResource> img, uint64_t x, uint64_t y) : Widge
 
 void Image::Draw(std::shared_ptr<Painter> painter) { painter->DrawImage({x_, y_}, img_, width_, height_); }
 
-void Image::DoOnMouseButton(const MouseButtonEvent&) {}
+bool Image::DoOnMouseButton(const MouseButtonEvent&) { return false; }
 
 bool Image::InBounds(uint64_t x, uint64_t y, const Event&) {
     if (x >= x_ && x <= x_ + width_ && y >= y_ && y <= y_ + height_) {

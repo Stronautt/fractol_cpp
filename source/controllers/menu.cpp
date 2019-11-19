@@ -34,11 +34,12 @@ MenuController::MenuController(const zzgui::Application& app, std::shared_ptr<cl
 
 void MenuController::Create() {}
 
-void MenuController::OnWindowClose(const zzgui::WindowCloseEvent&) {
+bool MenuController::OnWindowClose(const zzgui::WindowCloseEvent&) {
     controllers_manager_.lock()->Erase(shared_from_this());
+    return false;
 }
 
-void MenuController::OnMandelbrotFractalButtonClick(const zzgui::MouseButtonEvent&) const {
+bool MenuController::OnMandelbrotFractalButtonClick(const zzgui::MouseButtonEvent&) const {
     try {
         controllers_manager_.lock()->Push(std::make_shared<AlgebraicFractalController>(
             app_, cl_core_,
@@ -46,9 +47,10 @@ void MenuController::OnMandelbrotFractalButtonClick(const zzgui::MouseButtonEven
     } catch (const std::exception& e) {
         app_.ShowErrorMessage(e.what());
     }
+    return true;
 }
 
-void MenuController::OnJuliaFractalButtonClick(const zzgui::MouseButtonEvent&) const {
+bool MenuController::OnJuliaFractalButtonClick(const zzgui::MouseButtonEvent&) const {
     try {
         controllers_manager_.lock()->Push(std::make_shared<AlgebraicFractalController>(
             app_, cl_core_,
@@ -56,9 +58,10 @@ void MenuController::OnJuliaFractalButtonClick(const zzgui::MouseButtonEvent&) c
     } catch (const std::exception& e) {
         app_.ShowErrorMessage(e.what());
     }
+    return true;
 }
 
-void MenuController::OnBurningShipFractalButtonClick(const zzgui::MouseButtonEvent&) const {
+bool MenuController::OnBurningShipFractalButtonClick(const zzgui::MouseButtonEvent&) const {
     try {
         controllers_manager_.lock()->Push(std::make_shared<AlgebraicFractalController>(
             app_, cl_core_,
@@ -66,15 +69,23 @@ void MenuController::OnBurningShipFractalButtonClick(const zzgui::MouseButtonEve
     } catch (const std::exception& e) {
         app_.ShowErrorMessage(e.what());
     }
+    return true;
 }
 
-void MenuController::OnExitButtonClick(const zzgui::MouseButtonEvent&) const {
+bool MenuController::OnExitButtonClick(const zzgui::MouseButtonEvent&) const {
     event_handler_.lock()->PushEvent(zzgui::QuitEvent());
+    return true;
 }
 
-void MenuController::OnMenuButtonClick(const zzgui::MouseButtonEvent&) const { model_->CreateMenuWidgets(); }
+bool MenuController::OnMenuButtonClick(const zzgui::MouseButtonEvent&) const {
+    model_->CreateMenuWidgets();
+    return true;
+}
 
-void MenuController::OnSettingsButtonClick(const zzgui::MouseButtonEvent&) const { model_->CreateSettingsWidgets(); }
+bool MenuController::OnSettingsButtonClick(const zzgui::MouseButtonEvent&) const {
+    model_->CreateSettingsWidgets();
+    return true;
+}
 
 void MenuController::OnPlatformSelectChange(std::shared_ptr<clpp::Platform> platform) const {
     model_->SetClPlatform(platform);

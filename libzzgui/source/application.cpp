@@ -42,7 +42,7 @@ void Application::UpdateDeltaTime() {
     tp = std::chrono::high_resolution_clock::now();
 }
 
-void Application::Terminate() { Terminate(QuitEvent()); }
+bool Application::Terminate() { return Terminate(QuitEvent()); }
 
 }  // namespace zzgui
 

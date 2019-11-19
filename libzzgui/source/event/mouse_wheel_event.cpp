@@ -23,7 +23,7 @@ namespace cozz {
 
 namespace zzgui {
 
-MouseWheelEvent::MouseWheelEvent(uint32_t window_id, uint64_t x, uint64_t y, int64_t scrolled_x, int64_t scrolled_y,
+MouseWheelEvent::MouseWheelEvent(Window::ID window_id, uint64_t x, uint64_t y, int64_t scrolled_x, int64_t scrolled_y,
                                  bool inversed)
     : Event(Event::Type::kMouseWheel, window_id),
       x_(x),

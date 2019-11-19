@@ -173,7 +173,7 @@ void Controller<ModelType, ViewType>::RegisterWindow(std::weak_ptr<Window> windo
 }
 
 template <class ModelType, class ViewType>
-void Controller<ModelType, ViewType>::OnWindowResize(const WindowResizedEvent& event) {
+bool Controller<ModelType, ViewType>::OnWindowResize(const WindowResizedEvent& event) {
     for (const auto& window : registered_windows_) {
         if (!window.expired()) {
             if (window.lock()->GetId() == event.GetWindowId()) {
@@ -181,6 +181,7 @@ void Controller<ModelType, ViewType>::OnWindowResize(const WindowResizedEvent& e
             }
         }
     }
+    return false;
 }
 
 }  // namespace zzgui

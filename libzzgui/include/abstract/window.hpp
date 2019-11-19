@@ -22,11 +22,10 @@
 
 #include <cstdint>
 #include <functional>
+#include <limits>
 #include <memory>
 #include <string>
 #include <utility>
-
-#include "event/window_event.hpp"
 
 namespace cozz {
 
@@ -35,12 +34,15 @@ namespace zzgui {
 class ImageResource;
 class Canvas;
 class EventHandler;
+class WindowCloseEvent;
 class WindowMovedEvent;
 class WindowResizedEvent;
 
 class Window {
   public:
-    using ID = uint32_t;
+    enum ID : uint32_t {
+        kUnknown = std::numeric_limits<uint32_t>::max(),
+    };
 
     virtual ~Window();
 
@@ -72,13 +74,13 @@ class Window {
 
     void Close(std::shared_ptr<EventHandler> event_handler);
 
-    void OnClose(const WindowCloseEvent& event);
+    bool OnClose(const WindowCloseEvent& event);
 
     void IfClosed(std::function<void(const WindowCloseEvent&)> callback);
 
-    void OnMove(const WindowMovedEvent& event);
+    bool OnMove(const WindowMovedEvent& event);
 
-    void OnResize(const WindowResizedEvent& event);
+    bool OnResize(const WindowResizedEvent& event);
 
     void IfResized(std::function<void(const WindowResizedEvent&)> callback);
 

@@ -51,19 +51,19 @@ class MenuController final : public zzgui::Controller<MenuModel, MenuView>,
 
     virtual void Create() override;
 
-    void OnWindowClose(const zzgui::WindowCloseEvent& event);
+    bool OnWindowClose(const zzgui::WindowCloseEvent& event);
 
-    void OnMandelbrotFractalButtonClick(const zzgui::MouseButtonEvent& event) const;
+    bool OnMandelbrotFractalButtonClick(const zzgui::MouseButtonEvent& event) const;
 
-    void OnJuliaFractalButtonClick(const zzgui::MouseButtonEvent& event) const;
+    bool OnJuliaFractalButtonClick(const zzgui::MouseButtonEvent& event) const;
 
-    void OnBurningShipFractalButtonClick(const zzgui::MouseButtonEvent& event) const;
+    bool OnBurningShipFractalButtonClick(const zzgui::MouseButtonEvent& event) const;
 
-    void OnExitButtonClick(const zzgui::MouseButtonEvent& event) const;
+    bool OnExitButtonClick(const zzgui::MouseButtonEvent& event) const;
 
-    void OnMenuButtonClick(const zzgui::MouseButtonEvent& event) const;
+    bool OnMenuButtonClick(const zzgui::MouseButtonEvent& event) const;
 
-    void OnSettingsButtonClick(const zzgui::MouseButtonEvent& event) const;
+    bool OnSettingsButtonClick(const zzgui::MouseButtonEvent& event) const;
 
     void OnPlatformSelectChange(std::shared_ptr<clpp::Platform> platform) const;
 

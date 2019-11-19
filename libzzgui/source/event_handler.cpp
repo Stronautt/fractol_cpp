@@ -19,6 +19,8 @@
 
 #include "event_handler.hpp"
 
+#include <algorithm>
+
 #include "window.hpp"
 
 namespace cozz {
@@ -42,22 +44,33 @@ void EventHandler::UnregisterEventCallbacks(const std::list<HandlerID>& ids) {
     std::for_each(ids.begin(), ids.end(), std::bind(&EventHandler::UnregisterEventCallback, this, _1));
 }
 
-void EventHandler::TriggerCallbacks(const Event& e) const {
-    const auto callbacks_map = callbacks_map_;
-    for (auto it = callbacks_map.find(e.GetType()); it != callbacks_map.end(); it++) {
-        if (it->first != e.GetType()) {
-            break;
+bool EventHandler::TriggerCallbacks(const Event& e) const {
+    const auto& range = callbacks_map_.equal_range(e.GetType());
+
+    std::vector<decltype(callbacks_map_.begin()->second)> callbacks;
+    std::transform(range.first, range.second, std::back_inserter(callbacks),
+                   [](const auto& pair) { return pair.second; });
+    std::sort(callbacks.begin(), callbacks.end(), [](const auto& tuple_a, const auto& tuple_b) {
+        if (std::get<0>(tuple_a) == std::get<0>(tuple_b)) {
+            return std::get<1>(tuple_a) > std::get<1>(tuple_b);
+        } else {
+            return std::get<0>(tuple_a) < std::get<0>(tuple_b);
         }
-        const auto& window_linked = std::get<0>(it->second);
-        const auto& linked_id = std::get<1>(it->second);
-        if (window_linked && e.GetWindowId() != linked_id) {
+    });
+
+    bool callback_triggered = false;
+    for (const auto& tuple : callbacks) {
+        const auto& window_id = std::get<0>(tuple);
+        const auto& event_callback = std::get<2>(tuple);
+
+        if (window_id != Window::ID::kUnknown && e.GetWindowId() != window_id) {
             continue;
+        } else if (event_callback && event_callback(e)) {
+            return true;
         }
-        const auto& event_callback = std::get<2>(it->second);
-        if (event_callback) {
-            event_callback(e);
-        }
+        callback_triggered = true;
     }
+    return callback_triggered;
 }
 
 Event::Type EventHandler::ConvertEventType(const std::type_info& type) const {

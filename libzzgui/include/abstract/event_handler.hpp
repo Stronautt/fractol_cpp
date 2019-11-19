@@ -22,10 +22,10 @@
 
 #include <functional>
 #include <list>
+#include <map>
 #include <stdexcept>
 #include <tuple>
 #include <typeinfo>
-#include <unordered_map>
 #include <utility>
 
 #include "event.hpp"
@@ -46,7 +46,7 @@ namespace zzgui {
 class EventHandler {
   public:
     using HandlerID =
-        std::unordered_multimap<Event::Type, std::tuple<bool, Window::ID, std::function<void(const Event&)>>>::iterator;
+        std::multimap<Event::Type, std::tuple<Window::ID, uint64_t, std::function<bool(const Event&)>>>::iterator;
 
     virtual ~EventHandler();
 
@@ -56,10 +56,11 @@ class EventHandler {
     void PushEvent(const EventType& event) const;
 
     template <class EventType>
-    HandlerID RegisterEventCallback(const std::function<void(const EventType&)>& callback);
+    HandlerID RegisterEventCallback(const std::function<bool(const EventType&)>& callback, uint64_t priority = 0);
 
     template <class EventType>
-    HandlerID RegisterEventCallback(const std::function<void(const EventType&)>& callback, Window::ID id);
+    HandlerID RegisterEventCallback(const std::function<bool(const EventType&)>& callback, Window::ID id,
+                                    uint64_t priority = 0);
 
     virtual std::list<HandlerID> RegisterWindowEventCallbacks(Window& window) final;
 
@@ -68,20 +69,19 @@ class EventHandler {
     virtual void UnregisterEventCallbacks(const std::list<HandlerID>& ids) final;
 
   protected:
-    std::unordered_multimap<Event::Type, std::tuple<bool, Window::ID, std::function<void(const Event&)>>>
-        callbacks_map_;
+    std::multimap<Event::Type, std::tuple<Window::ID, uint64_t, std::function<bool(const Event&)>>> callbacks_map_;
 
-    virtual void TriggerCallbacks(const Event& event) const final;
+    virtual bool TriggerCallbacks(const Event& event) const final;
 
   private:
     template <class EventType>
-    std::pair<Event::Type, std::tuple<bool, Window::ID, std::function<void(const Event&)>>> MakePair(
-        const std::function<void(const EventType&)>& callback, const std::pair<bool, Window::ID>& window_id) const;
+    std::pair<Event::Type, std::tuple<Window::ID, uint64_t, std::function<bool(const Event&)>>> MakePair(
+        const std::function<bool(const EventType&)>& callback, Window::ID window_id, uint64_t priority = 0) const;
 
     Event::Type ConvertEventType(const std::type_info& type) const;
 
     template <class EventType>
-    std::function<void(const Event&)> ConvertCallback(const std::function<void(const EventType&)>& callback) const;
+    std::function<bool(const Event&)> ConvertCallback(const std::function<bool(const EventType&)>& callback) const;
 };
 
 }  // namespace zzgui

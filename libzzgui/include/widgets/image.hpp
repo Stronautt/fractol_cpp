@@ -41,7 +41,7 @@ class Image : public Widget {
 
     std::shared_ptr<ImageResource> GetImage() const;
 
-    virtual void DoOnMouseButton(const MouseButtonEvent& event) override;
+    virtual bool DoOnMouseButton(const MouseButtonEvent& event) override;
 
   protected:
     std::shared_ptr<ImageResource> img_;

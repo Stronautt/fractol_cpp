@@ -47,13 +47,14 @@ void AlgebraicFractalController::Render(float delta) {
     }
 }
 
-void AlgebraicFractalController::OnWindowClose(const zzgui::WindowCloseEvent&) {
+bool AlgebraicFractalController::OnWindowClose(const zzgui::WindowCloseEvent&) {
     controllers_manager_.lock()->Erase(shared_from_this());
+    return false;
 }
 
-void AlgebraicFractalController::OnKeyboard(const zzgui::KeyboardEvent& event) {
+bool AlgebraicFractalController::OnKeyboard(const zzgui::KeyboardEvent& event) {
     if (!event.IsPressed()) {
-        return;
+        return false;
     }
 
     auto window = model_->GetWindow().lock();
@@ -95,15 +96,17 @@ void AlgebraicFractalController::OnKeyboard(const zzgui::KeyboardEvent& event) {
         default:
             break;
     }
+    return false;
 }
 
-void AlgebraicFractalController::OnMouseButton(const zzgui::MouseButtonEvent& event) {
+bool AlgebraicFractalController::OnMouseButton(const zzgui::MouseButtonEvent& event) {
     if (event.GetButton() == zzgui::KeyMap::kLeftMouseButton) {
         drag_ = event.IsPressed();
     }
+    return false;
 }
 
-void AlgebraicFractalController::OnMouseMotion(const zzgui::MouseMotionEvent& event) {
+bool AlgebraicFractalController::OnMouseMotion(const zzgui::MouseMotionEvent& event) {
     const auto& mouse_pos = event.GetPosition();
 
     model_->FollowMouse(mouse_pos.first, mouse_pos.second);
@@ -111,12 +114,14 @@ void AlgebraicFractalController::OnMouseMotion(const zzgui::MouseMotionEvent& ev
         const auto& direction = event.GetDirection();
         model_->Drag(-direction.first, -direction.second);
     }
+    return false;
 }
 
-void AlgebraicFractalController::OnMouseWheel(const zzgui::MouseWheelEvent& event) {
+bool AlgebraicFractalController::OnMouseWheel(const zzgui::MouseWheelEvent& event) {
     const auto& mouse_pos = event.GetPosition();
 
     model_->Zoom(mouse_pos.first, mouse_pos.second, event.GetScrolledByY() > 0);
+    return false;
 }
 
 }  // namespace cozz

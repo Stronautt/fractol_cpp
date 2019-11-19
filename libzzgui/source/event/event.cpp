@@ -23,7 +23,7 @@ namespace cozz {
 
 namespace zzgui {
 
-Event::Event(Type type, uint32_t window_id)
+Event::Event(Type type, Window::ID window_id)
     : type_(type), timestamp_(std::chrono::system_clock::now()), window_id_(window_id) {}
 
 Event::~Event() = default;
@@ -32,7 +32,7 @@ Event::Type Event::GetType() const { return type_; }
 
 std::chrono::system_clock::time_point Event::GetTimestamp() const { return timestamp_; }
 
-uint32_t Event::GetWindowId() const { return window_id_; }
+Window::ID Event::GetWindowId() const { return window_id_; }
 
 }  // namespace zzgui
 

@@ -246,47 +246,49 @@ bool SDLEventHandler::Poll() const {
             case SDL_WINDOWEVENT:
                 switch (e.window.event) {
                     case SDL_WINDOWEVENT_SHOWN:
-                        TriggerCallbacks(WindowShownEvent(e.window.windowID));
+                        TriggerCallbacks(WindowShownEvent(static_cast<Window::ID>(e.window.windowID)));
                         break;
                     case SDL_WINDOWEVENT_HIDDEN:
-                        TriggerCallbacks(WindowHiddenEvent(e.window.windowID));
+                        TriggerCallbacks(WindowHiddenEvent(static_cast<Window::ID>(e.window.windowID)));
                         break;
                     case SDL_WINDOWEVENT_EXPOSED:
-                        TriggerCallbacks(WindowExposedEvent(e.window.windowID));
+                        TriggerCallbacks(WindowExposedEvent(static_cast<Window::ID>(e.window.windowID)));
                         break;
                     case SDL_WINDOWEVENT_MOVED:
-                        TriggerCallbacks(WindowMovedEvent(e.window.windowID, e.window.data1, e.window.data2));
+                        TriggerCallbacks(WindowMovedEvent(static_cast<Window::ID>(e.window.windowID), e.window.data1,
+                                                          e.window.data2));
                         break;
                     case SDL_WINDOWEVENT_RESIZED:
                     case SDL_WINDOWEVENT_SIZE_CHANGED:
-                        TriggerCallbacks(WindowResizedEvent(e.window.windowID, e.window.data1, e.window.data2));
+                        TriggerCallbacks(WindowResizedEvent(static_cast<Window::ID>(e.window.windowID), e.window.data1,
+                                                            e.window.data2));
                         break;
                     case SDL_WINDOWEVENT_MINIMIZED:
-                        TriggerCallbacks(WindowMinimizedEvent(e.window.windowID));
+                        TriggerCallbacks(WindowMinimizedEvent(static_cast<Window::ID>(e.window.windowID)));
                         break;
                     case SDL_WINDOWEVENT_MAXIMIZED:
-                        TriggerCallbacks(WindowMaximizedEvent(e.window.windowID));
+                        TriggerCallbacks(WindowMaximizedEvent(static_cast<Window::ID>(e.window.windowID)));
                         break;
                     case SDL_WINDOWEVENT_RESTORED:
-                        TriggerCallbacks(WindowRestoredEvent(e.window.windowID));
+                        TriggerCallbacks(WindowRestoredEvent(static_cast<Window::ID>(e.window.windowID)));
                         break;
                     case SDL_WINDOWEVENT_ENTER:
-                        TriggerCallbacks(WindowEnterEvent(e.window.windowID));
+                        TriggerCallbacks(WindowEnterEvent(static_cast<Window::ID>(e.window.windowID)));
                         break;
                     case SDL_WINDOWEVENT_LEAVE:
-                        TriggerCallbacks(WindowLeaveEvent(e.window.windowID));
+                        TriggerCallbacks(WindowLeaveEvent(static_cast<Window::ID>(e.window.windowID)));
                         break;
                     case SDL_WINDOWEVENT_FOCUS_GAINED:
-                        TriggerCallbacks(WindowFocusGainedEvent(e.window.windowID));
+                        TriggerCallbacks(WindowFocusGainedEvent(static_cast<Window::ID>(e.window.windowID)));
                         break;
                     case SDL_WINDOWEVENT_FOCUS_LOST:
-                        TriggerCallbacks(WindowFocusLostEvent(e.window.windowID));
+                        TriggerCallbacks(WindowFocusLostEvent(static_cast<Window::ID>(e.window.windowID)));
                         break;
                     case SDL_WINDOWEVENT_CLOSE:
-                        TriggerCallbacks(WindowCloseEvent(e.window.windowID));
+                        TriggerCallbacks(WindowCloseEvent(static_cast<Window::ID>(e.window.windowID)));
                         break;
                     case SDL_WINDOWEVENT_TAKE_FOCUS:
-                        TriggerCallbacks(WindowTakeFocusEvent(e.window.windowID));
+                        TriggerCallbacks(WindowTakeFocusEvent(static_cast<Window::ID>(e.window.windowID)));
                         break;
                     default:
                         return false;
@@ -294,23 +296,24 @@ bool SDLEventHandler::Poll() const {
                 break;
             case SDL_KEYDOWN:
             case SDL_KEYUP:
-                TriggerCallbacks(KeyboardEvent(e.key.windowID, e.key.state == SDL_PRESSED, e.key.repeat,
-                                               AlignKeys(e.key.keysym.scancode)));
+                TriggerCallbacks(KeyboardEvent(static_cast<Window::ID>(e.key.windowID), e.key.state == SDL_PRESSED,
+                                               e.key.repeat, AlignKeys(e.key.keysym.scancode)));
                 break;
             case SDL_MOUSEMOTION:
-                TriggerCallbacks(MouseMotionEvent(e.motion.windowID, AlignMouseButtonState(e.motion.state), e.motion.x,
-                                                  e.motion.y, e.motion.xrel, e.motion.yrel));
+                TriggerCallbacks(MouseMotionEvent(static_cast<Window::ID>(e.motion.windowID),
+                                                  AlignMouseButtonState(e.motion.state), e.motion.x, e.motion.y,
+                                                  e.motion.xrel, e.motion.yrel));
                 break;
             case SDL_MOUSEBUTTONDOWN:
             case SDL_MOUSEBUTTONUP:
-                TriggerCallbacks(MouseButtonEvent(e.button.windowID, AlignMouseButtons(e.button.button),
-                                                  e.button.state == SDL_PRESSED, e.button.clicks, e.button.x,
-                                                  e.button.y));
+                TriggerCallbacks(MouseButtonEvent(static_cast<Window::ID>(e.button.windowID),
+                                                  AlignMouseButtons(e.button.button), e.button.state == SDL_PRESSED,
+                                                  e.button.clicks, e.button.x, e.button.y));
                 break;
             case SDL_MOUSEWHEEL:
                 int x, y;
                 SDL_GetMouseState(&x, &y);
-                TriggerCallbacks(MouseWheelEvent(e.wheel.windowID, x, y, e.wheel.x, e.wheel.y,
+                TriggerCallbacks(MouseWheelEvent(static_cast<Window::ID>(e.wheel.windowID), x, y, e.wheel.x, e.wheel.y,
                                                  e.wheel.direction == SDL_MOUSEWHEEL_FLIPPED));
                 break;
             case SDL_QUIT:

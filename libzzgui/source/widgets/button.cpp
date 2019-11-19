@@ -37,14 +37,16 @@ Button::Button(const std::string& text, std::shared_ptr<FontResource> font, uint
 
 void Button::Draw(std::shared_ptr<Painter> painter) { Label::Draw(painter); }
 
-void Button::DoOnMouseButton(const MouseButtonEvent& event) {
+bool Button::DoOnMouseButton(const MouseButtonEvent& event) {
     if (event.GetButton() == KeyMap::kLeftMouseButton) {
         if (event.IsPressed()) {
             y_ += 3;
         } else {
             y_ -= 3;
         }
+        return true;
     }
+    return false;
 }
 
 }  // namespace zzgui

@@ -23,7 +23,7 @@ namespace cozz {
 
 namespace zzgui {
 
-QuitEvent::QuitEvent() : Event(Event::Type::kQuit, 0) {}
+QuitEvent::QuitEvent() : Event(Event::Type::kQuit, Window::ID::kUnknown) {}
 
 }  // namespace zzgui
 

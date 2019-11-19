@@ -21,6 +21,7 @@
 
 #include "event/mouse_button_event.hpp"
 #include "event/mouse_motion_event.hpp"
+#include "event/window_event.hpp"
 
 namespace cozz {
 
@@ -69,7 +70,7 @@ std::tuple<uint64_t, uint64_t, uint64_t, uint64_t> Widget::GetPadding() const {
     return std::make_tuple(padding_left_, padding_right_, padding_top_, padding_bottom_);
 }
 
-void Widget::OnMouseMotion(const MouseMotionEvent& event) {
+bool Widget::OnMouseMotion(const MouseMotionEvent& event) {
     auto mouse_position = event.GetPosition();
 
     if (InBounds(mouse_position.first, mouse_position.second, event)) {
@@ -77,15 +78,16 @@ void Widget::OnMouseMotion(const MouseMotionEvent& event) {
     } else {
         hover_ = false;
     }
+    return false;
 }
 
-void Widget::OnMouseButton(const MouseButtonEvent& event) {
+bool Widget::OnMouseButton(const MouseButtonEvent& event) {
     if (!event.IsPressed()) {
         if (!button_queue_.empty()) {
-            this->DoOnMouseButton(event);
+            DoOnMouseButton(event);
             button_queue_.pop_front();
             if (event.GetButton() == KeyMap::kLeftMouseButton && click_callback_) {
-                click_callback_(event);
+                return click_callback_(event);
             }
         }
     } else {
@@ -94,13 +96,14 @@ void Widget::OnMouseButton(const MouseButtonEvent& event) {
         const auto& button = event.GetButton();
         if (InBounds(mouse_position.first, mouse_position.second, event) &&
             std::find(button_queue_.begin(), button_queue_.end(), button) == button_queue_.end()) {
-            DoOnMouseButton(event);
             button_queue_.emplace_back(button);
+            return DoOnMouseButton(event);
         }
     }
+    return false;
 }
 
-void Widget::OnClick(std::function<void(const MouseButtonEvent&)> func) { click_callback_ = func; }
+void Widget::OnClick(std::function<bool(const MouseButtonEvent&)> func) { click_callback_ = func; }
 
 void Widget::PlaceRight(std::weak_ptr<Widget> widget, uint64_t offset_x, uint64_t offset_y) {
     if (!widget.expired()) {

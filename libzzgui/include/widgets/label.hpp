@@ -85,7 +85,7 @@ class Label : public Widget {
 
     const Canvas::PixelColor& GetForegroundColor() const;
 
-    virtual void DoOnMouseButton(const MouseButtonEvent& event) override;
+    virtual bool DoOnMouseButton(const MouseButtonEvent& event) override;
 
   protected:
     std::string text_;

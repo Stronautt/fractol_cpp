@@ -57,7 +57,7 @@ class SdlApplication : public Application {
 
     std::shared_ptr<ControllersManager> controller_manager_;
 
-    virtual void Terminate(const QuitEvent& event) override;
+    virtual bool Terminate(const QuitEvent& event) override;
 };
 
 }  // namespace zzgui

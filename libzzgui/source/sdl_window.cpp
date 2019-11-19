@@ -61,7 +61,9 @@ void SDLWindow::SetFullscreenDesktop(bool value) {
     SDL_SetWindowFullscreen(static_cast<SDL_Window*>(window_.get()), value ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 }
 
-Window::ID SDLWindow::GetId() const { return SDL_GetWindowID(static_cast<SDL_Window*>(window_.get())); }
+Window::ID SDLWindow::GetId() const {
+    return static_cast<Window::ID>(SDL_GetWindowID(static_cast<SDL_Window*>(window_.get())));
+}
 
 std::weak_ptr<Canvas> SDLWindow::GetCanvas() { return canvas_; }
 

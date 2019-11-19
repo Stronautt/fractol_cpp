@@ -44,13 +44,13 @@ SdlApplication::SdlApplication()
       resources_manager_(std::make_shared<zzgui::ResourcesManager>()),
       controller_manager_(std::make_shared<ControllersManager>(event_handler_, windows_manager_, resources_manager_)) {
     event_handler_->RegisterEventCallback<QuitEvent>(
-        std::bind(static_cast<void (SdlApplication::*)(const QuitEvent&)>(&SdlApplication::Terminate), this,
+        std::bind(static_cast<bool (SdlApplication::*)(const QuitEvent&)>(&SdlApplication::Terminate), this,
                   std::placeholders::_1));
 }
 
 SdlApplication::~SdlApplication() = default;
 
-void SdlApplication::Terminate(const QuitEvent&) { is_running_ = false; }
+bool SdlApplication::Terminate(const QuitEvent&) { return is_running_ = false; }
 
 uint8_t SdlApplication::Run() {
     try {

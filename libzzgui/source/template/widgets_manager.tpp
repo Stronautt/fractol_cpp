@@ -28,9 +28,9 @@ std::weak_ptr<WidgetType> WidgetsManager::Create(Window::ID id, uint64_t z_index
     auto widget = std::make_shared<WidgetType>(args...);
 
     registered_callbacks_.emplace_back(event_handler_.lock()->RegisterEventCallback<MouseButtonEvent>(
-        std::bind(&Widget::OnMouseButton, widget.get(), std::placeholders::_1), id));
+        std::bind(&Widget::OnMouseButton, widget.get(), std::placeholders::_1), id, z_index));
     registered_callbacks_.emplace_back(event_handler_.lock()->RegisterEventCallback<MouseMotionEvent>(
-        std::bind(&Widget::OnMouseMotion, widget.get(), std::placeholders::_1), id));
+        std::bind(&Widget::OnMouseMotion, widget.get(), std::placeholders::_1), id, z_index));
 
     widgets_.emplace(std::make_pair(z_index, widget));
     return widget;

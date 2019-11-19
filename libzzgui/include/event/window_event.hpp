@@ -21,6 +21,7 @@
 #define LIBZZGUI_INCLUDE_EVENT_WINDOW_EVENT_HPP_
 
 #include "event.hpp"
+#include "window.hpp"
 
 namespace cozz {
 
@@ -29,23 +30,47 @@ namespace zzgui {
 template <Event::Type EventType>
 class WindowEvent : public Event {
   public:
-    WindowEvent(uint32_t window_id) : Event(EventType, window_id) {}
+    WindowEvent(Window::ID window_id) : Event(EventType, window_id) {}
 
     virtual ~WindowEvent() = default;
 };
 
-using WindowShownEvent = WindowEvent<Event::Type::kWindowShown>;
-using WindowHiddenEvent = WindowEvent<Event::Type::kWindowHidden>;
-using WindowExposedEvent = WindowEvent<Event::Type::kWindowExposed>;
-using WindowMinimizedEvent = WindowEvent<Event::Type::kWindowMinimized>;
-using WindowMaximizedEvent = WindowEvent<Event::Type::kWindowMaximized>;
-using WindowRestoredEvent = WindowEvent<Event::Type::kWindowRestored>;
-using WindowEnterEvent = WindowEvent<Event::Type::kWindowEnter>;
-using WindowLeaveEvent = WindowEvent<Event::Type::kWindowLeave>;
-using WindowFocusGainedEvent = WindowEvent<Event::Type::kWindowFocusGained>;
-using WindowFocusLostEvent = WindowEvent<Event::Type::kWindowFocusLost>;
-using WindowCloseEvent = WindowEvent<Event::Type::kWindowClose>;
-using WindowTakeFocusEvent = WindowEvent<Event::Type::kWindowTakeFocus>;
+class WindowShownEvent : public WindowEvent<Event::Type::kWindowShown> {
+    using WindowEvent::WindowEvent;
+};
+class WindowHiddenEvent : public WindowEvent<Event::Type::kWindowHidden> {
+    using WindowEvent::WindowEvent;
+};
+class WindowExposedEvent : public WindowEvent<Event::Type::kWindowExposed> {
+    using WindowEvent::WindowEvent;
+};
+class WindowMinimizedEvent : public WindowEvent<Event::Type::kWindowMinimized> {
+    using WindowEvent::WindowEvent;
+};
+class WindowMaximizedEvent : public WindowEvent<Event::Type::kWindowMaximized> {
+    using WindowEvent::WindowEvent;
+};
+class WindowRestoredEvent : public WindowEvent<Event::Type::kWindowRestored> {
+    using WindowEvent::WindowEvent;
+};
+class WindowEnterEvent : public WindowEvent<Event::Type::kWindowEnter> {
+    using WindowEvent::WindowEvent;
+};
+class WindowLeaveEvent : public WindowEvent<Event::Type::kWindowLeave> {
+    using WindowEvent::WindowEvent;
+};
+class WindowFocusGainedEvent : public WindowEvent<Event::Type::kWindowFocusGained> {
+    using WindowEvent::WindowEvent;
+};
+class WindowFocusLostEvent : public WindowEvent<Event::Type::kWindowFocusLost> {
+    using WindowEvent::WindowEvent;
+};
+class WindowCloseEvent : public WindowEvent<Event::Type::kWindowClose> {
+    using WindowEvent::WindowEvent;
+};
+class WindowTakeFocusEvent : public WindowEvent<Event::Type::kWindowTakeFocus> {
+    using WindowEvent::WindowEvent;
+};
 
 }  // namespace zzgui
 

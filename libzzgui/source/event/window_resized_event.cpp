@@ -23,7 +23,7 @@ namespace cozz {
 
 namespace zzgui {
 
-WindowResizedEvent::WindowResizedEvent(uint32_t window_id, uint64_t new_width, uint64_t new_height)
+WindowResizedEvent::WindowResizedEvent(Window::ID window_id, uint64_t new_width, uint64_t new_height)
     : WindowEvent(window_id), new_width_(new_width), new_height_(new_height) {}
 
 std::pair<uint64_t, uint64_t> WindowResizedEvent::GetSize() const { return std::make_pair(new_width_, new_height_); }

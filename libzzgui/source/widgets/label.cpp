@@ -125,7 +125,7 @@ const Canvas::PixelColor& Label::GetBackgroundColor() const { return background_
 
 const Canvas::PixelColor& Label::GetForegroundColor() const { return foreground_color_; }
 
-void Label::DoOnMouseButton(const MouseButtonEvent&) {}
+bool Label::DoOnMouseButton(const MouseButtonEvent&) { return false; }
 
 bool Label::InBounds(uint64_t x, uint64_t y, const Event&) {
     if (x >= x_ && x <= x_ + width_ && y >= y_ && y <= y_ + height_) {

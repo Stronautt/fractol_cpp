@@ -23,7 +23,7 @@ namespace cozz {
 
 namespace zzgui {
 
-MouseButtonEvent::MouseButtonEvent(uint32_t window_id, KeyMap button, bool pressed, uint8_t clicks, uint64_t x,
+MouseButtonEvent::MouseButtonEvent(Window::ID window_id, KeyMap button, bool pressed, uint8_t clicks, uint64_t x,
                                    uint64_t y)
     : Event(Event::Type::kMouseButton, window_id),
       button_(button > KeyMap::kMouseButtonsBegin && button < KeyMap::kMouseButtonsEnd

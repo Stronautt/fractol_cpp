@@ -23,7 +23,7 @@ namespace cozz {
 
 namespace zzgui {
 
-MouseMotionEvent::MouseMotionEvent(uint32_t window_id, ButtonState state, uint64_t x, uint64_t y, int64_t x_dir,
+MouseMotionEvent::MouseMotionEvent(Window::ID window_id, ButtonState state, uint64_t x, uint64_t y, int64_t x_dir,
                                    int64_t y_dir)
     : Event(Event::Type::kMouseMotion, window_id), state_(state), x_(x), y_(y), x_dir_(x_dir), y_dir_(y_dir) {}
 

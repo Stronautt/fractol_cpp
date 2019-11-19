@@ -24,6 +24,8 @@
 #include <cstdint>
 #include <stdexcept>
 
+#include "window.hpp"
+
 namespace cozz {
 
 namespace zzgui {
@@ -35,9 +37,11 @@ class event_error : public std::runtime_error {
 class Event {
   public:
     enum class Type : uint8_t {
-        kWindowShown = 0x0,
-        kWindowHidden,
+        kQuit = 0x0,
+        kWindowClose,
+        kWindowShown,
         kWindowExposed,
+        kWindowHidden,
         kWindowMoved,
         kWindowResized,
         kWindowMinimized,
@@ -47,13 +51,11 @@ class Event {
         kWindowLeave,
         kWindowFocusGained,
         kWindowFocusLost,
-        kWindowClose,
         kWindowTakeFocus,
-        kKeyboard,
         kMouseMotion,
         kMouseButton,
         kMouseWheel,
-        kQuit,
+        kKeyboard
     };
 
     virtual ~Event();
@@ -62,14 +64,14 @@ class Event {
 
     virtual std::chrono::system_clock::time_point GetTimestamp() const final;
 
-    virtual uint32_t GetWindowId() const final;
+    virtual Window::ID GetWindowId() const final;
 
   protected:
-    Event(Type type, uint32_t window_id);
+    Event(Type type, Window::ID window_id);
 
     Type type_;
     std::chrono::system_clock::time_point timestamp_;
-    uint32_t window_id_;
+    Window::ID window_id_;
 };
 
 }  // namespace zzgui

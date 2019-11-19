@@ -29,29 +29,27 @@ void EventHandler::PushEvent(const EventType& event) const {
 }
 
 template <class EventType>
-EventHandler::HandlerID EventHandler::RegisterEventCallback(const std::function<void(const EventType&)>& callback) {
-    return callbacks_map_.emplace(MakePair(callback, std::make_pair(false, 0)));
+EventHandler::HandlerID EventHandler::RegisterEventCallback(const std::function<bool(const EventType&)>& callback, uint64_t priority) {
+    return RegisterEventCallback(callback, Window::ID::kUnknown, priority);
 }
 
 template <class EventType>
-EventHandler::HandlerID EventHandler::RegisterEventCallback(const std::function<void(const EventType&)>& callback,
-                                                            Window::ID id) {
-    return callbacks_map_.emplace(MakePair(callback, std::make_pair(true, id)));
+EventHandler::HandlerID EventHandler::RegisterEventCallback(const std::function<bool(const EventType&)>& callback, Window::ID id, uint64_t priority) {
+    return callbacks_map_.emplace(MakePair(callback, id, priority));
 }
 
 template <class EventType>
-std::pair<Event::Type, std::tuple<bool, Window::ID, std::function<void(const Event&)>>> EventHandler::MakePair(
-    const std::function<void(const EventType&)>& callback, const std::pair<bool, Window::ID>& window_id) const {
+std::pair<Event::Type, std::tuple<Window::ID, uint64_t, std::function<bool(const Event&)>>> EventHandler::MakePair(
+    const std::function<bool(const EventType&)>& callback, Window::ID window_id, uint64_t priority) const {
     static_assert(std::is_convertible<EventType, Event>::value);
 
-    return std::make_pair(ConvertEventType(typeid(EventType)),
-                          std::make_tuple(window_id.first, window_id.second, ConvertCallback(callback)));
+    return std::make_pair(ConvertEventType(typeid(EventType)), std::make_tuple(window_id, priority, ConvertCallback(callback)));
 }
 
 template <class EventType>
-std::function<void(const Event&)> EventHandler::ConvertCallback(
-    const std::function<void(const EventType&)>& callback) const {
-    return reinterpret_cast<const std::function<void(const Event&)>&>(callback);
+std::function<bool(const Event&)> EventHandler::ConvertCallback(
+    const std::function<bool(const EventType&)>& callback) const {
+    return reinterpret_cast<const std::function<bool(const Event&)>&>(callback);
 }
 
 }  // namespace zzgui

@@ -28,12 +28,13 @@ WindowsManager::WindowsManager(std::shared_ptr<EventHandler> event_handler) : ev
         std::bind(&WindowsManager::OnWindowClose, this, std::placeholders::_1));
 }
 
-void WindowsManager::OnWindowClose(const WindowCloseEvent& event) {
+bool WindowsManager::OnWindowClose(const WindowCloseEvent& event) {
     auto it = windows_.find(event.GetWindowId());
     if (it != windows_.end()) {
         event_handler_->UnregisterEventCallbacks(it->second.second);
         windows_.erase(event.GetWindowId());
     }
+    return false;
 }
 
 void WindowsManager::UpdateWindows() const {

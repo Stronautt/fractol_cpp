@@ -31,7 +31,7 @@ namespace zzgui {
 
 class WindowResizedEvent final : public WindowEvent<Event::Type::kWindowResized> {
   public:
-    WindowResizedEvent(uint32_t window_id, uint64_t new_width, uint64_t new_height);
+    WindowResizedEvent(Window::ID window_id, uint64_t new_width, uint64_t new_height);
 
     std::pair<uint64_t, uint64_t> GetSize() const;
 

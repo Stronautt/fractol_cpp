@@ -42,12 +42,12 @@ class Application {
     virtual void ShowInfoMessage(const std::string& message) const = 0;
     virtual void ShowErrorMessage(const std::string& message) const = 0;
 
-    void Terminate();
+    bool Terminate();
 
   protected:
     static void UpdateDeltaTime();
 
-    virtual void Terminate(const QuitEvent& event) = 0;
+    virtual bool Terminate(const QuitEvent& event) = 0;
 
   private:
     static thread_local float delta_time_;

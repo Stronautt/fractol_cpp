@@ -32,7 +32,7 @@ namespace zzgui {
 
 class MouseButtonEvent final : public Event {
   public:
-    MouseButtonEvent(uint32_t window_id, KeyMap button, bool pressed, uint8_t clicks, uint64_t x, uint64_t y);
+    MouseButtonEvent(Window::ID window_id, KeyMap button, bool pressed, uint8_t clicks, uint64_t x, uint64_t y);
 
     KeyMap GetButton() const;
 

@@ -23,7 +23,7 @@ namespace cozz {
 
 namespace zzgui {
 
-KeyboardEvent::KeyboardEvent(uint32_t window_id, bool pressed, bool is_repeat, KeyMap key)
+KeyboardEvent::KeyboardEvent(Window::ID window_id, bool pressed, bool is_repeat, KeyMap key)
     : Event(Event::Type::kKeyboard, window_id),
       pressed_(pressed),
       is_repeat_(is_repeat),

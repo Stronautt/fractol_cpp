@@ -54,7 +54,7 @@ class WindowsManager final {
     std::shared_ptr<EventHandler> event_handler_;
     std::map<Window::ID, std::pair<std::shared_ptr<Window>, std::list<EventHandler::HandlerID>>> windows_;
 
-    void OnWindowClose(const WindowCloseEvent& event);
+    bool OnWindowClose(const WindowCloseEvent& event);
 };
 
 }  // namespace zzgui

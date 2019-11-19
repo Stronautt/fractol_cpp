@@ -21,6 +21,7 @@
 #define LIBZZGUI_INCLUDE_EVENT_KEYBOARD_EVENT_HPP_
 
 #include "event.hpp"
+#include "window.hpp"
 
 #include "key_map.hpp"
 
@@ -30,7 +31,7 @@ namespace zzgui {
 
 class KeyboardEvent final : public Event {
   public:
-    KeyboardEvent(uint32_t window_id, bool pressed, bool is_repeat, KeyMap key);
+    KeyboardEvent(Window::ID window_id, bool pressed, bool is_repeat, KeyMap key);
 
     bool IsPressed() const;
 

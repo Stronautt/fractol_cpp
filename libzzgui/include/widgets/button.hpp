@@ -34,7 +34,7 @@ class Button final : public Label {
 
     virtual void Draw(std::shared_ptr<Painter> painter) override;
 
-    virtual void DoOnMouseButton(const MouseButtonEvent& event) override;
+    virtual bool DoOnMouseButton(const MouseButtonEvent& event) override;
 };
 
 }  // namespace zzgui

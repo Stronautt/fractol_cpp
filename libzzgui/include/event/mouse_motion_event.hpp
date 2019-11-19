@@ -39,7 +39,7 @@ class MouseMotionEvent final : public Event {
         kExtra2Pressed = 0x10, /* 0001 0000 */
     };
 
-    MouseMotionEvent(uint32_t window_id, ButtonState state, uint64_t x, uint64_t y, int64_t x_dir, int64_t y_dir);
+    MouseMotionEvent(Window::ID window_id, ButtonState state, uint64_t x, uint64_t y, int64_t x_dir, int64_t y_dir);
 
     std::pair<uint64_t, uint64_t> GetPosition() const;
 

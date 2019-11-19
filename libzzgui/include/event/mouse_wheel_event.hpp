@@ -30,7 +30,8 @@ namespace zzgui {
 
 class MouseWheelEvent final : public Event {
   public:
-    MouseWheelEvent(uint32_t window_id, uint64_t x, uint64_t y, int64_t scrolled_x, int64_t scrolled_y, bool inversed);
+    MouseWheelEvent(Window::ID window_id, uint64_t x, uint64_t y, int64_t scrolled_x, int64_t scrolled_y,
+                    bool inversed);
 
     std::pair<uint64_t, uint64_t> GetPosition() const;
 

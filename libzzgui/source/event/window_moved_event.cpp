@@ -23,7 +23,8 @@ namespace cozz {
 
 namespace zzgui {
 
-WindowMovedEvent::WindowMovedEvent(uint32_t window_id, uint64_t x, uint64_t y) : WindowEvent(window_id), x_(x), y_(y) {}
+WindowMovedEvent::WindowMovedEvent(Window::ID window_id, uint64_t x, uint64_t y)
+    : WindowEvent(window_id), x_(x), y_(y) {}
 
 std::pair<uint64_t, uint64_t> WindowMovedEvent::GetPosition() const { return std::make_pair(x_, y_); }
 

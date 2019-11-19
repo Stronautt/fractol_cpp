@@ -162,7 +162,7 @@ void Select<Data>::OnChange(std::function<void(const Data&)> func) {
 }
 
 template <class Data>
-void Select<Data>::DoOnMouseButton(const MouseButtonEvent& event) {
+bool Select<Data>::DoOnMouseButton(const MouseButtonEvent& event) {
     if (event.GetButton() == KeyMap::kLeftMouseButton) {
         if (event.IsPressed()) {
             y_ += 2;
@@ -183,6 +183,7 @@ void Select<Data>::DoOnMouseButton(const MouseButtonEvent& event) {
             focus_ ^= true;
         }
     }
+    return true;
 }
 
 template <class Data>

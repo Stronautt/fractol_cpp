@@ -31,7 +31,7 @@ namespace zzgui {
 
 class WindowMovedEvent final : public WindowEvent<Event::Type::kWindowMoved> {
   public:
-    WindowMovedEvent(uint32_t window_id, uint64_t x, uint64_t y);
+    WindowMovedEvent(Window::ID window_id, uint64_t x, uint64_t y);
 
     std::pair<uint64_t, uint64_t> GetPosition() const;
 

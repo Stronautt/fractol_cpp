@@ -43,26 +43,28 @@ uint64_t Window::GetHeight() const { return height_; }
 
 void Window::Close(std::shared_ptr<EventHandler> event_handler) { event_handler->PushEvent(WindowCloseEvent(GetId())); }
 
-void Window::OnClose(const WindowCloseEvent& event) {
+bool Window::OnClose(const WindowCloseEvent& event) {
     if (event.GetWindowId() == GetId()) {
         if (on_close_callback_) {
             on_close_callback_(event);
         }
     }
+    return false;
 }
 
 void Window::IfClosed(std::function<void(const WindowCloseEvent&)> callback) { on_close_callback_ = callback; }
 
-void Window::OnMove(const WindowMovedEvent& event) {
+bool Window::OnMove(const WindowMovedEvent& event) {
     if (event.GetWindowId() == GetId()) {
         auto new_position = event.GetPosition();
         x_ = new_position.first;
         y_ = new_position.second;
         Moved();
     }
+    return false;
 }
 
-void Window::OnResize(const WindowResizedEvent& event) {
+bool Window::OnResize(const WindowResizedEvent& event) {
     if (event.GetWindowId() == GetId()) {
         auto new_size = event.GetSize();
         width_ = new_size.first;
@@ -72,6 +74,7 @@ void Window::OnResize(const WindowResizedEvent& event) {
             on_resize_callback_(event);
         }
     }
+    return false;
 }
 
 void Window::IfResized(std::function<void(const WindowResizedEvent&)> callback) { on_resize_callback_ = callback; }

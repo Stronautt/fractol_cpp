@@ -56,15 +56,15 @@ class AlgebraicFractalController final : public zzgui::Controller<AlgebraicFract
 
     void Render(float delta) override;
 
-    void OnWindowClose(const zzgui::WindowCloseEvent& event);
+    bool OnWindowClose(const zzgui::WindowCloseEvent& event);
 
-    void OnKeyboard(const zzgui::KeyboardEvent& event);
+    bool OnKeyboard(const zzgui::KeyboardEvent& event);
 
-    void OnMouseButton(const zzgui::MouseButtonEvent& event);
+    bool OnMouseButton(const zzgui::MouseButtonEvent& event);
 
-    void OnMouseMotion(const zzgui::MouseMotionEvent& event);
+    bool OnMouseMotion(const zzgui::MouseMotionEvent& event);
 
-    void OnMouseWheel(const zzgui::MouseWheelEvent& event);
+    bool OnMouseWheel(const zzgui::MouseWheelEvent& event);
 
   private:
     const zzgui::Application& app_;

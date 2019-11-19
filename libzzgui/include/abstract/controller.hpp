@@ -94,7 +94,7 @@ class Controller : public BaseController {
     Controller(std::shared_ptr<ViewType> view);
 
   private:
-    void OnWindowResize(const WindowResizedEvent& event);
+    bool OnWindowResize(const WindowResizedEvent& event);
 };
 
 }  // namespace zzgui

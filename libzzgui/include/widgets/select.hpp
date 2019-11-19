@@ -74,7 +74,7 @@ class Select : public Widget {
 
     void OnChange(std::function<void(const Data&)> func);
 
-    virtual void DoOnMouseButton(const MouseButtonEvent& event) override;
+    virtual bool DoOnMouseButton(const MouseButtonEvent& event) override;
 
   protected:
     std::vector<std::pair<std::string, Data>> options_;
