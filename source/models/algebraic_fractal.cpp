@@ -66,7 +66,11 @@ AlgebraicFractalModel::~AlgebraicFractalModel() {
 void AlgebraicFractalModel::Create() {
     const auto& ubuntu10_font = resources_manager_.lock()->LoadFont("Ubuntu10", "resources/fonts/ubuntu.ttf", 10);
     const auto& app_icon = resources_manager_.lock()->LoadImage("AppIcon", "resources/images/icon.png");
+#ifdef DEBUG
     const std::string build_options = "-I resources/shaders -cl-std=CL1.2";
+#else
+    const std::string build_options = "-I resources/shaders -cl-std=CL1.2 -cl-fast-relaxed-math -cl-no-signed-zeros";
+#endif
 
     cl_shader_ = cl_platform_->LoadShader(source_paths_);
     cl_shader_->Build(cl_device_, build_options);
@@ -81,9 +85,6 @@ void AlgebraicFractalModel::Create() {
 
     registered_callbacks_.emplace_back(event_handler_.lock()->RegisterEventCallback<zzgui::KeyboardEvent>(
         std::bind(&AlgebraicFractalController::OnKeyboard, GetController().lock().get(), _1), window_.lock()->GetId()));
-    registered_callbacks_.emplace_back(event_handler_.lock()->RegisterEventCallback<zzgui::MouseButtonEvent>(
-        std::bind(&AlgebraicFractalController::OnMouseButton, GetController().lock().get(), _1),
-        window_.lock()->GetId()));
     registered_callbacks_.emplace_back(event_handler_.lock()->RegisterEventCallback<zzgui::MouseMotionEvent>(
         std::bind(&AlgebraicFractalController::OnMouseMotion, GetController().lock().get(), _1),
         window_.lock()->GetId()));

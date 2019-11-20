@@ -28,7 +28,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 set(CMAKE_CXX_FLAGS "-Wextra -Wall -pedantic -Wno-ignored-attributes")
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Werror -fsanitize=leak")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG -O0 -Werror -fsanitize=leak")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -s")
 
 set(EXE_NAME ${PROJECT_NAME} CACHE STRING "Name of the executable" FORCE)

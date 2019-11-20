@@ -165,7 +165,7 @@ template <class Data>
 bool Select<Data>::DoOnMouseButton(const MouseButtonEvent& event) {
     if (event.GetButton() == KeyMap::kLeftMouseButton) {
         if (event.IsPressed()) {
-            y_ += 2;
+            y_ += 1;
 
             if (focus_ && change_callback_) {
                 const auto& mouse_pos = event.GetPosition();
@@ -179,7 +179,7 @@ bool Select<Data>::DoOnMouseButton(const MouseButtonEvent& event) {
                 std::swap(options_[0], options_[count]);
             }
         } else {
-            y_ -= 2;
+            y_ -= 1;
             focus_ ^= true;
         }
     }

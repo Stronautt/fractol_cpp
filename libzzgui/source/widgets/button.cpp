@@ -40,9 +40,9 @@ void Button::Draw(std::shared_ptr<Painter> painter) { Label::Draw(painter); }
 bool Button::DoOnMouseButton(const MouseButtonEvent& event) {
     if (event.GetButton() == KeyMap::kLeftMouseButton) {
         if (event.IsPressed()) {
-            y_ += 3;
+            y_ += 2;
         } else {
-            y_ -= 3;
+            y_ -= 2;
         }
         return true;
     }

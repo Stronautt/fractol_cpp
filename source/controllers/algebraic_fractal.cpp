@@ -34,7 +34,7 @@ namespace cozz {
 AlgebraicFractalController::AlgebraicFractalController(const zzgui::Application& app,
                                                        std::shared_ptr<clpp::Core> cl_core,
                                                        std::shared_ptr<AlgebraicFractalModel> model)
-    : Controller(std::make_shared<AlgebraicFractalView>(model)), app_(app), cl_core_(cl_core), drag_(false) {}
+    : Controller(std::make_shared<AlgebraicFractalView>(model)), app_(app), cl_core_(cl_core) {}
 
 void AlgebraicFractalController::Create() {}
 
@@ -99,18 +99,11 @@ bool AlgebraicFractalController::OnKeyboard(const zzgui::KeyboardEvent& event) {
     return false;
 }
 
-bool AlgebraicFractalController::OnMouseButton(const zzgui::MouseButtonEvent& event) {
-    if (event.GetButton() == zzgui::KeyMap::kLeftMouseButton) {
-        drag_ = event.IsPressed();
-    }
-    return false;
-}
-
 bool AlgebraicFractalController::OnMouseMotion(const zzgui::MouseMotionEvent& event) {
     const auto& mouse_pos = event.GetPosition();
 
     model_->FollowMouse(mouse_pos.first, mouse_pos.second);
-    if (drag_) {
+    if (event.IsLeftButtonPressed()) {
         const auto& direction = event.GetDirection();
         model_->Drag(-direction.first, -direction.second);
     }

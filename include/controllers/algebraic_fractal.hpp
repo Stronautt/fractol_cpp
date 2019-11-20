@@ -70,8 +70,6 @@ class AlgebraicFractalController final : public zzgui::Controller<AlgebraicFract
     const zzgui::Application& app_;
 
     std::shared_ptr<clpp::Core> cl_core_;
-
-    bool drag_;
 };
 
 }  // namespace cozz
