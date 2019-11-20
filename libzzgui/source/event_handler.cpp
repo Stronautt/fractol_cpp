@@ -32,8 +32,8 @@ using std::placeholders::_1;
 
 EventHandler::~EventHandler() = default;
 
-bool EventHandler::CallbacksComarator::operator()(std::pair<Window::ID, uint64_t> pair_a,
-                                                  std::pair<Window::ID, uint64_t> pair_b) {
+bool EventHandler::CallbacksComarator::operator()(const std::pair<Window::ID, uint64_t>& pair_a,
+                                                  const std::pair<Window::ID, uint64_t>& pair_b) const {
     if (pair_a.first == pair_b.first) {
         return pair_a.second > pair_b.second;
     } else {

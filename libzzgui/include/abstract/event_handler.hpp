@@ -44,7 +44,8 @@ namespace zzgui {
 class EventHandler {
   public:
     struct CallbacksComarator {
-        bool operator()(std::pair<Window::ID, uint64_t> pair_a, std::pair<Window::ID, uint64_t> pair_b);
+        bool operator()(const std::pair<Window::ID, uint64_t>& pair_a,
+                        const std::pair<Window::ID, uint64_t>& pair_b) const;
     };
     using HandlerID =
         std::pair<std::map<Event::Type, std::multimap<std::pair<Window::ID, uint64_t>,
