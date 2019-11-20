@@ -24,7 +24,7 @@
 #include <chrono>
 #include <cstdint>
 #include <functional>
-#include <list>
+#include <map>
 #include <memory>
 #include <tuple>
 #include <utility>
@@ -63,6 +63,8 @@ class Widget {
 
     std::tuple<uint64_t, uint64_t, uint64_t, uint64_t> GetPadding() const;
 
+    bool OnWindowLeave(const WindowLeaveEvent& event);
+
     bool OnMouseMotion(const MouseMotionEvent& event);
 
     bool OnMouseButton(const MouseButtonEvent& event);
@@ -89,7 +91,7 @@ class Widget {
     uint64_t padding_top_;
     uint64_t padding_bottom_;
 
-    std::list<KeyMap> button_queue_;
+    std::map<KeyMap, const MouseButtonEvent> button_queue_;
     std::atomic<bool> hover_;
 
     std::function<bool(const MouseButtonEvent&)> click_callback_;

@@ -56,9 +56,9 @@ class MenuModel final : public zzgui::Model<MenuController> {
 
     virtual void Update(float delta) override;
 
-    void SetClPlatform(std::shared_ptr<clpp::Platform> platform);
+    void SetClPlatform(std::shared_ptr<const clpp::Platform> platform);
 
-    void SetClDevice(std::shared_ptr<clpp::Device> device);
+    void SetClDevice(std::shared_ptr<const clpp::Device> device);
 
     std::weak_ptr<zzgui::Window> GetWindow() const;
 
@@ -81,12 +81,12 @@ class MenuModel final : public zzgui::Model<MenuController> {
 
     std::weak_ptr<zzgui::Label> fps_counter_;
 
-    std::shared_ptr<clpp::Platform> cl_platform_;
+    std::shared_ptr<const clpp::Platform> cl_platform_;
     std::shared_ptr<const clpp::Device> cl_device_;
 
     struct {
         std::weak_ptr<zzgui::Label> device_types_avaliable;
-        std::weak_ptr<zzgui::Select<std::shared_ptr<clpp::Device>>> device_select;
+        std::weak_ptr<zzgui::Select<std::shared_ptr<const clpp::Device>>> device_select;
     } platform_info_;
 
     struct {

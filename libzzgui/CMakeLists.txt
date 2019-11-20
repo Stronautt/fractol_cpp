@@ -31,7 +31,7 @@ endif()
 
 set(CMAKE_CXX_FLAGS "-Wextra -Wall -pedantic")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Werror -fsanitize=leak")
-set(CMAKE_CXX_FLAGS_RELEASE "-O2 -g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -s")
 
 set(LIB_NAME ${PROJECT_NAME} CACHE STRING "Name of the library" FORCE)
 

@@ -87,10 +87,12 @@ bool MenuController::OnSettingsButtonClick(const zzgui::MouseButtonEvent&) const
     return true;
 }
 
-void MenuController::OnPlatformSelectChange(std::shared_ptr<clpp::Platform> platform) const {
+void MenuController::OnPlatformSelectChange(std::shared_ptr<const clpp::Platform> platform) const {
     model_->SetClPlatform(platform);
 }
 
-void MenuController::OnDeviceSelectChange(std::shared_ptr<clpp::Device> device) const { model_->SetClDevice(device); }
+void MenuController::OnDeviceSelectChange(std::shared_ptr<const clpp::Device> device) const {
+    model_->SetClDevice(device);
+}
 
 }  // namespace cozz

@@ -65,9 +65,9 @@ class MenuController final : public zzgui::Controller<MenuModel, MenuView>,
 
     bool OnSettingsButtonClick(const zzgui::MouseButtonEvent& event) const;
 
-    void OnPlatformSelectChange(std::shared_ptr<clpp::Platform> platform) const;
+    void OnPlatformSelectChange(std::shared_ptr<const clpp::Platform> platform) const;
 
-    void OnDeviceSelectChange(std::shared_ptr<clpp::Device> device) const;
+    void OnDeviceSelectChange(std::shared_ptr<const clpp::Device> device) const;
 
   private:
     const zzgui::Application& app_;

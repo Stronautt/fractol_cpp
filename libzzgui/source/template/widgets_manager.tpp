@@ -27,6 +27,8 @@ template <class WidgetType, class... Args>
 std::weak_ptr<WidgetType> WidgetsManager::Create(Window::ID id, uint64_t z_index, const Args&... args) {
     auto widget = std::make_shared<WidgetType>(args...);
 
+    registered_callbacks_.emplace_back(event_handler_.lock()->RegisterEventCallback<WindowLeaveEvent>(
+        std::bind(&Widget::OnWindowLeave, widget.get(), std::placeholders::_1), id, z_index));
     registered_callbacks_.emplace_back(event_handler_.lock()->RegisterEventCallback<MouseButtonEvent>(
         std::bind(&Widget::OnMouseButton, widget.get(), std::placeholders::_1), id, z_index));
     registered_callbacks_.emplace_back(event_handler_.lock()->RegisterEventCallback<MouseMotionEvent>(

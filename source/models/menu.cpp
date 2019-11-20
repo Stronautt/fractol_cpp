@@ -55,14 +55,11 @@ void MenuModel::Create() {
 
     GetController().lock()->RegisterWindow(window_);
 
-    try {
-        if (cl_core_) {
-            cl_platform_ = cl_core_->GetPlatform();
-        }
-    } catch (...) {
+    if (cl_core_) {
+        cl_platform_ = cl_core_->GetPlatform();
+        cl_device_ = cl_platform_->GetDevices().begin()->second;
     }
 
-    CreateSettingsWidgets();
     CreateMenuWidgets();
 }
 
@@ -137,7 +134,7 @@ void MenuModel::CreateSettingsWidgets() {
     back_button.lock()->SetPosition(window_.lock()->GetWidth() / 2 - back_button.lock()->GetSize().first / 2,
                                     window_.lock()->GetHeight() - back_button.lock()->GetSize().second - 20);
 
-    std::vector<std::pair<std::string, std::shared_ptr<clpp::Platform>>> platform_select_list;
+    std::vector<std::pair<std::string, std::shared_ptr<const clpp::Platform>>> platform_select_list;
     if (cl_platform_) {
         platform_select_list.push_back(std::make_pair(cl_platform_->GetName(), cl_platform_));
         for (const auto& platform : cl_core_->GetPlatforms()) {
@@ -155,7 +152,7 @@ void MenuModel::CreateSettingsWidgets() {
     auto platform_select_label = widgets_manager_->Create<zzgui::Label>(window_id, 0, "Platform:", ubuntu14_font);
     platform_select_label.lock()->PlaceBottom(logo_image, 30, 30);
 
-    auto platform_select = widgets_manager_->Create<zzgui::Select<std::shared_ptr<clpp::Platform>>>(
+    auto platform_select = widgets_manager_->Create<zzgui::Select<std::shared_ptr<const clpp::Platform>>>(
         window_id, 2, platform_select_list, ubuntu12_font);
     platform_select.lock()->PlaceRight(platform_select_label, 10);
     platform_select.lock()->SetBackgroundColor({0xFF, 0xFF, 0xFF});
@@ -173,8 +170,8 @@ void MenuModel::CreateSettingsWidgets() {
     auto device_select_label = widgets_manager_->Create<zzgui::Label>(window_id, 0, "Device:", ubuntu14_font);
     device_select_label.lock()->PlaceBottom(platform_info_label, 10, 20);
 
-    platform_info_.device_select = widgets_manager_->Create<zzgui::Select<std::shared_ptr<clpp::Device>>>(
-        window_id, 1, std::vector<std::pair<std::string, std::shared_ptr<clpp::Device>>>({{"< none >", nullptr}}),
+    platform_info_.device_select = widgets_manager_->Create<zzgui::Select<std::shared_ptr<const clpp::Device>>>(
+        window_id, 1, std::vector<std::pair<std::string, std::shared_ptr<const clpp::Device>>>({{"< none >", nullptr}}),
         ubuntu12_font);
     platform_info_.device_select.lock()->PlaceRight(device_select_label, 10);
     platform_info_.device_select.lock()->SetBackgroundColor({0xFF, 0xFF, 0xFF});
@@ -251,47 +248,50 @@ std::string ClDeviceTypeToString(cl_device_type type) {
 
 }  // namespace
 
-void MenuModel::SetClPlatform(std::shared_ptr<clpp::Platform> platform) {
+void MenuModel::SetClPlatform(std::shared_ptr<const clpp::Platform> platform) {
+    if (!platform) {
+        return platform_info_.device_types_avaliable.lock()->SetText("No information avaliable");
+    }
+    auto previous_platform = cl_platform_;
     cl_platform_ = platform;
 
-    if (cl_platform_) {
-        const auto& devices = cl_platform_->GetDevices();
+    const auto& devices = cl_platform_->GetDevices();
 
+    if (previous_platform != cl_platform_) {
         if (devices.empty()) {
             return platform_info_.device_types_avaliable.lock()->SetText("No devices avaliable");
         }
-
         SetClDevice(devices.begin()->second);
-
-        std::vector<std::pair<std::string, std::shared_ptr<clpp::Device>>> device_select_list;
-        std::map<cl_device_type, std::pair<std::string, uint64_t>> device_types;
-        for (const auto& device : devices) {
-            device_select_list.push_back({device.second->GetName(), device.second});
-            try {
-                device_types[device.first].first = ClDeviceTypeToString(device.first);
-                device_types.at(device.first).second++;
-            } catch (...) {
-            }
-        }
-
-        platform_info_.device_select.lock()->SetOptions(device_select_list);
-
-        std::string device_types_avaliable;
-        for (const auto& device_type : device_types) {
-            if (!device_types_avaliable.empty()) {
-                device_types_avaliable += ", ";
-            }
-            device_types_avaliable += std::to_string(device_type.second.second) + "x" + device_type.second.first;
-        }
-
-        platform_info_.device_types_avaliable.lock()->SetText("Devices avaliable (" + std::to_string(devices.size()) +
-                                                              "): " + device_types_avaliable);
     } else {
-        platform_info_.device_types_avaliable.lock()->SetText("No information avaliable");
+        SetClDevice(cl_device_);
     }
+
+    std::vector<std::pair<std::string, std::shared_ptr<const clpp::Device>>> device_select_list;
+    std::map<cl_device_type, std::pair<std::string, uint64_t>> device_types;
+    for (const auto& device : devices) {
+        device_select_list.push_back({device.second->GetName(), device.second});
+        try {
+            device_types[device.first].first = ClDeviceTypeToString(device.first);
+            device_types.at(device.first).second++;
+        } catch (...) {
+        }
+    }
+
+    platform_info_.device_select.lock()->SetOptions(device_select_list);
+
+    std::string device_types_avaliable;
+    for (const auto& device_type : device_types) {
+        if (!device_types_avaliable.empty()) {
+            device_types_avaliable += ", ";
+        }
+        device_types_avaliable += std::to_string(device_type.second.second) + "x" + device_type.second.first;
+    }
+
+    platform_info_.device_types_avaliable.lock()->SetText("Devices avaliable (" + std::to_string(devices.size()) +
+                                                          "): " + device_types_avaliable);
 }
 
-void MenuModel::SetClDevice(std::shared_ptr<clpp::Device> device) {
+void MenuModel::SetClDevice(std::shared_ptr<const clpp::Device> device) {
     cl_device_ = device;
     if (!cl_device_) {
         return;

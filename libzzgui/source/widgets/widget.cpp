@@ -70,6 +70,22 @@ std::tuple<uint64_t, uint64_t, uint64_t, uint64_t> Widget::GetPadding() const {
     return std::make_tuple(padding_left_, padding_right_, padding_top_, padding_bottom_);
 }
 
+bool Widget::OnWindowLeave(const WindowLeaveEvent& event) {
+    for (const auto& button_pair : button_queue_) {
+        const auto& mouse_button = button_pair.first;
+        const auto& mouse_button_event = button_pair.second;
+        const auto& mouse_position = mouse_button_event.GetPosition();
+
+        if (event.GetWindowId() == mouse_button_event.GetWindowId() && mouse_button_event.IsPressed()) {
+            DoOnMouseButton(MouseButtonEvent(mouse_button_event.GetWindowId(), mouse_button, false,
+                                             mouse_button_event.GetClicksCount(), mouse_position.first,
+                                             mouse_position.second));
+        }
+    }
+    button_queue_.clear();
+    return false;
+}
+
 bool Widget::OnMouseMotion(const MouseMotionEvent& event) {
     auto mouse_position = event.GetPosition();
 
@@ -82,21 +98,22 @@ bool Widget::OnMouseMotion(const MouseMotionEvent& event) {
 }
 
 bool Widget::OnMouseButton(const MouseButtonEvent& event) {
+    const auto& button = event.GetButton();
+
     if (!event.IsPressed()) {
         if (!button_queue_.empty()) {
             DoOnMouseButton(event);
-            button_queue_.pop_front();
-            if (event.GetButton() == KeyMap::kLeftMouseButton && click_callback_) {
+            button_queue_.erase(button);
+            if (button == KeyMap::kLeftMouseButton && click_callback_) {
                 return click_callback_(event);
             }
         }
     } else {
         const auto& mouse_position = event.GetPosition();
 
-        const auto& button = event.GetButton();
         if (InBounds(mouse_position.first, mouse_position.second, event) &&
-            std::find(button_queue_.begin(), button_queue_.end(), button) == button_queue_.end()) {
-            button_queue_.emplace_back(button);
+            button_queue_.find(button) == button_queue_.end()) {
+            button_queue_.emplace(button, event);
             return DoOnMouseButton(event);
         }
     }
