@@ -20,6 +20,7 @@
 #include "event_handler.hpp"
 
 #include <algorithm>
+#include <stdexcept>
 
 #include "window.hpp"
 
@@ -31,6 +32,15 @@ using std::placeholders::_1;
 
 EventHandler::~EventHandler() = default;
 
+bool EventHandler::CallbacksComarator::operator()(std::pair<Window::ID, uint64_t> pair_a,
+                                                  std::pair<Window::ID, uint64_t> pair_b) {
+    if (pair_a.first == pair_b.first) {
+        return pair_a.second > pair_b.second;
+    } else {
+        return pair_a.first < pair_b.first;
+    }
+}
+
 std::list<EventHandler::HandlerID> EventHandler::RegisterWindowEventCallbacks(Window& window) {
     const auto& window_id = window.GetId();
     return {RegisterEventCallback<WindowMovedEvent>(std::bind(&Window::OnMove, &window, _1), window_id),
@@ -38,39 +48,32 @@ std::list<EventHandler::HandlerID> EventHandler::RegisterWindowEventCallbacks(Wi
             RegisterEventCallback<WindowCloseEvent>(std::bind(&Window::OnClose, &window, _1), window_id)};
 }
 
-void EventHandler::UnregisterEventCallback(HandlerID id) { callbacks_map_.erase(id); }
+void EventHandler::UnregisterEventCallback(HandlerID id) { id.first->second.erase(id.second); }
 
 void EventHandler::UnregisterEventCallbacks(const std::list<HandlerID>& ids) {
     std::for_each(ids.begin(), ids.end(), std::bind(&EventHandler::UnregisterEventCallback, this, _1));
 }
 
 bool EventHandler::TriggerCallbacks(const Event& e) const {
-    const auto& range = callbacks_map_.equal_range(e.GetType());
+    try {
+        const auto callbacks = callbacks_map_.at(e.GetType());
 
-    std::vector<decltype(callbacks_map_.begin()->second)> callbacks;
-    std::transform(range.first, range.second, std::back_inserter(callbacks),
-                   [](const auto& pair) { return pair.second; });
-    std::sort(callbacks.begin(), callbacks.end(), [](const auto& tuple_a, const auto& tuple_b) {
-        if (std::get<0>(tuple_a) == std::get<0>(tuple_b)) {
-            return std::get<1>(tuple_a) > std::get<1>(tuple_b);
-        } else {
-            return std::get<0>(tuple_a) < std::get<0>(tuple_b);
+        bool callback_triggered = false;
+        for (const auto& callback_pair : callbacks) {
+            const auto& window_id = callback_pair.first.first;
+            const auto& event_callback = callback_pair.second;
+
+            if (window_id != Window::ID::kUnknown && e.GetWindowId() != window_id) {
+                continue;
+            } else if (event_callback && event_callback(e)) {
+                return true;
+            }
+            callback_triggered = true;
         }
-    });
-
-    bool callback_triggered = false;
-    for (const auto& tuple : callbacks) {
-        const auto& window_id = std::get<0>(tuple);
-        const auto& event_callback = std::get<2>(tuple);
-
-        if (window_id != Window::ID::kUnknown && e.GetWindowId() != window_id) {
-            continue;
-        } else if (event_callback && event_callback(e)) {
-            return true;
-        }
-        callback_triggered = true;
+        return callback_triggered;
+    } catch (const std::out_of_range&) {
+        return false;
     }
-    return callback_triggered;
 }
 
 Event::Type EventHandler::ConvertEventType(const std::type_info& type) const {

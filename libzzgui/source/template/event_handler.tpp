@@ -29,21 +29,31 @@ void EventHandler::PushEvent(const EventType& event) const {
 }
 
 template <class EventType>
-EventHandler::HandlerID EventHandler::RegisterEventCallback(const std::function<bool(const EventType&)>& callback, uint64_t priority) {
+EventHandler::HandlerID EventHandler::RegisterEventCallback(const std::function<bool(const EventType&)>& callback,
+                                                            uint64_t priority) {
     return RegisterEventCallback(callback, Window::ID::kUnknown, priority);
 }
 
 template <class EventType>
-EventHandler::HandlerID EventHandler::RegisterEventCallback(const std::function<bool(const EventType&)>& callback, Window::ID id, uint64_t priority) {
-    return callbacks_map_.emplace(MakePair(callback, id, priority));
-}
-
-template <class EventType>
-std::pair<Event::Type, std::tuple<Window::ID, uint64_t, std::function<bool(const Event&)>>> EventHandler::MakePair(
-    const std::function<bool(const EventType&)>& callback, Window::ID window_id, uint64_t priority) const {
+EventHandler::HandlerID EventHandler::RegisterEventCallback(const std::function<bool(const EventType&)>& callback,
+                                                            Window::ID id, uint64_t priority) {
     static_assert(std::is_convertible<EventType, Event>::value);
 
-    return std::make_pair(ConvertEventType(typeid(EventType)), std::make_tuple(window_id, priority, ConvertCallback(callback)));
+    const auto& event_type = ConvertEventType(typeid(EventType));
+
+    auto callback_pair = std::make_pair(std::make_pair(id, priority), ConvertCallback(callback));
+
+    HandlerID handler_id;
+    handler_id.first = callbacks_map_.find(event_type);
+    if (handler_id.first != callbacks_map_.end()) {
+        handler_id.second = handler_id.first->second.emplace(callback_pair);
+    } else {
+        decltype(callbacks_map_.begin()->second) callbacks;
+
+        handler_id.second = callbacks.emplace(callback_pair);
+        handler_id.first = callbacks_map_.emplace(std::make_pair(event_type, std::move(callbacks))).first;
+    }
+    return handler_id;
 }
 
 template <class EventType>

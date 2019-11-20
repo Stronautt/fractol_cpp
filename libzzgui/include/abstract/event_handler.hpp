@@ -23,8 +23,6 @@
 #include <functional>
 #include <list>
 #include <map>
-#include <stdexcept>
-#include <tuple>
 #include <typeinfo>
 #include <utility>
 
@@ -45,8 +43,14 @@ namespace zzgui {
 
 class EventHandler {
   public:
+    struct CallbacksComarator {
+        bool operator()(std::pair<Window::ID, uint64_t> pair_a, std::pair<Window::ID, uint64_t> pair_b);
+    };
     using HandlerID =
-        std::multimap<Event::Type, std::tuple<Window::ID, uint64_t, std::function<bool(const Event&)>>>::iterator;
+        std::pair<std::map<Event::Type, std::multimap<std::pair<Window::ID, uint64_t>,
+                                                      std::function<bool(const Event&)>, CallbacksComarator>>::iterator,
+                  std::multimap<std::pair<Window::ID, uint64_t>, std::function<bool(const Event&)>,
+                                CallbacksComarator>::iterator>;
 
     virtual ~EventHandler();
 
@@ -69,15 +73,13 @@ class EventHandler {
     virtual void UnregisterEventCallbacks(const std::list<HandlerID>& ids) final;
 
   protected:
-    std::multimap<Event::Type, std::tuple<Window::ID, uint64_t, std::function<bool(const Event&)>>> callbacks_map_;
+    std::map<Event::Type,
+             std::multimap<std::pair<Window::ID, uint64_t>, std::function<bool(const Event&)>, CallbacksComarator>>
+        callbacks_map_;
 
     virtual bool TriggerCallbacks(const Event& event) const final;
 
   private:
-    template <class EventType>
-    std::pair<Event::Type, std::tuple<Window::ID, uint64_t, std::function<bool(const Event&)>>> MakePair(
-        const std::function<bool(const EventType&)>& callback, Window::ID window_id, uint64_t priority = 0) const;
-
     Event::Type ConvertEventType(const std::type_info& type) const;
 
     template <class EventType>
