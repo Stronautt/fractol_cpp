@@ -42,14 +42,15 @@ std::shared_ptr<Canvas> CanvasFromSurface(const SDL_Surface* surface) {
                             surface->format->Bshift, surface->format->Ashift));
 }
 
-SDL_Surface* SurfaceFromCanvas(std::shared_ptr<Canvas> canvas) {
+std::unique_ptr<SDL_Surface, void (*)(SDL_Surface*)> SurfaceFromCanvas(std::shared_ptr<Canvas> canvas) {
     if (!canvas) {
-        return nullptr;
+        return {nullptr, &SDL_FreeSurface};
     }
     auto pixel_format = canvas->GetPixelFormat();
-    return SDL_CreateRGBSurfaceFrom(canvas->GetRawPixels(), canvas->GetWidth(), canvas->GetHeight(),
-                                    pixel_format.bits_per_pixel, canvas->GetPitch(), pixel_format.r_mask,
-                                    pixel_format.g_mask, pixel_format.b_mask, pixel_format.a_mask);
+    return {SDL_CreateRGBSurfaceFrom(canvas->GetRawPixels(), canvas->GetWidth(), canvas->GetHeight(),
+                                     pixel_format.bits_per_pixel, canvas->GetPitch(), pixel_format.r_mask,
+                                     pixel_format.g_mask, pixel_format.b_mask, pixel_format.a_mask),
+            &SDL_FreeSurface};
 }
 
 }  // namespace sdl2

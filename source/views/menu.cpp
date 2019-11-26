@@ -35,7 +35,7 @@ MenuView::MenuView(std::weak_ptr<MenuModel> model) : View(model) {}
 
 void MenuView::Create() {
     auto model = GetModel().lock();
-    Resized(model->GetWindow());
+    painter_ = std::make_shared<zzgui::Painter>();
 }
 
 void MenuView::Render(float /*delta*/) {
@@ -43,22 +43,16 @@ void MenuView::Render(float /*delta*/) {
     auto window = model->GetWindow().lock();
     auto canvas = window->GetCanvas().lock();
 
-    canvas->Clear({0xFF, 0xFF, 0xFF});
+    painter_->Clear(canvas, {0xFF, 0xFF, 0xFF});
     const auto widgets_manager = model->GetWidgetsManager().lock();
     if (widgets_manager) {
         for (const auto& widget : widgets_manager->GetWidgets()) {
-            widget.second->Draw(painter_);
+            widget.second->Draw(painter_, canvas);
         }
     }
 }
 
-void MenuView::Resized(std::weak_ptr<zzgui::Window> window) {
-    const auto window_ptr = window.lock();
-
-    if (window_ptr) {
-        painter_ = std::make_shared<zzgui::Painter>(window_ptr->GetCanvas());
-    }
-}
+void MenuView::Resized(std::weak_ptr<zzgui::Window> /*window*/) {}
 
 void MenuView::Show() {}
 

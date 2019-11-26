@@ -39,12 +39,12 @@ class Painter;
 template <class Data>
 class Select : public Widget {
   public:
-    Select(const std::vector<std::pair<std::string, Data>>& options, std::shared_ptr<FontResource> font, uint64_t x = 0,
-           uint64_t y = 0);
+    Select(const std::vector<std::pair<std::string, Data>>& options, std::shared_ptr<FontResource> font, int64_t x = 0,
+           int64_t y = 0);
 
-    virtual void Draw(std::shared_ptr<Painter> painter) override;
+    virtual void Draw(std::shared_ptr<Painter> painter, std::shared_ptr<Canvas> canvas) override;
 
-    virtual void SetSize(uint64_t width, uint64_t height) override;
+    virtual void SetSize(int64_t width, int64_t height) override;
 
     void SetOptions(const std::vector<std::pair<std::string, Data>>& options);
 
@@ -91,10 +91,10 @@ class Select : public Widget {
 
     std::function<void(const Data&)> change_callback_;
 
-    virtual bool InBounds(uint64_t x, uint64_t y, const Event& event) override;
+    virtual bool InBounds(int64_t x, int64_t y, const Event& event) override;
 
   private:
-    std::vector<std::pair<uint64_t, uint64_t>> options_text_size_;
+    std::vector<std::pair<int64_t, int64_t>> options_text_size_;
 };
 
 }  // namespace zzgui

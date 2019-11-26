@@ -28,7 +28,7 @@ namespace cozz {
 
 namespace zzgui {
 
-Label::Label(const std::string& text, std::shared_ptr<FontResource> font, uint64_t x, uint64_t y)
+Label::Label(const std::string& text, std::shared_ptr<FontResource> font, int64_t x, int64_t y)
     : Widget(x, y, 0, 0),
       font_(font),
       autosize_(true),
@@ -43,9 +43,9 @@ Label::Label(const std::string& text, std::shared_ptr<FontResource> font, uint64
     SetText(text);
 }
 
-void Label::Draw(std::shared_ptr<Painter> painter) {
-    painter->DrawRect({x_, y_}, width_, height_, border_color_);
-    painter->DrawFilledRect({x_ + border_thickness_, y_ + border_thickness_}, width_ - border_thickness_ * 2,
+void Label::Draw(std::shared_ptr<Painter> painter, std::shared_ptr<Canvas> canvas) {
+    painter->DrawRect(canvas, {x_, y_}, width_, height_, border_color_);
+    painter->DrawFilledRect(canvas, {x_ + border_thickness_, y_ + border_thickness_}, width_ - border_thickness_ * 2,
                             height_ - border_thickness_ * 2, background_color_);
 
     Canvas::Point pos;
@@ -80,10 +80,10 @@ void Label::Draw(std::shared_ptr<Painter> painter) {
         default:
             throw std::logic_error("Unknown text align type");
     }
-    painter->DrawText({pos.x, pos.y}, text_, font_, foreground_color_);
+    painter->DrawText(canvas, {pos.x, pos.y}, text_, font_, foreground_color_);
 }
 
-void Label::SetSize(uint64_t width, uint64_t height) {
+void Label::SetSize(int64_t width, int64_t height) {
     if (!autosize_) {
         Widget::SetSize(width, height);
     }
@@ -127,7 +127,7 @@ const Canvas::PixelColor& Label::GetForegroundColor() const { return foreground_
 
 bool Label::DoOnMouseButton(const MouseButtonEvent&) { return false; }
 
-bool Label::InBounds(uint64_t x, uint64_t y, const Event&) {
+bool Label::InBounds(int64_t x, int64_t y, const Event&) {
     if (x >= x_ && x <= x_ + width_ && y >= y_ && y <= y_ + height_) {
         return true;
     }

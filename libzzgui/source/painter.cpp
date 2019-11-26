@@ -20,6 +20,7 @@
 #include "painter.hpp"
 
 #include <cmath>
+#include <thread>
 
 #include <SDL2/SDL_ttf.h>
 
@@ -32,14 +33,17 @@ namespace cozz {
 
 namespace zzgui {
 
-Painter::Painter(std::weak_ptr<Canvas> canvas) : canvas_(canvas) {}
+void Painter::Clear(std::shared_ptr<Canvas> canvas, const Canvas::PixelColor& color) {
+    const auto surface = sdl2::SurfaceFromCanvas(canvas);
 
-void Painter::ResetCanvas(std::weak_ptr<Canvas> canvas) { canvas_ = canvas; }
+    uint32_t formated_color;
+    Canvas::pixel_iterator(reinterpret_cast<uint8_t*>(&formated_color), canvas->GetPixelFormat()).SetColor(color);
 
-void Painter::DrawLine(const Canvas::Point& a, const Canvas::Point& b, const Canvas::PixelColor& color,
-                       uint16_t thickness) const {
-    auto canvas = GetCanvas();
+    SDL_FillRect(surface.get(), NULL, formated_color);
+}
 
+void Painter::DrawLine(std::shared_ptr<Canvas> canvas, const Canvas::Point& a, const Canvas::Point& b,
+                       const Canvas::PixelColor& color, uint16_t thickness) const {
     int64_t short_length = b.y - a.y;
     int64_t long_length = b.x - a.x;
 
@@ -57,20 +61,18 @@ void Painter::DrawLine(const Canvas::Point& a, const Canvas::Point& b, const Can
     int64_t step_j = !long_length ? 0 : (short_length << 16) / long_length;
     for (int64_t i = 0, j = 0; i != end_value; i += step_i, j += step_j) {
         if (y_longer) {
-            DrawFilledCircle({a.x + (j >> 16), a.y + i}, thickness - 1, color);
+            DrawFilledCircle(canvas, {a.x + (j >> 16), a.y + i}, thickness - 1, color);
         } else {
-            DrawFilledCircle({a.x + i, a.y + (j >> 16)}, thickness - 1, color);
+            DrawFilledCircle(canvas, {a.x + i, a.y + (j >> 16)}, thickness - 1, color);
         }
     }
 }
 
-void Painter::DrawCircle(const Canvas::Point& p, uint64_t radius, const Canvas::PixelColor& color,
-                         uint16_t thickness) const {
+void Painter::DrawCircle(std::shared_ptr<Canvas> canvas, const Canvas::Point& p, uint64_t radius,
+                         const Canvas::PixelColor& color, uint16_t thickness) const {
     if (!thickness) {
         return;
     }
-
-    auto canvas = GetCanvas();
 
     if (!radius) {
         canvas->At(p).SetColor(color);
@@ -103,23 +105,24 @@ void Painter::DrawCircle(const Canvas::Point& p, uint64_t radius, const Canvas::
     } while (--thickness);
 }
 
-void Painter::DrawFilledCircle(const Canvas::Point& p, uint64_t radius, const Canvas::PixelColor& color) const {
-    DrawCircle(p, radius, color, radius + 1);
+void Painter::DrawFilledCircle(std::shared_ptr<Canvas> canvas, const Canvas::Point& p, uint64_t radius,
+                               const Canvas::PixelColor& color) const {
+    DrawCircle(canvas, p, radius, color, radius + 1);
 }
 
-void Painter::DrawRect(const Canvas::Point& p, uint64_t width, uint64_t height, const Canvas::PixelColor& color,
-                       uint16_t thickness) const {
+void Painter::DrawRect(std::shared_ptr<Canvas> canvas, const Canvas::Point& p, int64_t width, int64_t height,
+                       const Canvas::PixelColor& color, uint16_t thickness) const {
     if (!width || !height || !thickness) {
         return;
     }
 
-    uint64_t x = p.x, y = p.y;
+    int64_t x = p.x, y = p.y;
     do {
-        DrawLine({x, y}, {x + width, y}, color, 1);
-        DrawLine({x, y}, {x, y + height}, color, 1);
+        DrawLine(canvas, {x, y}, {x + width, y}, color, 1);
+        DrawLine(canvas, {x, y}, {x, y + height}, color, 1);
 
-        DrawLine({x, y + height}, {x + width, y + height}, color, 1);
-        DrawLine({x + width, y}, {x + width, y + height + 1}, color, 1);
+        DrawLine(canvas, {x, y + height}, {x + width, y + height}, color, 1);
+        DrawLine(canvas, {x + width, y}, {x + width, y + height + 1}, color, 1);
 
         height -= 2;
         width -= 2;
@@ -128,48 +131,53 @@ void Painter::DrawRect(const Canvas::Point& p, uint64_t width, uint64_t height, 
     } while (--thickness);
 }
 
-void Painter::DrawFilledRect(const Canvas::Point& p, uint64_t width, uint64_t height,
+void Painter::DrawFilledRect(std::shared_ptr<Canvas> canvas, const Canvas::Point& p, int64_t width, int64_t height,
                              const Canvas::PixelColor& color) const {
-    DrawRect(p, width, height, color, std::min(width, height) / 2.0 + 1);
+    const auto surface = sdl2::SurfaceFromCanvas(canvas);
+    const SDL_Rect rect{static_cast<int>(p.x), static_cast<int>(p.y), static_cast<int>(width),
+                        static_cast<int>(height)};
+
+    if (color.a) {
+        uint32_t formated_color;
+        Canvas::pixel_iterator(reinterpret_cast<uint8_t*>(&formated_color), canvas->GetPixelFormat()).SetColor(color);
+
+        SDL_FillRect(surface.get(), &rect, formated_color);
+    }
 }
 
-void Painter::DrawText(const Canvas::Point& p, const std::string text, std::shared_ptr<FontResource> font,
-                       const Canvas::PixelColor& color) const {
+void Painter::DrawText(std::shared_ptr<Canvas> canvas, const Canvas::Point& p, const std::string text,
+                       std::shared_ptr<FontResource> font, const Canvas::PixelColor& color) const {
     if (!font) {
         return;
     }
+    const auto surface = sdl2::SurfaceFromCanvas(canvas);
+
     auto font_surface = std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)>(
         TTF_RenderUTF8_Blended(static_cast<TTF_Font*>(font->GetFontData().get()), text.c_str(),
                                {color.r, color.g, color.b, color.a}),
         &SDL_FreeSurface);
-    auto surface = std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)>(sdl2::SurfaceFromCanvas(GetCanvas()),
-                                                                            &SDL_FreeSurface);
     SDL_Rect destination{static_cast<int>(p.x), static_cast<int>(p.y), 0, 0};
+
     SDL_BlitSurface(font_surface.get(), nullptr, surface.get(), &destination);
 }
 
-void Painter::DrawImage(const Canvas::Point& p, std::shared_ptr<ImageResource> img) const {
+void Painter::DrawImage(std::shared_ptr<Canvas> canvas, const Canvas::Point& p,
+                        std::shared_ptr<ImageResource> img) const {
     if (!img) {
         return;
     }
     auto img_size = img->GetSize();
-    DrawImage(p, img, img_size.first, img_size.second);
+    DrawImage(canvas, p, img, img_size.first, img_size.second);
 }
 
-void Painter::DrawImage(const Canvas::Point& p, std::shared_ptr<ImageResource> img, uint64_t width,
-                        uint64_t height) const {
-    auto surface = std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)>(sdl2::SurfaceFromCanvas(GetCanvas()),
-                                                                            &SDL_FreeSurface);
+void Painter::DrawImage(std::shared_ptr<Canvas> canvas, const Canvas::Point& p, std::shared_ptr<ImageResource> img,
+                        int64_t width, int64_t height) const {
+    const auto surface = sdl2::SurfaceFromCanvas(canvas);
+
     SDL_Rect destination{static_cast<int>(p.x), static_cast<int>(p.y), static_cast<int>(width),
                          static_cast<int>(height)};
-    SDL_BlitScaled(static_cast<SDL_Surface*>(img->GetImgData().get()), nullptr, surface.get(), &destination);
-}
 
-std::shared_ptr<Canvas> Painter::GetCanvas() const {
-    if (canvas_.expired()) {
-        throw std::runtime_error("Canvas is expired");
-    }
-    return canvas_.lock();
+    SDL_BlitScaled(static_cast<SDL_Surface*>(img->GetImgData().get()), nullptr, surface.get(), &destination);
 }
 
 }  // namespace zzgui

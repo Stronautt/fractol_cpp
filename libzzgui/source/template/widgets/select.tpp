@@ -31,7 +31,7 @@ namespace zzgui {
 
 template <class Data>
 Select<Data>::Select(const std::vector<std::pair<std::string, Data>>& options, std::shared_ptr<FontResource> font,
-                     uint64_t x, uint64_t y)
+                     int64_t x, int64_t y)
     : Widget(x, y, 0, 0),
       font_(font),
       autosize_(true),
@@ -47,31 +47,31 @@ Select<Data>::Select(const std::vector<std::pair<std::string, Data>>& options, s
 }
 
 template <class Data>
-void Select<Data>::Draw(std::shared_ptr<Painter> painter) {
-    const uint64_t options_size = options_.size();
+void Select<Data>::Draw(std::shared_ptr<Painter> painter, std::shared_ptr<Canvas> canvas) {
+    const int64_t options_size = options_.size();
 
-    uint64_t rect_height = focus_ ? height_ * options_size : height_;
-    painter->DrawRect({x_, y_}, width_, rect_height, border_color_);
-    painter->DrawFilledRect({x_ + border_thickness_, y_ + border_thickness_}, width_ - border_thickness_ * 2,
+    int64_t rect_height = focus_ ? height_ * options_size : height_;
+    painter->DrawRect(canvas, {x_, y_}, width_, rect_height, border_color_);
+    painter->DrawFilledRect(canvas, {x_ + border_thickness_, y_ + border_thickness_}, width_ - border_thickness_ * 2,
                             rect_height - border_thickness_ * 2, background_color_);
 
-    uint64_t it = 0;
+    int64_t it = 0;
     for (const auto& option : options_) {
-        painter->DrawText(
+        painter->DrawText(canvas,
             {x_ + padding_left_, y_ + height_ * (it + 1) - options_text_size_[it].second - padding_bottom_},
             option.first, font_, foreground_color_);
         if (!focus_) {
             break;
         }
         if (it < options_size - 1) {
-            painter->DrawLine({x_, y_ + height_ * (it + 1)}, {x_ + width_, y_ + height_ * (it + 1)}, border_color_);
+            painter->DrawLine(canvas, {x_, y_ + height_ * (it + 1)}, {x_ + width_, y_ + height_ * (it + 1)}, border_color_);
         }
         ++it;
     }
 }
 
 template <class Data>
-void Select<Data>::SetSize(uint64_t width, uint64_t height) {
+void Select<Data>::SetSize(int64_t width, int64_t height) {
     if (!autosize_) {
         Widget::SetSize(width, height);
     }
@@ -80,8 +80,8 @@ void Select<Data>::SetSize(uint64_t width, uint64_t height) {
 template <class Data>
 void Select<Data>::SetOptions(const std::vector<std::pair<std::string, Data>>& options) {
     options_ = options;
-    uint64_t max_width = 0;
-    uint64_t max_height = 0;
+    int64_t max_width = 0;
+    int64_t max_height = 0;
     for (const auto& option : options_) {
         options_text_size_.push_back(font_->CalcTextSize(option.first));
         if (options_text_size_.back().first > max_width) {
@@ -169,9 +169,9 @@ bool Select<Data>::DoOnMouseButton(const MouseButtonEvent& event) {
 
             if (focus_ && change_callback_) {
                 const auto& mouse_pos = event.GetPosition();
-                const uint64_t options_size = options_.size();
+                const int64_t options_size = options_.size();
 
-                uint64_t count = (mouse_pos.second - y_) / height_;
+                int64_t count = (mouse_pos.second - y_) / height_;
                 if (count > options_size - 1) {
                     count = options_size - 1;
                 }
@@ -187,8 +187,8 @@ bool Select<Data>::DoOnMouseButton(const MouseButtonEvent& event) {
 }
 
 template <class Data>
-bool Select<Data>::InBounds(uint64_t x, uint64_t y, const Event& event) {
-    uint64_t rect_height = focus_ ? height_ * options_.size() : height_;
+bool Select<Data>::InBounds(int64_t x, int64_t y, const Event& event) {
+    int64_t rect_height = focus_ ? height_ * options_.size() : height_;
     if (x >= x_ && x <= x_ + width_ && y >= y_ && y <= y_ + rect_height) {
         return true;
     }

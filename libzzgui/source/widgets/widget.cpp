@@ -27,30 +27,30 @@ namespace cozz {
 
 namespace zzgui {
 
-Widget::Widget(uint64_t x, uint64_t y, uint64_t width, uint64_t height)
+Widget::Widget(int64_t x, int64_t y, int64_t width, int64_t height)
     : x_(x), y_(y), padding_left_(5), padding_right_(5), padding_top_(5), padding_bottom_(5) {
     SetSize(width, height);
 }
 
 Widget::~Widget() = default;
 
-void Widget::SetPosition(uint64_t x, uint64_t y) {
+void Widget::SetPosition(int64_t x, int64_t y) {
     x_ = x;
     y_ = y;
 }
 
-void Widget::SetSize(uint64_t width, uint64_t height) {
+void Widget::SetSize(int64_t width, int64_t height) {
     width_ = width + padding_left_ + padding_right_;
     height_ = height + padding_top_ + padding_bottom_;
 }
 
-void Widget::SetPadding(uint64_t padding) { SetPadding(padding, padding); }
+void Widget::SetPadding(int64_t padding) { SetPadding(padding, padding); }
 
-void Widget::SetPadding(uint64_t horizontal, uint64_t vertical) {
+void Widget::SetPadding(int64_t horizontal, int64_t vertical) {
     SetPadding(horizontal, horizontal, vertical, vertical);
 }
 
-void Widget::SetPadding(uint64_t left, uint64_t right, uint64_t top, uint64_t bottom) {
+void Widget::SetPadding(int64_t left, int64_t right, int64_t top, int64_t bottom) {
     auto raw_width = width_ - padding_left_ - padding_right_;
     auto raw_height = height_ - padding_top_ - padding_bottom_;
 
@@ -62,11 +62,11 @@ void Widget::SetPadding(uint64_t left, uint64_t right, uint64_t top, uint64_t bo
     Widget::SetSize(raw_width, raw_height);
 }
 
-std::pair<uint64_t, uint64_t> Widget::GetPosition() const { return std::make_pair(x_, y_); }
+std::pair<int64_t, int64_t> Widget::GetPosition() const { return std::make_pair(x_, y_); }
 
-std::pair<uint64_t, uint64_t> Widget::GetSize() const { return std::make_pair(width_, height_); }
+std::pair<int64_t, int64_t> Widget::GetSize() const { return std::make_pair(width_, height_); }
 
-std::tuple<uint64_t, uint64_t, uint64_t, uint64_t> Widget::GetPadding() const {
+std::tuple<int64_t, int64_t, int64_t, int64_t> Widget::GetPadding() const {
     return std::make_tuple(padding_left_, padding_right_, padding_top_, padding_bottom_);
 }
 
@@ -122,28 +122,28 @@ bool Widget::OnMouseButton(const MouseButtonEvent& event) {
 
 void Widget::OnClick(std::function<bool(const MouseButtonEvent&)> func) { click_callback_ = func; }
 
-void Widget::PlaceRight(std::weak_ptr<Widget> widget, uint64_t offset_x, uint64_t offset_y) {
+void Widget::PlaceRight(std::weak_ptr<Widget> widget, int64_t offset_x, int64_t offset_y) {
     if (!widget.expired()) {
         x_ = widget.lock()->x_ + widget.lock()->width_ + offset_x;
         y_ = widget.lock()->y_ + offset_y;
     }
 }
 
-void Widget::PlaceLeft(std::weak_ptr<Widget> widget, uint64_t offset_x, uint64_t offset_y) {
+void Widget::PlaceLeft(std::weak_ptr<Widget> widget, int64_t offset_x, int64_t offset_y) {
     if (!widget.expired()) {
         x_ = widget.lock()->x_ - width_ - offset_x;
         y_ = widget.lock()->y_ + offset_y;
     }
 }
 
-void Widget::PlaceBottom(std::weak_ptr<Widget> widget, uint64_t offset_y, uint64_t offset_x) {
+void Widget::PlaceBottom(std::weak_ptr<Widget> widget, int64_t offset_y, int64_t offset_x) {
     if (!widget.expired()) {
         x_ = widget.lock()->x_ + offset_x;
         y_ = widget.lock()->y_ + widget.lock()->height_ + offset_y;
     }
 }
 
-void Widget::PlaceUp(std::weak_ptr<Widget> widget, uint64_t offset_y, uint64_t offset_x) {
+void Widget::PlaceUp(std::weak_ptr<Widget> widget, int64_t offset_y, int64_t offset_x) {
     if (!widget.expired()) {
         x_ = widget.lock()->x_ + offset_x;
         y_ = widget.lock()->y_ - height_ - offset_y;

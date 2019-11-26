@@ -36,8 +36,6 @@
 #include "widgets_manager.hpp"
 #include "windows_manager.hpp"
 
-using std::placeholders::_1;
-
 namespace cozz {
 
 MenuModel::MenuModel(std::shared_ptr<clpp::Core> cl_core) : cl_core_(cl_core) {}
@@ -49,7 +47,8 @@ void MenuModel::Create() {
     const auto& app_icon = resources_manager_.lock()->LoadImage("AppIcon", "resources/images/icon.png");
 
     window_ = windows_manager_.lock()->CreateWindow<zzgui::SDLWindow>("Main Menu", logo_image->GetSize().first, 600);
-    window_.lock()->IfClosed(std::bind(&MenuController::OnWindowClose, GetController().lock().get(), _1));
+    window_.lock()->IfClosed(
+        std::bind(&MenuController::OnWindowClose, GetController().lock().get(), std::placeholders::_1));
 
     window_.lock()->SetIcon(app_icon);
 
@@ -80,8 +79,8 @@ void MenuModel::CreateMenuWidgets() {
         widgets_manager_->Create<zzgui::Button>(window_id, 0, "Mandelbrot Fractal", ubuntu14_font);
     mandelbrot_fractal_button.lock()->SetAutosize(false);
     mandelbrot_fractal_button.lock()->SetSize(200, 30);
-    mandelbrot_fractal_button.lock()->OnClick(
-        std::bind(&MenuController::OnMandelbrotFractalButtonClick, GetController().lock().get(), _1));
+    mandelbrot_fractal_button.lock()->OnClick(std::bind(&MenuController::OnMandelbrotFractalButtonClick,
+                                                        GetController().lock().get(), std::placeholders::_1));
     mandelbrot_fractal_button.lock()->SetPosition(
         window_.lock()->GetWidth() / 2 - mandelbrot_fractal_button.lock()->GetSize().first - 5,
         logo_image->GetSize().second + 30);
@@ -90,21 +89,30 @@ void MenuModel::CreateMenuWidgets() {
     julia_fractal_button.lock()->SetAutosize(false);
     julia_fractal_button.lock()->SetSize(200, 30);
     julia_fractal_button.lock()->OnClick(
-        std::bind(&MenuController::OnJuliaFractalButtonClick, GetController().lock().get(), _1));
+        std::bind(&MenuController::OnJuliaFractalButtonClick, GetController().lock().get(), std::placeholders::_1));
     julia_fractal_button.lock()->PlaceRight(mandelbrot_fractal_button, 10);
 
     auto burning_ship_fractal_button =
         widgets_manager_->Create<zzgui::Button>(window_id, 0, "Burning Ship Fractal", ubuntu14_font);
     burning_ship_fractal_button.lock()->SetAutosize(false);
     burning_ship_fractal_button.lock()->SetSize(200, 30);
-    burning_ship_fractal_button.lock()->OnClick(
-        std::bind(&MenuController::OnBurningShipFractalButtonClick, GetController().lock().get(), _1));
+    burning_ship_fractal_button.lock()->OnClick(std::bind(&MenuController::OnBurningShipFractalButtonClick,
+                                                          GetController().lock().get(), std::placeholders::_1));
     burning_ship_fractal_button.lock()->PlaceBottom(mandelbrot_fractal_button, 10);
+
+    auto pythagoras_tree_fractal_button =
+        widgets_manager_->Create<zzgui::Button>(window_id, 0, "Pythagoras Tree Fractal", ubuntu14_font);
+    pythagoras_tree_fractal_button.lock()->SetAutosize(false);
+    pythagoras_tree_fractal_button.lock()->SetSize(200, 30);
+    pythagoras_tree_fractal_button.lock()->OnClick(std::bind(&MenuController::OnPythagorasTreeFractalButtonClick,
+                                                             GetController().lock().get(), std::placeholders::_1));
+    pythagoras_tree_fractal_button.lock()->PlaceRight(burning_ship_fractal_button, 10);
 
     auto exit_button = widgets_manager_->Create<zzgui::Button>(window_id, 0, "Exit", ubuntu14_font);
     exit_button.lock()->SetAutosize(false);
     exit_button.lock()->SetSize(100, 30);
-    exit_button.lock()->OnClick(std::bind(&MenuController::OnExitButtonClick, GetController().lock().get(), _1));
+    exit_button.lock()->OnClick(
+        std::bind(&MenuController::OnExitButtonClick, GetController().lock().get(), std::placeholders::_1));
     exit_button.lock()->SetPosition(window_.lock()->GetWidth() / 2 - exit_button.lock()->GetSize().first / 2,
                                     window_.lock()->GetHeight() - exit_button.lock()->GetSize().second - 20);
 
@@ -112,7 +120,7 @@ void MenuModel::CreateMenuWidgets() {
     settings_button.lock()->SetAutosize(false);
     settings_button.lock()->SetSize(100, 30);
     settings_button.lock()->OnClick(
-        std::bind(&MenuController::OnSettingsButtonClick, GetController().lock().get(), _1));
+        std::bind(&MenuController::OnSettingsButtonClick, GetController().lock().get(), std::placeholders::_1));
     settings_button.lock()->PlaceUp(exit_button, 5);
 }
 
@@ -130,7 +138,8 @@ void MenuModel::CreateSettingsWidgets() {
     auto back_button = widgets_manager_->Create<zzgui::Button>(window_id, 0, "Back", ubuntu14_font);
     back_button.lock()->SetAutosize(false);
     back_button.lock()->SetSize(100, 30);
-    back_button.lock()->OnClick(std::bind(&MenuController::OnMenuButtonClick, GetController().lock().get(), _1));
+    back_button.lock()->OnClick(
+        std::bind(&MenuController::OnMenuButtonClick, GetController().lock().get(), std::placeholders::_1));
     back_button.lock()->SetPosition(window_.lock()->GetWidth() / 2 - back_button.lock()->GetSize().first / 2,
                                     window_.lock()->GetHeight() - back_button.lock()->GetSize().second - 20);
 
@@ -157,7 +166,7 @@ void MenuModel::CreateSettingsWidgets() {
     platform_select.lock()->PlaceRight(platform_select_label, 10);
     platform_select.lock()->SetBackgroundColor({0xFF, 0xFF, 0xFF});
     platform_select.lock()->OnChange(
-        std::bind(&MenuController::OnPlatformSelectChange, GetController().lock().get(), _1));
+        std::bind(&MenuController::OnPlatformSelectChange, GetController().lock().get(), std::placeholders::_1));
     platform_select.lock()->SetPadding(7);
 
     auto platform_info_label = widgets_manager_->Create<zzgui::Label>(window_id, 0, "Info:", ubuntu14_font);
@@ -176,7 +185,7 @@ void MenuModel::CreateSettingsWidgets() {
     platform_info_.device_select.lock()->PlaceRight(device_select_label, 10);
     platform_info_.device_select.lock()->SetBackgroundColor({0xFF, 0xFF, 0xFF});
     platform_info_.device_select.lock()->OnChange(
-        std::bind(&MenuController::OnDeviceSelectChange, GetController().lock().get(), _1));
+        std::bind(&MenuController::OnDeviceSelectChange, GetController().lock().get(), std::placeholders::_1));
     platform_info_.device_select.lock()->SetPadding(7);
 
     auto device_info_label = widgets_manager_->Create<zzgui::Label>(window_id, 0, "Info:", ubuntu14_font);

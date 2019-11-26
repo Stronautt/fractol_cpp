@@ -27,7 +27,7 @@ namespace cozz {
 
 namespace zzgui {
 
-Image::Image(std::shared_ptr<ImageResource> img, uint64_t x, uint64_t y) : Widget(x, y, 0, 0), img_(img) {
+Image::Image(std::shared_ptr<ImageResource> img, int64_t x, int64_t y) : Widget(x, y, 0, 0), img_(img) {
     if (!img_) {
         throw std::runtime_error("Bad image");
     }
@@ -36,11 +36,13 @@ Image::Image(std::shared_ptr<ImageResource> img, uint64_t x, uint64_t y) : Widge
     SetSize(img_size.first, img_size.second);
 }
 
-void Image::Draw(std::shared_ptr<Painter> painter) { painter->DrawImage({x_, y_}, img_, width_, height_); }
+void Image::Draw(std::shared_ptr<Painter> painter, std::shared_ptr<Canvas> canvas) {
+    painter->DrawImage(canvas, {x_, y_}, img_, width_, height_);
+}
 
 bool Image::DoOnMouseButton(const MouseButtonEvent&) { return false; }
 
-bool Image::InBounds(uint64_t x, uint64_t y, const Event&) {
+bool Image::InBounds(int64_t x, int64_t y, const Event&) {
     if (x >= x_ && x <= x_ + width_ && y >= y_ && y <= y_ + height_) {
         return true;
     }

@@ -33,8 +33,8 @@ namespace zzgui {
 class Canvas final {
   public:
     struct Point {
-        uint64_t x;
-        uint64_t y;
+        int64_t x;
+        int64_t y;
     };
 
     class PixelColor : public std::tuple<uint8_t, uint8_t, uint8_t, uint8_t> {
@@ -145,8 +145,6 @@ class Canvas final {
     pixel_iterator At(const Point& p);
 
     uint8_t* GetRawPixels() const;
-
-    void Clear(const Canvas::PixelColor& color);
 
   private:
     // Size of the canvas

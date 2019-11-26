@@ -33,9 +33,9 @@ class Painter;
 
 class Image : public Widget {
   public:
-    Image(std::shared_ptr<ImageResource> img, uint64_t x = 0, uint64_t y = 0);
+    Image(std::shared_ptr<ImageResource> img, int64_t x = 0, int64_t y = 0);
 
-    virtual void Draw(std::shared_ptr<Painter> painter) override;
+    virtual void Draw(std::shared_ptr<Painter> painter, std::shared_ptr<Canvas> canvas) override;
 
     void SetImage(std::shared_ptr<ImageResource> img);
 
@@ -46,7 +46,7 @@ class Image : public Widget {
   protected:
     std::shared_ptr<ImageResource> img_;
 
-    virtual bool InBounds(uint64_t x, uint64_t y, const Event& event) override;
+    virtual bool InBounds(int64_t x, int64_t y, const Event& event) override;
 };
 
 }  // namespace zzgui

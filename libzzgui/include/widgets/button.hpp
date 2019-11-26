@@ -30,9 +30,9 @@ class Button final : public Label {
   public:
     using Label::TextAlign;
 
-    Button(const std::string& text, std::shared_ptr<FontResource> font, uint64_t x = 0, uint64_t y = 0);
+    Button(const std::string& text, std::shared_ptr<FontResource> font, int64_t x = 0, int64_t y = 0);
 
-    virtual void Draw(std::shared_ptr<Painter> painter) override;
+    virtual void Draw(std::shared_ptr<Painter> painter, std::shared_ptr<Canvas> canvas) override;
 
     virtual bool DoOnMouseButton(const MouseButtonEvent& event) override;
 };

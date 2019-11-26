@@ -228,10 +228,6 @@ Canvas::pixel_iterator Canvas::At(const Point& p) { return At(p.x, p.y); }
 
 uint8_t* Canvas::GetRawPixels() const { return pixels_.get(); }
 
-void Canvas::Clear(const Canvas::PixelColor& color) {
-    std::for_each(begin(), end(), [&color](auto& pixel) { pixel.SetColor(color); });
-}
-
 }  // namespace zzgui
 
 }  // namespace cozz

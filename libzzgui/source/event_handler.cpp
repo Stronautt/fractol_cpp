@@ -28,8 +28,6 @@ namespace cozz {
 
 namespace zzgui {
 
-using std::placeholders::_1;
-
 EventHandler::~EventHandler() = default;
 
 bool EventHandler::CallbacksComarator::operator()(const std::pair<Window::ID, uint64_t>& pair_a,
@@ -43,22 +41,25 @@ bool EventHandler::CallbacksComarator::operator()(const std::pair<Window::ID, ui
 
 std::list<EventHandler::HandlerID> EventHandler::RegisterWindowEventCallbacks(Window& window) {
     const auto& window_id = window.GetId();
-    return {RegisterEventCallback<WindowMovedEvent>(std::bind(&Window::OnMove, &window, _1), window_id),
-            RegisterEventCallback<WindowResizedEvent>(std::bind(&Window::OnResize, &window, _1), window_id),
-            RegisterEventCallback<WindowCloseEvent>(std::bind(&Window::OnClose, &window, _1), window_id)};
+    return {
+        RegisterEventCallback<WindowMovedEvent>(std::bind(&Window::OnMove, &window, std::placeholders::_1), window_id),
+        RegisterEventCallback<WindowResizedEvent>(std::bind(&Window::OnResize, &window, std::placeholders::_1),
+                                                  window_id),
+        RegisterEventCallback<WindowCloseEvent>(std::bind(&Window::OnClose, &window, std::placeholders::_1),
+                                                window_id)};
 }
 
 void EventHandler::UnregisterEventCallback(HandlerID id) { id.first->second.erase(id.second); }
 
 void EventHandler::UnregisterEventCallbacks(const std::list<HandlerID>& ids) {
-    std::for_each(ids.begin(), ids.end(), std::bind(&EventHandler::UnregisterEventCallback, this, _1));
+    std::for_each(ids.begin(), ids.end(),
+                  std::bind(&EventHandler::UnregisterEventCallback, this, std::placeholders::_1));
 }
 
 bool EventHandler::TriggerCallbacks(const Event& e) const {
     try {
         const auto callbacks = callbacks_map_.at(e.GetType());
 
-        bool callback_triggered = false;
         for (const auto& callback_pair : callbacks) {
             const auto& window_id = callback_pair.first.first;
             const auto& event_callback = callback_pair.second;
@@ -68,12 +69,10 @@ bool EventHandler::TriggerCallbacks(const Event& e) const {
             } else if (event_callback && event_callback(e)) {
                 return true;
             }
-            callback_triggered = true;
         }
-        return callback_triggered;
     } catch (const std::out_of_range&) {
-        return false;
     }
+    return false;
 }
 
 Event::Type EventHandler::ConvertEventType(const std::type_info& type) const {

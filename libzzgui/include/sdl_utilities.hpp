@@ -20,6 +20,7 @@
 #ifndef LIBZZGUI_INCLUDE_SDL_UTILITIES_HPP_
 #define LIBZZGUI_INCLUDE_SDL_UTILITIES_HPP_
 
+#include <functional>
 #include <memory>
 
 extern "C" typedef struct SDL_Surface SDL_Surface;
@@ -34,7 +35,7 @@ namespace sdl2 {
 
 std::shared_ptr<Canvas> CanvasFromSurface(const SDL_Surface* surface);
 
-SDL_Surface* SurfaceFromCanvas(std::shared_ptr<Canvas> canvas);
+std::unique_ptr<SDL_Surface, void (*)(SDL_Surface*)> SurfaceFromCanvas(std::shared_ptr<Canvas> canvas);
 
 }  // namespace sdl2
 

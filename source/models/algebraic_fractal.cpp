@@ -39,8 +39,6 @@
 #include "widgets_manager.hpp"
 #include "windows_manager.hpp"
 
-using std::placeholders::_1;
-
 namespace cozz {
 
 AlgebraicFractalModel::AlgebraicFractalModel(const std::string& name, std::shared_ptr<clpp::Core> cl_core,
@@ -76,20 +74,22 @@ void AlgebraicFractalModel::Create() {
     cl_shader_->Build(cl_device_, build_options);
 
     window_ = windows_manager_.lock()->CreateWindow<zzgui::SDLWindow>(name_.c_str(), 800, 600);
-    auto window_id = window_.lock()->GetId();
-    window_.lock()->IfClosed(std::bind(&AlgebraicFractalController::OnWindowClose, GetController().lock().get(), _1));
+    const auto& window_id = window_.lock()->GetId();
+    window_.lock()->IfClosed(
+        std::bind(&AlgebraicFractalController::OnWindowClose, GetController().lock().get(), std::placeholders::_1));
 
     window_.lock()->SetIcon(app_icon);
 
     GetController().lock()->RegisterWindow(window_);
 
     registered_callbacks_.emplace_back(event_handler_.lock()->RegisterEventCallback<zzgui::KeyboardEvent>(
-        std::bind(&AlgebraicFractalController::OnKeyboard, GetController().lock().get(), _1), window_.lock()->GetId()));
+        std::bind(&AlgebraicFractalController::OnKeyboard, GetController().lock().get(), std::placeholders::_1),
+        window_.lock()->GetId()));
     registered_callbacks_.emplace_back(event_handler_.lock()->RegisterEventCallback<zzgui::MouseMotionEvent>(
-        std::bind(&AlgebraicFractalController::OnMouseMotion, GetController().lock().get(), _1),
+        std::bind(&AlgebraicFractalController::OnMouseMotion, GetController().lock().get(), std::placeholders::_1),
         window_.lock()->GetId()));
     registered_callbacks_.emplace_back(event_handler_.lock()->RegisterEventCallback<zzgui::MouseWheelEvent>(
-        std::bind(&AlgebraicFractalController::OnMouseWheel, GetController().lock().get(), _1),
+        std::bind(&AlgebraicFractalController::OnMouseWheel, GetController().lock().get(), std::placeholders::_1),
         window_.lock()->GetId()));
 
     widgets_manager_ = std::make_shared<zzgui::WidgetsManager>(event_handler_);

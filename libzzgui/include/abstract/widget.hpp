@@ -36,6 +36,7 @@ namespace cozz {
 namespace zzgui {
 
 class Painter;
+class Canvas;
 class Event;
 class WindowLeaveEvent;
 class MouseMotionEvent;
@@ -45,23 +46,23 @@ class Widget {
   public:
     virtual ~Widget();
 
-    virtual void Draw(std::shared_ptr<Painter> painter) = 0;
+    virtual void Draw(std::shared_ptr<Painter> painter, std::shared_ptr<Canvas> canvas) = 0;
 
-    virtual void SetPosition(uint64_t x, uint64_t y);
+    virtual void SetPosition(int64_t x, int64_t y);
 
-    virtual void SetSize(uint64_t width, uint64_t height);
+    virtual void SetSize(int64_t width, int64_t height);
 
-    void SetPadding(uint64_t padding);
+    void SetPadding(int64_t padding);
 
-    void SetPadding(uint64_t horizontal, uint64_t vertical);
+    void SetPadding(int64_t horizontal, int64_t vertical);
 
-    void SetPadding(uint64_t left, uint64_t right, uint64_t top, uint64_t bottom);
+    void SetPadding(int64_t left, int64_t right, int64_t top, int64_t bottom);
 
-    std::pair<uint64_t, uint64_t> GetPosition() const;
+    std::pair<int64_t, int64_t> GetPosition() const;
 
-    std::pair<uint64_t, uint64_t> GetSize() const;
+    std::pair<int64_t, int64_t> GetSize() const;
 
-    std::tuple<uint64_t, uint64_t, uint64_t, uint64_t> GetPadding() const;
+    std::tuple<int64_t, int64_t, int64_t, int64_t> GetPadding() const;
 
     bool OnWindowLeave(const WindowLeaveEvent& event);
 
@@ -71,34 +72,34 @@ class Widget {
 
     void OnClick(std::function<bool(const MouseButtonEvent&)> func);
 
-    void PlaceRight(std::weak_ptr<Widget> widget, uint64_t offset_x = 0, uint64_t offset_y = 0);
+    void PlaceRight(std::weak_ptr<Widget> widget, int64_t offset_x = 0, int64_t offset_y = 0);
 
-    void PlaceLeft(std::weak_ptr<Widget> widget, uint64_t offset_x = 0, uint64_t offset_y = 0);
+    void PlaceLeft(std::weak_ptr<Widget> widget, int64_t offset_x = 0, int64_t offset_y = 0);
 
-    void PlaceBottom(std::weak_ptr<Widget> widget, uint64_t offset_y = 0, uint64_t offset_x = 0);
+    void PlaceBottom(std::weak_ptr<Widget> widget, int64_t offset_y = 0, int64_t offset_x = 0);
 
-    void PlaceUp(std::weak_ptr<Widget> widget, uint64_t offset_y = 0, uint64_t offset_x = 0);
+    void PlaceUp(std::weak_ptr<Widget> widget, int64_t offset_y = 0, int64_t offset_x = 0);
 
   protected:
-    uint64_t x_;
-    uint64_t y_;
+    int64_t x_;
+    int64_t y_;
 
-    uint64_t width_;
-    uint64_t height_;
+    int64_t width_;
+    int64_t height_;
 
-    uint64_t padding_left_;
-    uint64_t padding_right_;
-    uint64_t padding_top_;
-    uint64_t padding_bottom_;
+    int64_t padding_left_;
+    int64_t padding_right_;
+    int64_t padding_top_;
+    int64_t padding_bottom_;
 
     std::map<KeyMap, const MouseButtonEvent> button_queue_;
     std::atomic<bool> hover_;
 
     std::function<bool(const MouseButtonEvent&)> click_callback_;
 
-    Widget(uint64_t x, uint64_t y, uint64_t width, uint64_t height);
+    Widget(int64_t x, int64_t y, int64_t width, int64_t height);
 
-    virtual bool InBounds(uint64_t x, uint64_t y, const Event& event) = 0;
+    virtual bool InBounds(int64_t x, int64_t y, const Event& event) = 0;
 
     virtual bool DoOnMouseButton(const MouseButtonEvent& event) = 0;
 };

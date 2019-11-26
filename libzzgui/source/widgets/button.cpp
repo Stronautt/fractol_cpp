@@ -28,14 +28,14 @@ namespace cozz {
 
 namespace zzgui {
 
-Button::Button(const std::string& text, std::shared_ptr<FontResource> font, uint64_t x, uint64_t y)
+Button::Button(const std::string& text, std::shared_ptr<FontResource> font, int64_t x, int64_t y)
     : Label(text, font, x, y) {
     SetBackgroundColor({0xFF, 0xFF, 0xFF});
     SetBorderColor({0, 0, 0});
     SetForegroundColor({0, 0, 0});
 }
 
-void Button::Draw(std::shared_ptr<Painter> painter) { Label::Draw(painter); }
+void Button::Draw(std::shared_ptr<Painter> painter, std::shared_ptr<Canvas> canvas) { Label::Draw(painter, canvas); }
 
 bool Button::DoOnMouseButton(const MouseButtonEvent& event) {
     if (event.GetButton() == KeyMap::kLeftMouseButton) {

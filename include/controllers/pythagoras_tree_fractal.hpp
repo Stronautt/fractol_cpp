@@ -17,16 +17,16 @@
  * Author: Pavlo Hrytsenko
 */
 
-#ifndef FRACTOL_INCLUDE_CONTROLLERS_ALGEBRAIC_FRACTAL_HPP_
-#define FRACTOL_INCLUDE_CONTROLLERS_ALGEBRAIC_FRACTAL_HPP_
+#ifndef FRACTOL_INCLUDE_CONTROLLERS_PYTHAGORAS_TREE_FRACTAL_HPP_
+#define FRACTOL_INCLUDE_CONTROLLERS_PYTHAGORAS_TREE_FRACTAL_HPP_
 
 #include "controller.hpp"
 
 #include <memory>
 
 #include "event/window_event.hpp"
-#include "models/algebraic_fractal.hpp"
-#include "views/algebraic_fractal.hpp"
+#include "models/pythagoras_tree_fractal.hpp"
+#include "views/pythagoras_tree_fractal.hpp"
 
 namespace cozz {
 
@@ -46,31 +46,16 @@ class Core;
 
 }  // namespace clpp
 
-class AlgebraicFractalController final : public zzgui::Controller<AlgebraicFractalModel, AlgebraicFractalView> {
+class PythagorasTreeFractalController final
+    : public zzgui::Controller<PythagorasTreeFractalModel, PythagorasTreeFractalView> {
   public:
-    AlgebraicFractalController(const zzgui::Application& app, std::shared_ptr<clpp::Core> cl_core,
-                               std::shared_ptr<AlgebraicFractalModel> model);
+    PythagorasTreeFractalController(std::shared_ptr<PythagorasTreeFractalModel> model);
 
     virtual void Create() override;
 
-    void Render(float delta) override;
-
     bool OnWindowClose(const zzgui::WindowCloseEvent& event);
-
-    bool OnKeyboard(const zzgui::KeyboardEvent& event);
-
-    bool OnMouseButton(const zzgui::MouseButtonEvent& event);
-
-    bool OnMouseMotion(const zzgui::MouseMotionEvent& event);
-
-    bool OnMouseWheel(const zzgui::MouseWheelEvent& event);
-
-  private:
-    const zzgui::Application& app_;
-
-    std::shared_ptr<clpp::Core> cl_core_;
 };
 
 }  // namespace cozz
 
-#endif  // FRACTOL_INCLUDE_CONTROLLERS_ALGEBRAIC_FRACTAL_HPP_
+#endif  // FRACTOL_INCLUDE_CONTROLLERS_PYTHAGORAS_TREE_FRACTAL_HPP_

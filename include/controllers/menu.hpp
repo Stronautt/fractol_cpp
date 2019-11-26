@@ -44,8 +44,7 @@ class Platform;
 
 }  // namespace clpp
 
-class MenuController final : public zzgui::Controller<MenuModel, MenuView>,
-                             public std::enable_shared_from_this<MenuController> {
+class MenuController final : public zzgui::Controller<MenuModel, MenuView> {
   public:
     MenuController(const zzgui::Application& app, std::shared_ptr<clpp::Core> cl_core);
 
@@ -58,6 +57,8 @@ class MenuController final : public zzgui::Controller<MenuModel, MenuView>,
     bool OnJuliaFractalButtonClick(const zzgui::MouseButtonEvent& event) const;
 
     bool OnBurningShipFractalButtonClick(const zzgui::MouseButtonEvent& event) const;
+
+    bool OnPythagorasTreeFractalButtonClick(const zzgui::MouseButtonEvent& event) const;
 
     bool OnExitButtonClick(const zzgui::MouseButtonEvent& event) const;
 

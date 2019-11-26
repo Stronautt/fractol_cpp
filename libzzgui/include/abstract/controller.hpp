@@ -33,7 +33,7 @@ namespace zzgui {
 class WindowResizedEvent;
 
 template <class ModelType, class ViewType>
-class Controller : public BaseController {
+class Controller : public BaseController, public std::enable_shared_from_this<Controller<ModelType, ViewType>> {
   public:
     virtual ~Controller();
 

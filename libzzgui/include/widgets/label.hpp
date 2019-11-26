@@ -49,11 +49,11 @@ class Label : public Widget {
         kVerticalAndHorizontalCentered,
     };
 
-    Label(const std::string& text, std::shared_ptr<FontResource> font, uint64_t x = 0, uint64_t y = 0);
+    Label(const std::string& text, std::shared_ptr<FontResource> font, int64_t x = 0, int64_t y = 0);
 
-    virtual void Draw(std::shared_ptr<Painter> painter) override;
+    virtual void Draw(std::shared_ptr<Painter> painter, std::shared_ptr<Canvas> canvas) override;
 
-    virtual void SetSize(uint64_t width, uint64_t height) override;
+    virtual void SetSize(int64_t width, int64_t height) override;
 
     void SetText(const std::string& text);
 
@@ -101,10 +101,10 @@ class Label : public Widget {
     Canvas::PixelColor background_color_;
     Canvas::PixelColor foreground_color_;
 
-    virtual bool InBounds(uint64_t x, uint64_t y, const Event& event) override;
+    virtual bool InBounds(int64_t x, int64_t y, const Event& event) override;
 
   private:
-    std::pair<uint64_t, uint64_t> text_size_;
+    std::pair<int64_t, int64_t> text_size_;
 };
 
 }  // namespace zzgui

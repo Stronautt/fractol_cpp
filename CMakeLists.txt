@@ -40,10 +40,13 @@ add_library(${LIB_NAME} STATIC source/fractol.cpp
                                source/models/mandelfract.cpp
                                source/models/juliafract.cpp
                                source/models/burningshipfract.cpp
+                               source/models/pythagoras_tree_fractal.cpp
                                source/views/menu.cpp
                                source/views/algebraic_fractal.cpp
+                               source/views/pythagoras_tree_fractal.cpp
                                source/controllers/menu.cpp
-                               source/controllers/algebraic_fractal.cpp)
+                               source/controllers/algebraic_fractal.cpp
+                               source/controllers/pythagoras_tree_fractal.cpp)
 
 target_include_directories(${LIB_NAME} PUBLIC include
                                               include/interfaces

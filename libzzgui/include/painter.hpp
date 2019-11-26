@@ -35,35 +35,30 @@ class ImageResource;
 
 class Painter final {
   public:
-    Painter(std::weak_ptr<Canvas> canvas);
+    void Clear(std::shared_ptr<Canvas> canvas, const Canvas::PixelColor& color);
 
-    void ResetCanvas(std::weak_ptr<Canvas> canvas);
+    void DrawLine(std::shared_ptr<Canvas> canvas, const Canvas::Point& a, const Canvas::Point& b,
+                  const Canvas::PixelColor& color = {0, 0, 0}, uint16_t thickness = 1) const;
 
-    void DrawLine(const Canvas::Point& a, const Canvas::Point& b, const Canvas::PixelColor& color = {0, 0, 0},
-                  uint16_t thickness = 1) const;
+    void DrawCircle(std::shared_ptr<Canvas> canvas, const Canvas::Point& p, uint64_t radius,
+                    const Canvas::PixelColor& color = {0, 0, 0}, uint16_t thickness = 1) const;
 
-    void DrawCircle(const Canvas::Point& p, uint64_t radius, const Canvas::PixelColor& color = {0, 0, 0},
-                    uint16_t thickness = 1) const;
+    void DrawFilledCircle(std::shared_ptr<Canvas> canvas, const Canvas::Point& p, uint64_t radius,
+                          const Canvas::PixelColor& color = {0, 0, 0}) const;
 
-    void DrawFilledCircle(const Canvas::Point& p, uint64_t radius, const Canvas::PixelColor& color = {0, 0, 0}) const;
+    void DrawRect(std::shared_ptr<Canvas> canvas, const Canvas::Point& p, int64_t width, int64_t height,
+                  const Canvas::PixelColor& color = {0, 0, 0}, uint16_t thickness = 1) const;
 
-    void DrawRect(const Canvas::Point& p, uint64_t width, uint64_t height, const Canvas::PixelColor& color = {0, 0, 0},
-                  uint16_t thickness = 1) const;
-
-    void DrawFilledRect(const Canvas::Point& p, uint64_t width, uint64_t height,
+    void DrawFilledRect(std::shared_ptr<Canvas> canvas, const Canvas::Point& p, int64_t width, int64_t height,
                         const Canvas::PixelColor& color = {0, 0, 0}) const;
 
-    void DrawText(const Canvas::Point& p, const std::string text, std::shared_ptr<FontResource> font,
-                  const Canvas::PixelColor& color = {0xFF, 0xFF, 0xFF}) const;
+    void DrawText(std::shared_ptr<Canvas> canvas, const Canvas::Point& p, const std::string text,
+                  std::shared_ptr<FontResource> font, const Canvas::PixelColor& color = {0xFF, 0xFF, 0xFF}) const;
 
-    void DrawImage(const Canvas::Point& p, std::shared_ptr<ImageResource> img) const;
+    void DrawImage(std::shared_ptr<Canvas> canvas, const Canvas::Point& p, std::shared_ptr<ImageResource> img) const;
 
-    void DrawImage(const Canvas::Point& p, std::shared_ptr<ImageResource> img, uint64_t width, uint64_t height) const;
-
-  private:
-    std::weak_ptr<Canvas> canvas_;
-
-    std::shared_ptr<Canvas> GetCanvas() const;
+    void DrawImage(std::shared_ptr<Canvas> canvas, const Canvas::Point& p, std::shared_ptr<ImageResource> img,
+                   int64_t width, int64_t height) const;
 };
 
 }  // namespace zzgui

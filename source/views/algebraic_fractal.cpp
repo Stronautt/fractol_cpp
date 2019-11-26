@@ -35,7 +35,7 @@ AlgebraicFractalView::AlgebraicFractalView(std::weak_ptr<AlgebraicFractalModel> 
 
 void AlgebraicFractalView::Create() {
     auto model = GetModel().lock();
-    Resized(model->GetWindow());
+    painter_ = std::make_shared<zzgui::Painter>();
 }
 
 void AlgebraicFractalView::Render(float /*delta*/) {
@@ -45,17 +45,11 @@ void AlgebraicFractalView::Render(float /*delta*/) {
 
     const auto widgets_manager = model->GetWidgetsManager().lock();
     for (const auto& widget : widgets_manager->GetWidgets()) {
-        widget.second->Draw(painter_);
+        widget.second->Draw(painter_, canvas);
     }
 }
 
-void AlgebraicFractalView::Resized(std::weak_ptr<zzgui::Window> window) {
-    const auto window_ptr = window.lock();
-
-    if (window_ptr) {
-        painter_ = std::make_shared<zzgui::Painter>(window_ptr->GetCanvas());
-    }
-}
+void AlgebraicFractalView::Resized(std::weak_ptr<zzgui::Window> /*window*/) {}
 
 void AlgebraicFractalView::Show() {}
 
